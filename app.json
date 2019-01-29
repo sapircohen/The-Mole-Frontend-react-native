@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "the mole",
+    "slug": "TheMole",
+    "privacy": "public",
+    "sdkVersion": "32.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "facebookAppId":"752014891800107",
+    "facebookScheme":"fb752014891800107",
+    "extra":{
+      "googleAppId":{
+        "ios":"625987979169-ich3hq56mbspf3k8lp6ttd4it6g246e6.apps.googleusercontent.com",
+        "android":"625987979169-470e5jli10dbo7nq3q9cecskrksd8gsk.apps.googleusercontent.com"
+      }
+    }
+  }
+}
