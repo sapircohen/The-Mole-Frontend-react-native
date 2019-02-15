@@ -13,7 +13,7 @@ class SplashScreen extends Component{
     checkAuth = ()=>{
         firebase.auth().onAuthStateChanged(user=>{
             if(user){
-                this.props.navigation.navigate('Main');
+                this.props.navigation.navigate('Profile');
             }
             else{
                 this.props.navigation.navigate('Auth')

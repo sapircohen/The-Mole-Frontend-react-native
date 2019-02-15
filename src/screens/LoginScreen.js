@@ -1,5 +1,5 @@
 import React,{ Component } from 'react';
-import {Box,Text} from 'react-native-design-utility'
+import {Box} from 'react-native-design-utility'
 import {Animated,Alert} from 'react-native';
 
 import OnBoardingLogo from '../common/OnBoardingLogo';
@@ -11,6 +11,9 @@ class LoginScreen extends Component{
     state={
         opacity: new Animated.Value(0),
         position: new Animated.Value(0)
+    }
+    static navigationOptions = {
+        header: null,
     }
     componentDidMount(){
         Animated.parallel([this.positionAnim(),this.opacityAnim()]).start();
