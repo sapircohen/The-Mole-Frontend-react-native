@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import {Box} from 'react-native-design-utility'
-import {Animated,Alert} from 'react-native';
+import {Animated} from 'react-native';
 
 import OnBoardingLogo from '../common/OnBoardingLogo';
 import {FbButton,GoogleButton} from '../buttons/AuthButton';
@@ -38,7 +38,7 @@ class LoginScreen extends Component{
         //alert("google press");
         try {
             const token = await GoogleApi.loginAsync();
-            alert('token: ' + token);
+            //alert('token: ' + token);
 
         } catch (error) {
             console.log('error',error);
@@ -48,7 +48,7 @@ class LoginScreen extends Component{
         //alert("facebook press");
         try {
             const token = await FacebookApi.loginAsync();
-            alert('token: ' + token);
+            //alert('token: ' + token);
 
         } catch (error) {
             console.log('error',error);

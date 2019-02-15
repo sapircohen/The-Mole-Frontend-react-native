@@ -14,15 +14,25 @@ const AuthNavigator = createStackNavigator(
         },
     },
 )
-const ProfileNavigator = createStackNavigator({
-    Profile: {
-        getScreen: ()=>require('./ProfileScreen').default,
-    }
-} )
+const ProfileNavigator = createStackNavigator(
+    {
+        Profile: {
+            getScreen: ()=>require('./ProfileScreen').default,
+        },
+    },
+)
 const TabNavigator = createBottomTabNavigator(
     {
         Home: {
             getScreen: ()=> require('./Home').default,
+        }
+
+    }
+)
+const IntroNavigator = createStackNavigator(
+    {
+        Home: {
+            getScreen: ()=> require('./Intro').default,
         }
 
     }
@@ -39,7 +49,8 @@ const AppNavigator = createSwitchNavigator(
         },
         Auth: AuthNavigator,
         Main: MainNavigator,
-        Profile:ProfileNavigator
+        Profile:ProfileNavigator,
+        Intro:IntroNavigator,
     },{
         initialRouteName:'Splash'
     }
