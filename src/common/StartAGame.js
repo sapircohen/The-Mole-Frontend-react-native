@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, View, Button, Icon, Fab } from 'native-base';
-import {Text} from 'react-native-design-utility'
+//import Alert from '../common/Alert';
 
 export default class FABStartGame extends Component {
   constructor(props) {
@@ -8,6 +8,13 @@ export default class FABStartGame extends Component {
     this.state = {
       active: false
     };
+  }
+  
+  AlertTwoPlayers = ()=>{
+    
+  }
+  AlertOnePlayer = ()=>{
+
   }
   render() {
     return (  
@@ -23,10 +30,10 @@ export default class FABStartGame extends Component {
             onPress={() => this.setState({ active: !this.state.active })}>
             <Icon name="ios-rocket" />
             <Button style={{ backgroundColor: '#34A34F'}}>
-                <Icon name="ios-contact" />
+                <Icon onPress={this.AlertOnePlayer} name="ios-contact" />
             </Button>
-            <Button style={{ backgroundColor: '#3B5998' }}>
-              <Icon name="ios-contacts" />
+            <Button on style={{ backgroundColor: '#3B5998' }}>
+              <Icon onPress={this.AlertTwoPlayers} name="ios-contacts" />
             </Button>
           </Fab>
         </View>

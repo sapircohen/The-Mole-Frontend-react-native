@@ -2,20 +2,31 @@ import React,{ Component } from 'react';
 import {Box,Text} from 'react-native-design-utility'
 import { Avatar } from 'react-native-elements';
 import FABStartGame from '../common/StartAGame'
+import firebase from 'firebase';
+import { firstFromTime } from 'uuid-js';
 
 class ProfileScreen extends Component{
     static navigationOptions = {
       header: null,
     }
+    state = {
+      userName:"",
+      userPic:"",
+      email:""
+    }
     componentDidMount(){
-      console.log(this.props.navigation)
+      //get current user info from firebase auth, current user
+        this.setState({
+          userName:firebase.auth().currentUser.displayName,
+          userPic:firebase.auth().currentUser.photoURL,
+          email:firebase.auth().currentUser.email
+        })
     }
     EditAvatarPic = () =>{
       this.props.navigation.navigate('Home');
       //change to navigate to AvatarScreen
     }
     render(){
-        const userName = this.props.navigation.getParam('userName','No name');
         return(
           <Box f={1} center>
               <Box f={1} center>
@@ -23,12 +34,12 @@ class ProfileScreen extends Component{
                 rounded
                 source={{
                   uri:
-                    'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
+                   this.state.userPic?this.state.userPic:'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
                 }}
                 showEditButton
                 onEditPress={this.EditAvatarPic}
               />
-              <Text size="lg" style={{marginTop:"5%"}}>{JSON.stringify(userName)}</Text>
+              <Text size="lg" style={{marginTop:"5%"}}>{this.state.userName}</Text>
             </Box>
             <Box f={1} style={{marginLeft:"93%",marginBottom:"5%"}} >
               <FABStartGame/> 

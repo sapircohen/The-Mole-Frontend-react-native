@@ -7,6 +7,7 @@ import {FbButton,GoogleButton} from '../buttons/AuthButton';
 import { FacebookApi } from '../api/Facebook';
 import { GoogleApi } from '../api/Google';
 
+
 class LoginScreen extends Component{
     state={
         opacity: new Animated.Value(0),

@@ -1,6 +1,5 @@
 import React,{ Component } from 'react';
 import {Box,Text} from 'react-native-design-utility'
-import {Image} from 'react-native';
 import firebase from 'firebase';
 
 import OnBoardingLogo from '../common/OnBoardingLogo'
@@ -13,7 +12,12 @@ class SplashScreen extends Component{
     checkAuth = ()=>{
         firebase.auth().onAuthStateChanged(user=>{
             if(user){
-                this.props.navigation.navigate('Profile');
+                this.props.navigation.navigate('Profile',{
+                    params:{
+                        userName:user.displayName,
+                        userPic:user.photoURL,
+                    }
+                });
             }
             else{
                 this.props.navigation.navigate('Auth')
