@@ -4,6 +4,7 @@ import {Button,Icon,View} from 'react-native';
 import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
 import FABSettings from '../common/Settings';
+import FABBombShop from '../common/BombShop';
 import firebase from 'firebase';
 
 
@@ -58,7 +59,10 @@ class ProfileScreen extends Component{
               <Box f={1} >
                 <FABStartGame GoToScreen={this.changeScreen}/> 
               </Box>
-              <Box  >
+              <Box style={{marginLeft:"37%"}}>
+                <FABBombShop/>
+              </Box>
+              <Box>
                 <FABSettings GoToScreen={this.changeScreen} />
               </Box>
             </Box>

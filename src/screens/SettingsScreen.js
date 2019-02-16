@@ -6,9 +6,14 @@ export default class SettingsScreen extends Component {
     static navigationOptions = {
       headerTitle: "Settings",
     };
-    // backToProfile = ()=>{
-
-    // }
+    BackToProfileScreen = (screenName) =>{
+      if (screenName==='Back') {
+        this.props.navigation.navigate('Profile');
+      }
+      else{
+        this.props.navigation.navigate('Profile');
+      }
+    }
   render() {
     return (
         <Container>
@@ -55,7 +60,7 @@ export default class SettingsScreen extends Component {
               </Right>
             </ListItem>
           </Content>
-          <FooterNavigator />
+          <FooterNavigator BackOrSave={this.BackToProfileScreen} />
         </Container>
     );
   }

@@ -24,7 +24,7 @@ const ProfileNavigator = createStackNavigator(
     },
 )
 
-const TabNavigator = createBottomTabNavigator(
+const AvatarNavigator = createStackNavigator(
     {
         Avatar: {
             getScreen: ()=> require('./AvatarScreen').default,
@@ -49,9 +49,9 @@ const SettingsNavigator = createStackNavigator(
     },
 )
 
-const MainNavigator = createStackNavigator({
-    Tab:TabNavigator,
-})
+// const MainNavigator = createStackNavigator({
+//     Tab:TabNavigator,
+// })
 
 //using switch navigator for better performence
 const AppNavigator = createSwitchNavigator(
@@ -60,7 +60,7 @@ const AppNavigator = createSwitchNavigator(
             getScreen:()=>require('./Splash').default,
         },
         Auth: AuthNavigator,
-        Avatar: MainNavigator,
+        Avatar: AvatarNavigator,
         Profile:ProfileNavigator,
         Intro:IntroNavigator,
         Settings:SettingsNavigator,
