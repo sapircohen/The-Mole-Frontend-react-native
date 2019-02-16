@@ -1,14 +1,15 @@
 import React,{ Component } from 'react';
 import {Box,Text} from 'react-native-design-utility'
 
-class HomeScreen extends Component{
+class AvatarScreen extends Component{
+    
     render(){
         return(
             <Box f={1} center>
-                <Text>Home Screen</Text>
+                <Text>Avatar Screen</Text>
             </Box>
         )
     }
 }
 
-export default HomeScreen;
+export default AvatarScreen;

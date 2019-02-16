@@ -22,7 +22,7 @@ export default class FABStartGame extends Component {
             active={this.state.active}
             direction="up"
             containerStyle={{ }}
-            style={{ backgroundColor: '#5067FF' }}
+            style={{ backgroundColor: '#5067FF'}}
             position="bottomRight"
             onPress={() => this.setState({ active: !this.state.active })}>
             <Icon name="logo-game-controller-b" />

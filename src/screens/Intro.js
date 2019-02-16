@@ -7,32 +7,38 @@ const styles = StyleSheet.create({
   image: {
     width: 300,
     height: 300,
+  },
+  text:{
+    fontSize: 21,
   }
 });
 
 const slides = [
   {
     key: 'somethun',
-    title: 'Title 1',
-    text: 'Description.\nSay something cool',
+    title: 'The Mole',
+    text: 'Your Goal is to get from one Wikipedia article - your base,\n To another article - your target.',
     //image: require('https://data1.ibtimes.co.in/cache-img-0-450/en/full/685870/1550110791_beyonce-knowles.jpg'),
     imageStyle: styles.image,
+    textStyle: styles.text,
     backgroundColor: '#59b2ab',
   },
   {
     key: 'somethun-dos',
-    title: 'Title 2',
-    text: 'Other cool stuff',
+    title: 'The Mole',
+    text: 'In order to win the game,\nTry to get to the base article of your opponent in the\nshortest path and as fast as you can!',
     //image: require('https://data1.ibtimes.co.in/cache-img-0-450/en/full/685870/1550110791_beyonce-knowles.jpg'),
     imageStyle: styles.image,
+    textStyle: styles.text,
     backgroundColor: '#febe29',
   },
   {
     key: 'somethun1',
-    title: 'Rocket guy',
-    text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
+    title: 'The Mole',
+    text: 'You can choose to perform a defensive\nmove instead of attacking.\n\nPlace a Bomb in your opponent Path\nIn order to prevent the opponent from reaching your Base article.\nThe opponent won\'t know where you placed the Bomb!',
     //image: require('https://data1.ibtimes.co.in/cache-img-0-450/en/full/685870/1550110791_beyonce-knowles.jpg'),
     imageStyle: styles.image,
+    textStyle: styles.text,
     backgroundColor: '#22bcb5',
   }
 ];
@@ -51,7 +57,7 @@ class Intro extends React.Component {
   }
   render() {
     if (this.state.showRealApp) {
-      return <App />;
+      return this.props.navigation.navigate('Profile');
     } else {
       return <AppIntroSlider slides={slides} onDone={this._onDone}/>;
     }

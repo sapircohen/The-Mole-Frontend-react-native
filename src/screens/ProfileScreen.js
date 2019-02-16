@@ -1,7 +1,7 @@
 import React,{ Component } from 'react';
-import {Box,Text} from 'react-native-design-utility'
+import {Box} from 'react-native-design-utility'
 import {Button,Icon,View} from 'react-native';
-import { Avatar} from 'react-native-elements';
+import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
 import FABSettings from '../common/Settings';
 import firebase from 'firebase';
@@ -28,9 +28,14 @@ class ProfileScreen extends Component{
         })
     }
     EditAvatarPic = () =>{
-      this.props.navigation.navigate('Home');
+      this.props.navigation.navigate('Avatar');
       //change to navigate to AvatarScreen
     }
+    changeScreen = (screenName)=>{
+      this.props.navigation.navigate(screenName);
+      //this.props.navigation.push(screenName);
+    }
+
     render(){
         return(
             <Box f={1} bg="white">
@@ -44,22 +49,21 @@ class ProfileScreen extends Component{
                 showEditButton
                 onEditPress={this.EditAvatarPic}
               />
-              <Text size="lg" style={{marginTop:"5%"}}>{this.state.userName}</Text>
+              <Text h4 style={{fontWeight:"bold",marginTop:"5%"}}>{this.state.userName}</Text>
             </Box>
             <Box style={{marginLeft:"5%"}}>
               <Text>Games Won</Text>
             </Box>
-            <Box f={1} style={{flexDirection:"row"}}>
-              <Box f={1} style={{marginLeft:"100%",marginBottom:"8%"}} >
-                <FABStartGame/>  
+            <Box f={1} style={{marginBottom:"3%"}}>
+              <Box f={1} >
+                <FABStartGame GoToScreen={this.changeScreen}/> 
               </Box>
-              <Box style={{backgroundColor:"black",marginBottom:"8%"}} >
-                <FABSettings/>
+              <Box  >
+                <FABSettings GoToScreen={this.changeScreen} />
               </Box>
             </Box>
           </Box>
         )
     }
 }
-
 export default ProfileScreen;

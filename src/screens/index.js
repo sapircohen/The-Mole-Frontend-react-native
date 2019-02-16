@@ -1,7 +1,7 @@
 import {createAppContainer,createStackNavigator,createSwitchNavigator,createBottomTabNavigator} from 'react-navigation';
 import React,{Component} from 'react';
 
-
+//Auth screen (only if the player isn't signed in)
 const AuthNavigator = createStackNavigator(
     {
         Login:{
@@ -14,6 +14,8 @@ const AuthNavigator = createStackNavigator(
         },
     },
 )
+
+//user profile 
 const ProfileNavigator = createStackNavigator(
     {
         Profile: {
@@ -21,41 +23,53 @@ const ProfileNavigator = createStackNavigator(
         },
     },
 )
+
 const TabNavigator = createBottomTabNavigator(
     {
-        Home: {
-            getScreen: ()=> require('./Home').default,
+        Avatar: {
+            getScreen: ()=> require('./AvatarScreen').default,
         }
-
     }
 )
+//walkthrough game introduction . . .
 const IntroNavigator = createStackNavigator(
     {
-        Home: {
+        Intro: {
             getScreen: ()=> require('./Intro').default,
         }
-
     }
+)
+
+//settings screen . . .
+const SettingsNavigator = createStackNavigator(
+    {
+        Settings: {
+            getScreen: ()=> require('./SettingsScreen').default,
+        }
+    },
 )
 
 const MainNavigator = createStackNavigator({
     Tab:TabNavigator,
 })
 
+//using switch navigator for better performence
 const AppNavigator = createSwitchNavigator(
     {
         Splash:{
             getScreen:()=>require('./Splash').default,
         },
         Auth: AuthNavigator,
-        Main: MainNavigator,
+        Avatar: MainNavigator,
         Profile:ProfileNavigator,
         Intro:IntroNavigator,
+        Settings:SettingsNavigator,
     },{
         initialRouteName:'Splash'
     }
 )
 
+//warp with app container
 const AppContainer = createAppContainer(AppNavigator);
 class Navigation extends Component{
     render(){
