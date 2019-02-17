@@ -1,12 +1,11 @@
 import React,{ Component } from 'react';
 import {Box} from 'react-native-design-utility'
-import {Button,Icon,View} from 'react-native';
+import {Button,Icon, View, Alert} from 'react-native';
 import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
 import FABSettings from '../common/Settings';
 import FABBombShop from '../common/BombShop';
 import firebase from 'firebase';
-
 
 class ProfileScreen extends Component{
     static navigationOptions = {
@@ -36,11 +35,10 @@ class ProfileScreen extends Component{
       this.props.navigation.navigate(screenName);
       //this.props.navigation.push(screenName);
     }
-
     render(){
         return(
             <Box f={1} bg="white">
-              <Box f={1} center>
+              <Box f={1} style={{marginTop:"15%"}} center>
                 <Avatar size='xlarge' 
                 rounded
                 source={{
@@ -52,8 +50,8 @@ class ProfileScreen extends Component{
               />
               <Text h4 style={{fontWeight:"bold",marginTop:"5%"}}>{this.state.userName}</Text>
             </Box>
-            <Box style={{marginLeft:"5%"}}>
-              <Text>Games Won</Text>
+            <Box >
+              <Text h4>Hello world</Text>          
             </Box>
             <Box f={1} style={{marginBottom:"3%"}}>
               <Box f={1} >
@@ -70,4 +68,6 @@ class ProfileScreen extends Component{
         )
     }
 }
+
+
 export default ProfileScreen;
