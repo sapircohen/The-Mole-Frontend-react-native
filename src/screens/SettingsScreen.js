@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import { Title,Button,Container, Content, List, ListItem, Text, Icon, Left, Body, Right, Switch, Header } from 'native-base';
 import FooterNavigator from '../common/Footer'
-import {View} from 'react-native';
+import {View,Linking} from 'react-native';
+import NetworkHeader from '../common/NetworkHeader';
 
 export default class SettingsScreen extends Component {
     static navigationOptions = {
       headerTitle: "Settings",
+      headerBackground: (
+        <NetworkHeader/>
+      ),
+      headerTitleStyle: { color: '#000',fontSize:20 },
     };
+    state = {
+      soundOn:false,
+      NotificationsOn:false,
+    }
     BackToProfileScreen = (screenName) =>{
       if (screenName==='Back') {
         this.props.navigation.navigate('Profile');
@@ -15,18 +24,21 @@ export default class SettingsScreen extends Component {
         this.props.navigation.navigate('Profile');
       }
     }
+    shareToWhatsAppWithContact = (text, phoneNumber) => {
+      Linking.openURL(`whatsapp://send?text=${text}&phone=${phoneNumber}`);
+    }
   render() {
     return (
         <Container>
-            <View>
-              <Header>
+            <View >
+            <Header style={{backgroundColor:"white"}} >
                 <Left >
                   <Title style={{color:"red"}}>PROFILE SETTINGS</Title>
                 </Left>
                 <Right />
               </Header>
             </View>
-            <Content>
+            <Content style={{marginBottom:"-10%"}}>
             <ListItem icon>
               <Left>
                 <Button style={{ backgroundColor: "#FF9501" }}>
@@ -37,7 +49,7 @@ export default class SettingsScreen extends Component {
                 <Text>Sound Mode</Text>
               </Body>
               <Right>
-                <Switch value={true} />
+                <Switch onValueChange={()=>this.setState({soundOn:!this.state.soundOn})} value={this.state.soundOn} />
               </Right>
             </ListItem>
             <ListItem icon>
@@ -50,41 +62,27 @@ export default class SettingsScreen extends Component {
                 <Text>Send Push Notifications</Text>
               </Body>
               <Right>
-                <Switch value={true} />
-              </Right>
-            </ListItem>
-            <ListItem icon>
-              <Left>
-                <Button style={{ backgroundColor: "#007AFF" }}>
-                  <Icon active name="bluetooth" />
-                </Button>
-              </Left>
-              <Body>
-                <Text>Bluetooth</Text>
-              </Body>
-              <Right>
-                <Text>On</Text>
-                <Icon active name="arrow-forward" />
+                <Switch onValueChange={()=>this.setState({NotificationsOn:!this.state.NotificationsOn})} value={this.state.NotificationsOn} />
               </Right>
             </ListItem>
           </Content>
-          <View>
-              <Header>
+              <Header style={{backgroundColor:"white"}} >
                 <Left >
                   <Title style={{color:"red"}}>SHARE THE APP</Title>
                 </Left>
                 <Right />
               </Header>
-            </View>
             <Content>
             <ListItem icon>
               <Left>
-                <Button style={{ backgroundColor: "blue" }}>
-                  <Icon active name="logo-facebook" />
+                <Button style={{ backgroundColor: "white" }}>
+                  <Icon style={{color:"#4167B2"}} active name="logo-facebook" />
                 </Button>
               </Left>
               <Body>
-                <Text>Share with Facebook!</Text>
+                <Button transparent dark>
+                  <Text>Share with Facebook!</Text>
+                </Button>
               </Body>
               <Right>
                 <Icon active name="arrow-forward" />
@@ -92,18 +90,43 @@ export default class SettingsScreen extends Component {
             </ListItem>
             <ListItem icon>
               <Left>
-                <Button style={{ backgroundColor: "green" }}>
-                  <Icon active name="logo-whatsapp" />
+                <Button style={{ backgroundColor: "white" }}>
+                  <Icon style={{color:"#00E576"}} active name="logo-whatsapp" />
                 </Button>
               </Left>
               <Body>
-                <Text>Share with Whatsapp!</Text>
+                <Button transparent dark onPress={this.shareToWhatsAppWithContact}>
+                  <Text>Share with Whatsapp!</Text>
+                </Button>
               </Body>
               <Right>
                 <Icon active name="arrow-forward" />
               </Right>
             </ListItem>
           </Content>
+          <Header style={{backgroundColor:"white"}} >
+                <Left >
+                  <Title style={{color:"red"}}>SUPPORT</Title>
+                </Left>
+                <Right />
+              </Header>
+            <Content>
+            <ListItem icon>
+              <Left>
+                <Button style={{ backgroundColor: "white" }}>
+                  <Icon style={{color:"#000000"}} active name="md-construct" />
+                </Button>
+              </Left>
+              <Body>
+                <Button transparent dark onPress={() => Linking.openURL('mailto:support@example.com')}>
+                  <Text>Talk to us</Text>
+                </Button>
+              </Body>
+              <Right>
+                <Icon active name="arrow-forward" />
+              </Right>
+            </ListItem>
+          </Content>  
           <FooterNavigator BackOrSave={this.BackToProfileScreen} />
         </Container>
     );

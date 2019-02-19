@@ -3,7 +3,7 @@ import {Text} from 'react-native-design-utility'
 import FooterNavigator from '../common/Footer'
 import { Container } from 'native-base';
 import {StyleSheet, FlatList, View, Alert, Platform} from 'react-native';
-
+import NetworkHeader from '../common/NetworkHeader';
 
 const styles = StyleSheet.create({
     MainContainer :{
@@ -46,7 +46,11 @@ class AvatarScreen extends Component{
 
     }
     static navigationOptions = {
-        headerTitle: "Avatars",
+      headerTitle: "Avatars",
+      headerBackground: (
+        <NetworkHeader/>
+      ),
+      headerTitleStyle: { color: '#000',fontSize:20 },
     };
 
     BackToProfileScreen = (screenName) =>{
@@ -69,7 +73,7 @@ class AvatarScreen extends Component{
                     data={ this.state.GridViewItems }
                     renderItem={({item}) =>
                         <View style={styles.GridViewBlockStyle}>
-                        <Text style={styles.GridViewInsideTextItemStyle} onPress={this.GetGridViewItem.bind(this, item.key)} > {item.key} </Text>
+                        <Text style={styles.GridViewInsideTextItemStyle} onPress={this.GetGridViewItem.bind(this, item.key)} > "sapir"</Text>
                         </View>
                     }
                     numColumns={3}

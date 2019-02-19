@@ -1,5 +1,6 @@
 import {createAppContainer,createStackNavigator,createSwitchNavigator,createBottomTabNavigator} from 'react-navigation';
 import React,{Component} from 'react';
+import NetworkHeader from '../common/NetworkHeader'
 
 //Auth screen (only if the player isn't signed in)
 const AuthNavigator = createStackNavigator(
@@ -47,6 +48,14 @@ const SettingsNavigator = createStackNavigator(
             getScreen: ()=> require('./SettingsScreen').default,
         }
     },
+    {
+    navigationOptions: {
+        headerBackground: (
+          <NetworkHeader/>
+        ),
+        headerTitleStyle: { color: '#000' },
+      }
+    },
 )
 
 // const MainNavigator = createStackNavigator({
@@ -65,7 +74,7 @@ const AppNavigator = createSwitchNavigator(
         Intro:IntroNavigator,
         Settings:SettingsNavigator,
     },{
-        initialRouteName:'Splash'
+        initialRouteName:'Splash',
     }
 )
 

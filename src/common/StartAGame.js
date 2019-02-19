@@ -27,10 +27,10 @@ export default class FABStartGame extends Component {
             onPress={() => this.setState({ active: !this.state.active })}>
             <Icon name="logo-game-controller-b" />
             <Button onPress={this.AlertOnePlayer} style={{ backgroundColor: '#34A34F'}}>
-                <Icon  name="ios-contact" />
+                <Icon style={{fontSize:29}}  name="ios-contact" />
             </Button>
             <Button onPress={this.AlertTwoPlayers} on style={{ backgroundColor: '#3B5998' }}>
-              <Icon name="ios-contacts" />
+              <Icon style={{fontSize:29}}  name="ios-contacts" />
             </Button>
           </Fab>
         </View>

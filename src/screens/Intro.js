@@ -10,13 +10,17 @@ const styles = StyleSheet.create({
   },
   text:{
     fontSize: 21,
+  },
+  title:{
+    fontSize: 50,
   }
 });
 
 const slides = [
   {
-    key: 'somethun',
+    key: 'Help1',
     title: 'The Mole',
+    titleStyle:styles.title,
     text: 'Your Goal is to get from one Wikipedia article - your base,\n To another article - your target.',
     //image: require('https://data1.ibtimes.co.in/cache-img-0-450/en/full/685870/1550110791_beyonce-knowles.jpg'),
     imageStyle: styles.image,
@@ -24,8 +28,9 @@ const slides = [
     backgroundColor: '#59b2ab',
   },
   {
-    key: 'somethun-dos',
+    key: 'Help2',
     title: 'The Mole',
+    titleStyle:styles.title,
     text: 'In order to win the game,\nTry to get to the base article of your opponent in the\nshortest path and as fast as you can!',
     //image: require('https://data1.ibtimes.co.in/cache-img-0-450/en/full/685870/1550110791_beyonce-knowles.jpg'),
     imageStyle: styles.image,
@@ -33,9 +38,10 @@ const slides = [
     backgroundColor: '#febe29',
   },
   {
-    key: 'somethun1',
+    key: 'Help3',
     title: 'The Mole',
-    text: 'You can choose to perform a defensive\nmove instead of attacking.\n\nPlace a Bomb in your opponent Path\nIn order to prevent the opponent from reaching your Base article.\nThe opponent won\'t know where you placed the Bomb!',
+    titleStyle:styles.title,
+    text: 'You can choose to perform a defensive move instead of attacking.\n\nPlace a Bomb in your opponent Path\nIn order to prevent the opponent from reaching your Base article.\nThe opponent won\'t know where you placed the Bomb!',
     //image: require('https://data1.ibtimes.co.in/cache-img-0-450/en/full/685870/1550110791_beyonce-knowles.jpg'),
     imageStyle: styles.image,
     textStyle: styles.text,
