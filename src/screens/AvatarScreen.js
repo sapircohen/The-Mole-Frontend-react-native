@@ -1,31 +1,44 @@
 import React,{ Component } from 'react';
-import {Text} from 'react-native-design-utility'
 import FooterNavigator from '../common/Footer'
+import {Text} from 'react-native';
 import { Container } from 'native-base';
-import {StyleSheet, FlatList, View, Alert, Platform} from 'react-native';
+import {StyleSheet, FlatList, View, Platform,Image} from 'react-native';
 import NetworkHeader from '../common/NetworkHeader';
+import {images} from '../constant/images';
+import Lightbox from 'react-native-lightbox/Lightbox/';
+import {Button} from 'react-native-elements';
 
+const activeProps = {
+  resizeMode: 'contain',
+  flex: 1,
+  width: null
+};
 const styles = StyleSheet.create({
     MainContainer :{
-    justifyContent: 'center',
-    flex:1,
-    margin: 10,
-    paddingTop: (Platform.OS) === 'ios' ? 20 : 0
+      justifyContent: 'center',
+      flex:4,
+      margin: 10,
+      paddingTop: (Platform.OS) === 'ios' ? 20 : 0,
+      borderStyle:'solid',
+      height:'auto'
     },
     GridViewBlockStyle: {
       justifyContent: 'center',
       flex:1,
       alignItems: 'center',
-      height: 100,
+      height: 130,
+      width:120,
       margin: 5,
-      backgroundColor: '#00BCD4',
-      borderRadius:150
+      backgroundColor: 'transparent',
+      borderStyle:'solid',
     },
-    GridViewInsideTextItemStyle: {
-     color: '#fff',
-     padding: 10,
-     fontSize: 18,
+    GridViewInsideImageItemStyle: {
      justifyContent: 'center',
+     width:159,
+     height:115,
+     borderRadius:10,
+     //borderStyle:'solid',
+     borderWidth:1
     },
   });
 
@@ -33,17 +46,15 @@ const styles = StyleSheet.create({
 class AvatarScreen extends Component{
     state = {
         GridViewItems: [
-          {key: 'One'},
-          {key: 'Two'},
-          {key: 'Three'},
-          {key: 'Four'},
-          {key: 'Five'},
-          {key: 'Six'},
-          {key: 'Seven'},
-          {key: 'Eight'},
-          {key: 'Nine'}
+          {key: images.avatar1},
+          {key: images.avatar2},
+          {key: images.avatar3},
+          {key: images.avatar4},
+          {key: images.avatar5},
+          {key: images.avatar6},
+          {key: images.avatar7},
+          {key: images.avatar8},
         ],
-
     }
     static navigationOptions = {
       headerTitle: "Avatars",
@@ -61,22 +72,25 @@ class AvatarScreen extends Component{
           this.props.navigation.navigate('Profile');
         }
       }
-    GetGridViewItem (item) {
-        Alert.alert(item);    
-    }
     render(){
-        
         return(
             <Container>
-                <View style={styles.MainContainer}>
+                <View  style={styles.MainContainer}>
                     <FlatList
                     data={ this.state.GridViewItems }
                     renderItem={({item}) =>
-                        <View style={styles.GridViewBlockStyle}>
-                        <Text style={styles.GridViewInsideTextItemStyle} onPress={this.GetGridViewItem.bind(this, item.key)} > "sapir"</Text>
+                        <View on style={styles.GridViewBlockStyle}>
+                          <Lightbox activeProps={activeProps} pinchToZoom swipeToDismiss>
+                            <Image style={styles.GridViewInsideImageItemStyle} source={item.key} />
+                          </Lightbox>
+                          <Button 
+                            title="take me!"
+                            style={{paddingBottom:1,paddingTop:1}}
+                            type='outline'
+                          />
                         </View>
                     }
-                    numColumns={3}
+                    numColumns={2}
                     />
                 </View> 
               <FooterNavigator BackOrSave={this.BackToProfileScreen}/>
@@ -84,5 +98,6 @@ class AvatarScreen extends Component{
         )
     }
 }
+
 
 export default AvatarScreen;
