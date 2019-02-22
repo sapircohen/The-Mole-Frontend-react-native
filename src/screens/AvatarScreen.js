@@ -16,7 +16,7 @@ const activeProps = {
 const styles = StyleSheet.create({
     MainContainer :{
       justifyContent: 'center',
-      flex:4,
+      flex:7,
       margin: 10,
       paddingTop: (Platform.OS) === 'ios' ? 20 : 0,
       borderStyle:'solid',
@@ -26,11 +26,13 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       flex:1,
       alignItems: 'center',
-      height: 130,
-      width:120,
+      height: 165,
+      width:135,
       margin: 5,
       backgroundColor: 'transparent',
       borderStyle:'solid',
+      borderWidth:1,
+      borderRadius:15
     },
     GridViewInsideImageItemStyle: {
      justifyContent: 'center',
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
      height:115,
      borderRadius:10,
      //borderStyle:'solid',
-     borderWidth:1
+     //borderWidth:1
     },
   });
 
@@ -54,6 +56,7 @@ class AvatarScreen extends Component{
           {key: images.avatar6},
           {key: images.avatar7},
           {key: images.avatar8},
+          {key: images.avatar9},
         ],
     }
     static navigationOptions = {
