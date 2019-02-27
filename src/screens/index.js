@@ -41,6 +41,15 @@ const IntroNavigator = createStackNavigator(
     }
 )
 
+//Article screen
+const ArticleNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./article').default,
+        }
+    }
+)
+
 //settings screen . . .
 const SettingsNavigator = createStackNavigator(
     {
@@ -73,6 +82,7 @@ const AppNavigator = createSwitchNavigator(
         Profile:ProfileNavigator,
         Intro:IntroNavigator,
         Settings:SettingsNavigator,
+        Article:ArticleNavigator,
     },{
         initialRouteName:'Splash',
     }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Container, Header, View, Button, Icon, Fab } from 'native-base';
-
 export default class FABStartGame extends Component {
   constructor(props) {
   super(props)
@@ -9,10 +8,12 @@ export default class FABStartGame extends Component {
     };
   }
   AlertTwoPlayers = ()=>{
+    //this.props.GoToScreen('Categories');
     alert("Two Player game!");
   }
   AlertOnePlayer = ()=>{
-    alert("One Player game!")
+    //this.props.GoToScreen('Categories');
+    alert("One Player game!");
   }
   render() {
     return (  

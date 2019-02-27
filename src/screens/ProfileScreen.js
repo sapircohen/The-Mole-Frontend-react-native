@@ -1,12 +1,17 @@
 import React,{ Component } from 'react';
 import {Box} from 'react-native-design-utility'
-import {Button,Icon, View, Alert,StyleSheet} from 'react-native';
+import { View, Alert,StyleSheet} from 'react-native';
+import {Button,Icon} from 'native-base';
 import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
 import FABSettings from '../common/Settings';
 import FABBombShop from '../common/BombShop';
 import firebase from 'firebase';
 import NetworkHeader from '../common/NetworkHeader';
+//https://en.wikipedia.org/w/api.php?action=parse&prop=sections&page=2018_AFC_Champions_League_group_stage&format=json&formatversion=2&callback=?
+
+
+
 
 
 const styles = StyleSheet.create({
@@ -40,18 +45,28 @@ const styles = StyleSheet.create({
   }
 })
 
+
 class ProfileScreen extends Component{
-    static navigationOptions = {
+    static navigationOptions = ({ navigation }) =>{
+      return{
       headerTitle:"Your Profile",
       headerBackground: (
         <NetworkHeader/>
       ),
       headerTitleStyle: { color: '#000',fontSize:20 },
+      headerRight: 
+       ( <Button
+          onPress={()=>navigation.navigate('Article')}
+          style={{backgroundColor:"transparent"}}>
+            <Icon style={{color:"black",fontSize:32}}  name="md-paper" />
+        </Button>
+       ),
+      }
     }
     state = {
       userName:"",
       userPic:"",
-      email:""
+      email:"",
     }
     NavigateToHelp = ()=>{
       this.props.navigation.navigate('Intro');
@@ -66,11 +81,9 @@ class ProfileScreen extends Component{
     }
     EditAvatarPic = () =>{
       this.props.navigation.navigate('Avatar');
-      //change to navigate to AvatarScreen
     }
-    changeScreen = (screenName)=>{
-      this.props.navigation.navigate(screenName);
-      //this.props.navigation.push(screenName);
+    changeScreen=(screenName)=>{ 
+     this.props.navigation.navigate(screenName);
     }
     render(){
         return(
@@ -105,7 +118,8 @@ class ProfileScreen extends Component{
                       <Text style={{fontSize:20}}>400</Text>
                       <Text style={{fontSize:20}}>Mole Wins</Text>
                   </View>
-                  <View></View>
+                  <View>
+                  </View>
                 </View>
             </Box>
             <Box f={1} style={{marginBottom:"3%"}}>

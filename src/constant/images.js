@@ -9,5 +9,6 @@ export const images ={
         avatar6:require('../../assets/images/6.png'),
         avatar7:require('../../assets/images/7.png'),
         avatar8:require('../../assets/images/8.png'),
-        avatar9:require('../../assets/images/9.png')
+        avatar9:require('../../assets/images/9.png'),
+        wikiLogo:require('../../assets/images/wikilogo1.jpg')
 }
