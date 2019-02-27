@@ -8,11 +8,11 @@ export default class FABStartGame extends Component {
     };
   }
   AlertTwoPlayers = ()=>{
-    //this.props.GoToScreen('Categories');
+    this.props.GoToScreen('Categories');
     alert("Two Player game!");
   }
   AlertOnePlayer = ()=>{
-    //this.props.GoToScreen('Categories');
+    this.props.GoToScreen('Categories');
     alert("One Player game!");
   }
   render() {

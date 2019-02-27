@@ -53,7 +53,7 @@ class ProfileScreen extends Component{
       headerBackground: (
         <NetworkHeader/>
       ),
-      headerTitleStyle: { color: '#000',fontSize:20 },
+      headerTitleStyle: { color: '#000',fontSize:23 },
       headerRight: 
        ( <Button
           onPress={()=>navigation.navigate('Article')}

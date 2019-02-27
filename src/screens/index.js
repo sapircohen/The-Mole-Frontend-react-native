@@ -50,6 +50,15 @@ const ArticleNavigator = createStackNavigator(
     }
 )
 
+//Categories screen
+const CategoriesNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./CategoriesScreen').default,
+        }
+    }
+)
+
 //settings screen . . .
 const SettingsNavigator = createStackNavigator(
     {
@@ -67,9 +76,6 @@ const SettingsNavigator = createStackNavigator(
     },
 )
 
-// const MainNavigator = createStackNavigator({
-//     Tab:TabNavigator,
-// })
 
 //using switch navigator for better performence
 const AppNavigator = createSwitchNavigator(
@@ -83,6 +89,7 @@ const AppNavigator = createSwitchNavigator(
         Intro:IntroNavigator,
         Settings:SettingsNavigator,
         Article:ArticleNavigator,
+        Categories:CategoriesNavigator
     },{
         initialRouteName:'Splash',
     }

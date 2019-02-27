@@ -16,6 +16,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-app-intro-slider": "^1.0.1",
     "react-native-design-utility": "0.0.30",
+    "react-native-easy-grid": "^0.2.1",
     "react-native-elements": "^1.0.0",
     "react-native-foldview": "^1.2.1",
     "react-native-interactable": "^0.1.10",
