@@ -1,25 +1,25 @@
 import React,{ Component } from 'react';
 import {Box} from 'react-native-design-utility'
 import { View, Alert,StyleSheet} from 'react-native';
-import {Button,Icon} from 'native-base';
+import {Button,Icon, Content} from 'native-base';
 import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
 import FABSettings from '../common/Settings';
 import FABBombShop from '../common/BombShop';
 import firebase from 'firebase';
 import NetworkHeader from '../common/NetworkHeader';
-//https://en.wikipedia.org/w/api.php?action=parse&prop=sections&page=2018_AFC_Champions_League_group_stage&format=json&formatversion=2&callback=?
-
-
-
-
+//import {MyCarousel} from '../common/DataCarousel';
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 const styles = StyleSheet.create({
+  baseColumns:{
+    padding:10,
+
+  },
   dataViewCash:{
     alignItems:'center',
     borderStyle:'solid',
     borderColor:'grey',
-    //borderWidth:1,
     padding:10,
     borderRadius:10,
     backgroundColor:'#4F86EC'
@@ -98,30 +98,39 @@ class ProfileScreen extends Component{
                 showEditButton
                 onEditPress={this.EditAvatarPic}
               />
-              <Text h4 style={{fontWeight:"bold",marginTop:"5%"}}>{this.state.userName}</Text>
+              <Text h5 style={{fontWeight:"bold",marginTop:"5%"}}>{this.state.userName}</Text>
             </Box>
-            {/* this box is for user labels */}
-            <Box f={1} style={{marginTop:"15%"}}>
-                <View style={{flexDirection:"row",justifyContent:"space-around"}}>
-                  <View style={styles.dataViewCash}>
-                    <Text style={{fontSize:20}}>200</Text>
-                    <Text style={{fontSize:20}}>Cash Mole</Text>
-                  </View>
-                  <View style={styles.dataViewBombs}  >
-                    <Text style={{fontSize:20}}>300</Text>
-                    <Text style={{fontSize:20}}>Mole Bombs</Text>
-                  </View>
-                </View>
-                <View style={{flexDirection:"row",justifyContent:"space-around"}}>
-                  <View></View>
-                  <View style={styles.dataViewWins}>
-                      <Text style={{fontSize:20}}>400</Text>
-                      <Text style={{fontSize:20}}>Mole Wins</Text>
-                  </View>
-                  <View>
-                  </View>
-                </View>
-            </Box>
+                  <Content contentContainerStyle={{ flex: 1}}>
+                    <Grid style={{justifyContent:'space-evenly'}}>
+                      <Col style={{backgroundColor:'transparent'}}>
+                        <Row>
+                          <Col></Col>
+                          <Col size='60%'>
+                            <Text style={{color:'black',fontSize:16}}>CASH MOLE</Text>
+                          </Col>
+                          <Col></Col>
+                        </Row>
+                      </Col>
+                      <Col style={{backgroundColor:'transparent'}}>
+                        <Row>
+                          <Col></Col>
+                          <Col size='60%'>
+                            <Text style={{color:'black',fontSize:16}}>WINS</Text>
+                          </Col>
+                          <Col></Col>
+                        </Row>
+                      </Col>
+                      <Col style={{backgroundColor:'transparent'}}>
+                        <Row>
+                          <Col></Col>
+                          <Col size='60%'>
+                            <Text style={{color:'black',fontSize:16}}>BOMBS</Text>
+                          </Col>
+                          <Col></Col>
+                        </Row>
+                      </Col>
+                    </Grid>
+                </Content>
             <Box f={1} style={{marginBottom:"3%"}}>
               <Box f={1} >
                 <FABStartGame GoToScreen={this.changeScreen}/> 

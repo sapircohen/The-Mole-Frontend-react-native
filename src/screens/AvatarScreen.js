@@ -6,8 +6,9 @@ import {StyleSheet, FlatList, View, Platform,Image} from 'react-native';
 import NetworkHeader from '../common/NetworkHeader';
 import {images} from '../constant/images';
 import Lightbox from 'react-native-lightbox/Lightbox/';
-import {Button} from 'react-native-elements';
-
+import {Button,Icon} from 'react-native-elements';
+import BannerMole from '../common/BannerMole';
+ 
 const activeProps = {
   resizeMode: 'contain',
   flex: 1,
@@ -46,6 +47,28 @@ const styles = StyleSheet.create({
 
 
 class AvatarScreen extends Component{
+  static navigationOptions = ({ navigation }) =>{
+    return{
+    headerTitle:"Our Avatars!",
+    headerBackground: (
+      <NetworkHeader/>
+    ),
+    headerTitleStyle: { color: '#000',fontSize:20 },
+    headerLeft: 
+     ( <Button
+        onPress={()=>navigation.navigate('Profile')}
+        type='clear'
+        icon={
+          <Icon
+            name="arrow-back"
+            size={25}
+            color="black"
+          />
+        }
+    />
+     ),
+    }
+  }
     state = {
         GridViewItems: [
           {key: images.avatar1},
@@ -59,14 +82,6 @@ class AvatarScreen extends Component{
           {key: images.avatar9},
         ],
     }
-    static navigationOptions = {
-      headerTitle: "Avatars",
-      headerBackground: (
-        <NetworkHeader/>
-      ),
-      headerTitleStyle: { color: '#000',fontSize:20 },
-    };
-
     BackToProfileScreen = (screenName) =>{
         if (screenName==='Back') {
           this.props.navigation.navigate('Profile');
@@ -78,6 +93,7 @@ class AvatarScreen extends Component{
     render(){
         return(
             <Container>
+              <BannerMole title='More avatars are coming soon:)' />
                 <View  style={styles.MainContainer}>
                     <FlatList
                     data={ this.state.GridViewItems }
@@ -96,7 +112,6 @@ class AvatarScreen extends Component{
                     numColumns={2}
                     />
                 </View> 
-              <FooterNavigator BackOrSave={this.BackToProfileScreen}/>
             </Container>
         )
     }

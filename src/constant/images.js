@@ -12,4 +12,12 @@ export const images ={
         avatar9:require('../../assets/images/9.png'),
         wikiLogo:require('../../assets/images/wikilogo1.jpg'),
         bouncyWikiLogo:require('../../assets/images/Bouncywikilogo.gif'),
+        celebrityLogo:require('../../assets/images/CelebrityCategory.gif'),
+        filmLogo:require('../../assets/images/filmCategory.gif'),
+        musicLogo:require('../../assets/images/musicGif.gif'),
+        nbaLogo:require('../../assets/images/NBAcategory.png'),
+        politicsLogo:require('../../assets/images/PoliticsCategory.png'),
+        generalKnowledgeLogo:require('../../assets/images/GeneralKnowPic.jpg'),
+        generalKnowledgeGifLogo:require('../../assets/images/GeneralKnowledgeGif.gif')
+
 }

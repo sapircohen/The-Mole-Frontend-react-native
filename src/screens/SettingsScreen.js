@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
 import { Title,Button,Container, Content, List, ListItem, Text, Icon, Left, Body, Right, Switch, Header } from 'native-base';
-import FooterNavigator from '../common/Footer'
 import {View,Linking} from 'react-native';
 import NetworkHeader from '../common/NetworkHeader';
 
+
 export default class SettingsScreen extends Component {
-    static navigationOptions = {
-      headerTitle: "Settings",
+    static navigationOptions = ({ navigation }) =>{
+      return{
+      headerTitle:"Settings",
       headerBackground: (
         <NetworkHeader/>
       ),
       headerTitleStyle: { color: '#000',fontSize:20 },
-    };
+      headerLeft: 
+      ( <Button
+          onPress={()=>navigation.navigate('Profile')}
+          style={{backgroundColor:"transparent"}}>
+            <Icon style={{color:"black",fontSize:32}}  name="ios-arrow-round-back" />
+        </Button>
+      ),
+      }
+    }
     state = {
       soundOn:false,
       NotificationsOn:false,
@@ -126,8 +135,14 @@ export default class SettingsScreen extends Component {
                 <Icon active name="arrow-forward" />
               </Right>
             </ListItem>
+          </Content>
+          <Content>
+            <Body>
+              <Button success block rounded>
+                  <Text>Save new settings</Text>
+                </Button>
+            </Body>
           </Content>  
-          <FooterNavigator BackOrSave={this.BackToProfileScreen} />
         </Container>
     );
   }
