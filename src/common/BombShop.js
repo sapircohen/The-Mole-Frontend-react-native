@@ -4,7 +4,7 @@ import { Container, View, Button,Icon, Fab } from 'native-base';
 export default class FABBombShop extends Component {
 
   goToBombShop = ()=>{
-    alert("Welcome to the bomb shop!");
+    this.props.GoToScreen('BombShop');
   }
   render() {
     return (  
@@ -15,7 +15,7 @@ export default class FABBombShop extends Component {
             containerStyle={{ }}
             style={{ backgroundColor: '#000000' }}
             position="bottomLeft"
-            onPress={() => alert("Welcome to the bomb shop!")}>
+            onPress={this.goToBombShop}>
             <Icon name="ios-cart" />
           </Fab>
         </View>

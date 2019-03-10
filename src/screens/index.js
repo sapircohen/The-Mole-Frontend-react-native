@@ -25,6 +25,21 @@ const ProfileNavigator = createStackNavigator(
     },
 )
 
+const BombNavigator = createStackNavigator(
+    {
+        BombShop: {
+            getScreen: ()=>require('./BombShop').default,
+        },
+    },
+)
+const PathsNavigator = createStackNavigator(
+    {
+        BombShop: {
+            getScreen: ()=>require('./PathsScreen').default,
+        },
+    },
+)
+
 const AvatarNavigator = createStackNavigator(
     {
         Avatar: {
@@ -89,7 +104,9 @@ const AppNavigator = createSwitchNavigator(
         Intro:IntroNavigator,
         Settings:SettingsNavigator,
         Article:ArticleNavigator,
-        Categories:CategoriesNavigator
+        Categories:CategoriesNavigator,
+        BombShop:BombNavigator,
+        Paths:PathsNavigator
     },{
         initialRouteName:'Splash',
     }

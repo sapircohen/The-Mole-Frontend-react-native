@@ -1,8 +1,10 @@
 import * as React from 'react';
-import {Linking,ScrollView} from 'react-native';
+import {Linking,ScrollView,ActivityIndicator} from 'react-native';
 import {  Button, Card, Title, Paragraph } from 'react-native-paper';
 import NetworkHeader from '../common/NetworkHeader';
 import {images} from '../constant/images';
+import {Box} from 'react-native-design-utility';
+
 
 const wikipediaApi = 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=random&prop=extracts&exintro=&explaintext=&grnnamespace=0';
 const body = { method: 'GET', dataType: 'json'};
@@ -15,24 +17,26 @@ class RandArticle extends React.Component{
     randomArticle:"",
     article:false,
     randomArticleImage:"",
-    randomArticleURI:""
+    randomArticleURI:"",
+    isReady:false
   }
   componentDidMount(){
     fetch(myRequest)
           .then(response => response.json())
           .then(data => {
             var pageid = Object.keys(data.query.pages)[0];
-            //console.log( 'data fetched:   ', data.query.pages[pageid]);
             fullWikiUri = 'https://en.wikipedia.org/wiki/';
             let wiki = data.query.pages[pageid].title;
             fullWikiUri = fullWikiUri + wiki;
-            //console.log(fullWikiUri);
             this.setState({ 
-              randomArticle: data.query.pages[pageid], article: true })
+              randomArticle: data.query.pages[pageid],
+              article: true,
+              isReady:true
+             })
           })
   }
   static navigationOptions = {
-    headerTitle:"Random Wiki",
+    headerTitle:"Random Wiki!",
     headerBackground: (
       <NetworkHeader/>
     ),
@@ -45,10 +49,17 @@ class RandArticle extends React.Component{
     Linking.openURL(fullWikiUri);
   }
   render(){
+    if (!this.state.isReady) {
+      return(
+        <Box f={1} center bg="white">
+          <ActivityIndicator color='purple' size="large"/>
+        </Box>
+      )
+    }
     return(
     <ScrollView>
-      <Card elevation={2}>
-          <Card.Cover source={images.bouncyWikiLogo}/>      
+      <Card elevation={16}>
+          <Card.Cover resizeMode='contain' source={images.dice}/>      
           <Card.Content>
           <Title>{this.state.randomArticle.title}</Title>
           <Paragraph>{this.state.randomArticle.extract}</Paragraph>
