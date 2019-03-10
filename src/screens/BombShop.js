@@ -14,12 +14,12 @@ export default class BombShop extends Component{
         headerBackground: (
           <NetworkHeader/>
         ),
-        headerTitleStyle: { color: '#000',fontSize:20 },
+        headerTitleStyle: { color: '#4D5F66',fontSize:20 },
         headerLeft: 
          ( <Button
             onPress={()=>navigation.navigate('Profile')}
             style={{backgroundColor:"transparent"}}>
-              <Icon style={{color:"black",fontSize:32}}  name="ios-arrow-round-back" />
+              <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
           </Button>
          ),
         }

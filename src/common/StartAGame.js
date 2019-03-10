@@ -13,6 +13,9 @@ export default class FABStartGame extends Component {
   AlertOnePlayer = ()=>{
     this.props.GoToScreen('Categories');
   }
+  Paths = ()=>{
+    this.props.GoToScreen('Paths');
+  }
   render() {
     return (  
       <Container backgroundColor="white">
@@ -31,7 +34,7 @@ export default class FABStartGame extends Component {
             <Button onPress={this.AlertTwoPlayers} on style={{ backgroundColor: '#A2C593' }}>
               <Icon style={{fontSize:29}}  name="ios-contacts" />
             </Button>
-            <Button onPress={this.AlertTwoPlayers} on style={{ backgroundColor: '#FFC593' }}>
+            <Button onPress={this.Paths} on style={{ backgroundColor: '#FFC593' }}>
               <Icon style={{fontSize:29}}  name="ios-infinite" />
             </Button>
           </Fab>

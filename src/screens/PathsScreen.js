@@ -1,9 +1,9 @@
 import React,{ Component } from "react";
-import { StyleSheet,View ,TextInput} from "react-native";
+import {Image, StyleSheet,View ,TextInput,ImageBackground} from "react-native";
 import {Button,Icon, Text} from 'native-base';
-
-//import { Col, Row, Grid } from "react-native-easy-grid";
 import  NetworkHeader from '../common/NetworkHeader';
+import { images } from "../../src/constant/images";
+
 const style = StyleSheet.create({
     textInputStyle:{
         height:40,
@@ -22,7 +22,9 @@ const style = StyleSheet.create({
 export default class Paths extends React.Component{
     static navigationOptions = ({ navigation }) =>{
         return{
-          headerTitle:"6DOW",
+            headerTitle: (
+                <Image style={{ width: 220, height: 39 }} source={images.SIXDOW}/>
+            ),
           headerBackground: (
             <NetworkHeader/>
           ),
@@ -31,7 +33,7 @@ export default class Paths extends React.Component{
            ( <Button
               onPress={()=>navigation.navigate('Profile')}
               style={{backgroundColor:"transparent"}}>
-              <Icon style={{color:"black",fontSize:29}}  name="ios-arrow-back" />
+              <Icon style={{color:"#4D5F66",fontSize:29}}  name="ios-arrow-back" />
             </Button>
            ),
           }
@@ -43,6 +45,7 @@ export default class Paths extends React.Component{
     render(){
         return(
             <View>
+                
                 <Text style={{textAlign:'center',marginTop:'5%',fontSize:24}}>Find the shortest paths from</Text>
                 <TextInput
                     onBlur = {()=>this.setState({backgroundColor:'transparent'})}
@@ -78,6 +81,9 @@ export default class Paths extends React.Component{
                 <Button block style={{margin:"4%"}}>
                     <Text>Let's Go!</Text>
                 </Button>
+                {/* <ImageBackground source={images.SIXDOW} style={{ flex: 1 }} resizeMode='cover'>
+                    <View style={{width:'100%',height:100,backgroundColor:'transparent'}} ></View>
+                </ImageBackground> */}
             </View>
         );
     }
