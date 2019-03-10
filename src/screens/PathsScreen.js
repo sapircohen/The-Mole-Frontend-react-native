@@ -75,6 +75,9 @@ export default class Paths extends React.Component{
                             color:'black'
                     }}
                 />
+                <Button block style={{margin:"4%"}}>
+                    <Text>Let's Go!</Text>
+                </Button>
             </View>
         );
     }
