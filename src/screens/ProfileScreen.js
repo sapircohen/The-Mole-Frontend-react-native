@@ -72,14 +72,14 @@ class ProfileScreen extends Component{
        ( <Button
           onPress={()=>navigation.navigate('Article')}
           style={{backgroundColor:"transparent"}}>
-            <Icon style={{color:"#4D5F66",fontSize:32}}  name="md-paper" />
+            <Icon style={{color:"#FFA050",fontSize:35}}  name="md-paper" />
         </Button>
        ),
       headerLeft: 
        ( <Button
           onPress={()=>navigation.navigate('Paths')}
           style={{backgroundColor:"transparent"}}>
-          <Icon style={{color:"#4D5F66",fontSize:29}}  name="ios-infinite" />
+          <Icon style={{color:"#FFA050",fontSize:35}}  name="ios-infinite" />
         </Button>
        ),
       }
