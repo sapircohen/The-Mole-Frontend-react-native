@@ -1,11 +1,11 @@
 import React,{ Component } from "react";
-import {Image, StyleSheet,View ,TextInput,ListView,TouchableOpacity} from "react-native";
+import {Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView,ActivityIndicator} from "react-native";
 import {Button,Icon, Text} from 'native-base';
 import  NetworkHeader from '../common/NetworkHeader';
 import Autocomplete from 'react-native-autocomplete-input';
-
+import { ListItem,Avatar } from 'react-native-elements'
 import { images } from "../../src/constant/images";
-import WikiList from '../common/WikiList';
+import {Box} from 'react-native-design-utility';
 
 
 const styles = StyleSheet.create({
@@ -71,10 +71,12 @@ export default class Paths extends React.Component{
         }
     state={
         path:[],
+        paths:[],
         articles: [],
         secondArticles:[],
         query: '',
         secondQuery:'',
+        isReady:true
     }
     FirstOpenSearchWiki = (text)=>{
         const serachTerm = text;
@@ -88,7 +90,7 @@ export default class Paths extends React.Component{
             console.log(data[1]);
             this.setState({ 
               articles:data[1],
-              query: text
+              query: text,
              })
           })
     }
@@ -105,13 +107,50 @@ export default class Paths extends React.Component{
             console.log(data[1]);
             this.setState({ 
                 secondArticles:data[1],
-                secondQuery: text
+                secondQuery: text,
              })
           })
     }
-    SearchPath = ()=>{
-        await this.setState({path:[this.state.query,this.state.secondQuery]});
-        console.log(path)
+    SearchPath = ()=>{      
+        this.setState({
+            paths:[this.state.query,this.state.secondQuery],
+            path:[],
+            isReady:false
+        },()=>
+        {
+        this.state.paths.map((article,i)=>{
+            let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+article+'&prop=pageimages&format=json&pithumbsize=100';
+            console.log(API);
+            fetch(API)
+                .then(response => response.json())
+                .then(data => {
+                console.log(data);
+
+                //getting the page id for extracting information about the article 
+                var pageid = Object.keys(data.query.pages)[0];
+                
+                //getting the full url to redirect user onPress
+                fullWikiUri = 'https://en.wikipedia.org/wiki/';
+                let wiki = data.query.pages[pageid].title;
+                fullWikiUri = fullWikiUri + wiki;
+                
+                //updating the list to be rendered
+                let wikiArticleForList = {
+                    name:data.query.pages[pageid].title,
+                    avatar_url:data.query.pages[pageid].thumbnail.source,
+                    wikiUrl:fullWikiUri
+                }
+                this.setState(prevState => ({
+                    path:[...prevState.path,wikiArticleForList],
+                    isReady:true
+                }))
+            })
+        })
+        console.log(this.state.path.length)
+    })
+
+    //need to get path from api (not working for the moment)
+
         // const source = this.state.query.replace(' ','%20');
         // const target = this.state.secondQuery.replace(' ','%20');;
         // const pathsUri = 'http://proj.ruppin.ac.il/bgroup65/prod/api/SIXDOW?source='+source+'&target='+target;
@@ -127,7 +166,13 @@ export default class Paths extends React.Component{
     }
     render(){
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
-
+        if (!this.state.isReady) {
+            return(
+              <Box f={1} center bg="white">
+                <ActivityIndicator color='purple' size="large"/>
+              </Box>
+            )
+          }
         return(
             <View flex={1} style={{marginTop:'4%'}}>
                 <Text style={{textAlign:'center',marginTop:'5%',fontSize:24}}>Find the shortest paths{"\n"}From</Text>
@@ -173,14 +218,31 @@ export default class Paths extends React.Component{
                     <Button style={{backgroundColor:"#E384FF"}} onPress={this.SearchPath} block >
                         <Text style={{fontSize:25,fontWeight:'bold'}}>Let's Go!</Text>
                     </Button>
-                    <WikiList pathsList={this.state.path}/>
+                    <ScrollView>
+                        <View>
+                        {
+                            this.state.path.map((l, i) => (
+                            <ListItem
+                                onPress={()=> Linking.openURL(l.wikiUrl)}
+                                key={i}
+                                leftAvatar={<Avatar
+                                    source={ {uri: l.avatar_url } }
+                                    size="large"
+                                />}
+                                title={l.name}
+                                subtitle={l.subtitle}
+                                rightIcon={
+                                    <Icon 
+                                    name='ios-infinite'
+                                    />
+                                }
+                            />
+                            ))
+                        }
+                        </View>
+                    </ScrollView>
                 </View>
             </View>
         );
     }
 }
-
-
-
-            //         onBlur = {()=>this.setState({backgroundColor1:'transparent'})}
-            //         onFocus = {()=>this.setState({backgroundColor1:'#E2FFF0'})}
