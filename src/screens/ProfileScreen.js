@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import {Box} from 'react-native-design-utility'
-import { StyleSheet,ImageBackground,ActivityIndicator} from 'react-native';
+import { StyleSheet,ImageBackground,ActivityIndicator,Image} from 'react-native';
 import {Button,Icon, Content} from 'native-base';
 import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
@@ -63,7 +63,9 @@ const styles = StyleSheet.create({
 class ProfileScreen extends Component{
     static navigationOptions = ({ navigation }) =>{
     return{
-      headerTitle:"Your Profile",
+      headerTitle: (
+        <Image style={{ width: 90, height: 50 }} source={images.logo}/>
+      ),
       headerBackground: (
         <NetworkHeader/>
       ),
@@ -72,14 +74,14 @@ class ProfileScreen extends Component{
        ( <Button
           onPress={()=>navigation.navigate('Article')}
           style={{backgroundColor:"transparent"}}>
-            <Icon style={{color:"#FFA050",fontSize:35}}  name="md-paper" />
+            <Icon style={{color:"#8B7FB0",fontSize:35}}  name="md-paper" />
         </Button>
        ),
       headerLeft: 
        ( <Button
           onPress={()=>navigation.navigate('Paths')}
           style={{backgroundColor:"transparent"}}>
-          <Icon style={{color:"#FFA050",fontSize:35}}  name="ios-infinite" />
+          <Icon style={{color:"#8B7FB0",fontSize:35}}  name="ios-infinite" />
         </Button>
        ),
       }
@@ -154,7 +156,7 @@ class ProfileScreen extends Component{
                         </Row>
                       </Col>
 
-                      <Col style={styles.colStyleForGrid}>
+                      {/* <Col style={styles.colStyleForGrid}>
                         <Row>
                           <Col >
                             <Text style={styles.textStyleForGrid}>20</Text>
@@ -163,7 +165,7 @@ class ProfileScreen extends Component{
                             </ImageBackground>
                           </Col>                        
                         </Row>
-                      </Col>
+                      </Col> */}
 
                     </Grid>
                 </Content>

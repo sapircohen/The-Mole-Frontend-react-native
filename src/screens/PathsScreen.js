@@ -5,7 +5,7 @@ import  NetworkHeader from '../common/NetworkHeader';
 import Autocomplete from 'react-native-autocomplete-input';
 
 import { images } from "../../src/constant/images";
-//import console = require("console");
+import WikiList from '../common/WikiList';
 
 
 const styles = StyleSheet.create({
@@ -110,19 +110,20 @@ export default class Paths extends React.Component{
           })
     }
     SearchPath = ()=>{
-
-        const source = this.state.query.replace(' ','%20');
-        const target = this.state.secondQuery.replace(' ','%20');;
-        const pathsUri = 'http://proj.ruppin.ac.il/bgroup65/prod/api/SIXDOW?source='+source+'&target='+target;
-        console.log(pathsUri)
-        fetch(pathsUri)
-          .then(response => response.json())
-          .then(data => {
-            console.log(data);
-            this.setState({ 
-                path:data
-             })
-          })
+        await this.setState({path:[this.state.query,this.state.secondQuery]});
+        console.log(path)
+        // const source = this.state.query.replace(' ','%20');
+        // const target = this.state.secondQuery.replace(' ','%20');;
+        // const pathsUri = 'http://proj.ruppin.ac.il/bgroup65/prod/api/SIXDOW?source='+source+'&target='+target;
+        // console.log(pathsUri)
+        // fetch(pathsUri)
+        //   .then(response => response.json())
+        //   .then(data => {
+        //     console.log(data);
+        //     this.setState({ 
+        //         path:data
+        //      })
+        //   })
     }
     render(){
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
@@ -172,6 +173,7 @@ export default class Paths extends React.Component{
                     <Button style={{backgroundColor:"#E384FF"}} onPress={this.SearchPath} block >
                         <Text style={{fontSize:25,fontWeight:'bold'}}>Let's Go!</Text>
                     </Button>
+                    <WikiList pathsList={this.state.path}/>
                 </View>
             </View>
         );

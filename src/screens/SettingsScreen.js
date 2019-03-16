@@ -138,8 +138,8 @@ export default class SettingsScreen extends Component {
           </Content>
           <Content>
             <Body>
-              <Button success block rounded>
-                  <Text>Save new settings</Text>
+              <Button success block>
+                  <Text style={{fontSize:20}}>Save</Text>
                 </Button>
             </Body>
           </Content>  
