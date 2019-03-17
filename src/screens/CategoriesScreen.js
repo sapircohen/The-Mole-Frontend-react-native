@@ -37,7 +37,7 @@ export default class Categories extends Component{
     
         return (
         <View flex={1}>
-          <BannerMole title={'Choose a categori'}/>
+          <BannerMole title={'more categories are coming soon:)'}/>
           <FlatGrid
             itemDimension={130}
             items={items}

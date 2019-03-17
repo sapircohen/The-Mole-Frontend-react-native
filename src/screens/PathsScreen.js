@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
       },
       itemText: {
-        fontSize: 20,
+        fontSize: 22,
         margin: 1,
         color:'#3C4037'
       },
@@ -64,7 +64,7 @@ export default class Paths extends React.Component{
            ( <Button
               onPress={()=>navigation.navigate('Profile')}
               style={{backgroundColor:"transparent"}}>
-              <Icon style={{color:"#4D5F66",fontSize:29}}  name="ios-arrow-back" />
+              <Icon  style={{color:"#B621E8",fontSize:35}}  name="ios-arrow-round-back" />
             </Button>
            ),
           }
@@ -76,29 +76,34 @@ export default class Paths extends React.Component{
         secondArticles:[],
         query: '',
         secondQuery:'',
-        isReady:true
+        isReady:true,
+        isButtonReady:true,
     }
     FirstOpenSearchWiki = (text)=>{
         const serachTerm = text;
         const API = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+serachTerm+'&limit=10&namespace=0&format=json';
-
-        console.log(serachTerm);
-        console.log(API);
-        fetch(API)
-          .then(response => response.json())
-          .then(data => {
-            console.log(data[1]);
-            this.setState({ 
-              articles:data[1],
-              query: text,
-             })
+        if (serachTerm.length>0) {
+            console.log(serachTerm);
+            console.log(API);
+            fetch(API)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data[1]);
+                this.setState({ 
+                articles:data[1],
+                query: text,
+                isButtonReady:this.state.secondQuery.length>0 ? false : true
+                })
           })
+        }
+        
     }
 
     SecondOpenSearchWiki = (text)=>{
         const serachTerm = text;
         const API = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+serachTerm+'&limit=10&namespace=0&format=json';
 
+        if (serachTerm.length>0) {
         console.log(serachTerm);
         console.log(API);
         fetch(API)
@@ -108,8 +113,10 @@ export default class Paths extends React.Component{
             this.setState({ 
                 secondArticles:data[1],
                 secondQuery: text,
+                isButtonReady:this.state.query.length>0 ? false : true
              })
           })
+        }
     }
     SearchPath = ()=>{      
         this.setState({
@@ -119,25 +126,34 @@ export default class Paths extends React.Component{
         },()=>
         {
         this.state.paths.map((article,i)=>{
+            if (article.length>0) {
             let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+article+'&prop=pageimages&format=json&pithumbsize=100';
             console.log(API);
             fetch(API)
                 .then(response => response.json())
                 .then(data => {
                 console.log(data);
-
+                
                 //getting the page id for extracting information about the article 
                 var pageid = Object.keys(data.query.pages)[0];
-                
+                console.log(data.query.pages[pageid]);
+                if (data.query.pages[pageid].missing === "") {
+                    alert("no good");
+                    return;
+                }
                 //getting the full url to redirect user onPress
                 fullWikiUri = 'https://en.wikipedia.org/wiki/';
                 let wiki = data.query.pages[pageid].title;
                 fullWikiUri = fullWikiUri + wiki;
+                let pic = 'https://www.freeiconspng.com/uploads/no-image-icon-4.png';
+                if (typeof data.query.pages[pageid].thumbnail !== "undefined") {
+                    pic = data.query.pages[pageid].thumbnail.source;
+                }
                 
                 //updating the list to be rendered
                 let wikiArticleForList = {
                     name:data.query.pages[pageid].title,
-                    avatar_url:data.query.pages[pageid].thumbnail.source,
+                    avatar_url:pic,
                     wikiUrl:fullWikiUri
                 }
                 this.setState(prevState => ({
@@ -145,6 +161,7 @@ export default class Paths extends React.Component{
                     isReady:true
                 }))
             })
+        }
         })
         console.log(this.state.path.length)
     })
@@ -215,7 +232,7 @@ export default class Paths extends React.Component{
                     />
                 </View>
                 <View flex={1} style={{margin:"5%"}}>
-                    <Button style={{backgroundColor:"#E384FF"}} onPress={this.SearchPath} block >
+                    <Button disabled={this.state.isButtonReady} style={{backgroundColor:"#9FBBFF"}} onPress={this.SearchPath} block >
                         <Text style={{fontSize:25,fontWeight:'bold'}}>Let's Go!</Text>
                     </Button>
                     <ScrollView>
@@ -226,7 +243,7 @@ export default class Paths extends React.Component{
                                 onPress={()=> Linking.openURL(l.wikiUrl)}
                                 key={i}
                                 leftAvatar={<Avatar
-                                    source={ {uri: l.avatar_url } }
+                                    source={ {uri: l.avatar_url} }
                                     size="large"
                                 />}
                                 title={l.name}
@@ -234,6 +251,7 @@ export default class Paths extends React.Component{
                                 rightIcon={
                                     <Icon 
                                     name='ios-infinite'
+                                    style={{fontSize: 25, color: '#AE81FE'}}
                                     />
                                 }
                             />

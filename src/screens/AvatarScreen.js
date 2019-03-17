@@ -1,12 +1,12 @@
 import React,{ Component } from 'react';
 import FooterNavigator from '../common/Footer'
 import {Text} from 'react-native';
-import { Container } from 'native-base';
+import { Container,Icon } from 'native-base';
 import {StyleSheet, FlatList, View, Platform,Image} from 'react-native';
 import NetworkHeader from '../common/NetworkHeader';
 import {images} from '../constant/images';
 import Lightbox from 'react-native-lightbox/Lightbox/';
-import {Button,Icon} from 'react-native-elements';
+import {Button} from 'react-native-elements';
 import BannerMole from '../common/BannerMole';
  
 const activeProps = {
@@ -60,9 +60,8 @@ class AvatarScreen extends Component{
         type='clear'
         icon={
           <Icon
-            name="arrow-back"
-            size={25}
-            color="black"
+            name="ios-arrow-round-back"
+            style={{color:"#B621E8",fontSize:35}}
           />
         }
     />

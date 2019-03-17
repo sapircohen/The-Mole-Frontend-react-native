@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Container, View, Button,Icon, Fab } from 'native-base';
 
-export default class FABBombShop extends Component {
+export default class FABPaths extends Component {
 
-  goToBombShop = ()=>{
-    this.props.GoToScreen('BombShop');
+  goToPathsScreen = ()=>{
+    this.props.GoToScreen('Paths');
   }
   render() {
     return (  
@@ -13,10 +13,10 @@ export default class FABBombShop extends Component {
           <Fab
             direction="up"
             containerStyle={{ }}
-            style={{ backgroundColor: '#000000' }}
+            style={{ backgroundColor: '#8BBA99' }}
             position="bottomLeft"
-            onPress={this.goToBombShop}>
-            <Icon name="ios-cart" />
+            onPress={this.goToPathsScreen}>
+            <Icon name="ios-infinite" />
           </Fab>
         </View>
       </Container>

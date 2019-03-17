@@ -5,7 +5,7 @@ import {Button,Icon, Content} from 'native-base';
 import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
 import FABSettings from '../common/Settings';
-import FABBombShop from '../common/BombShop';
+import FABPaths from '../common/BombShop';
 import firebase from 'firebase';
 import NetworkHeader from '../common/NetworkHeader';
 import { Col, Row, Grid } from "react-native-easy-grid";
@@ -174,8 +174,8 @@ class ProfileScreen extends Component{
                 <FABStartGame GoToScreen={this.changeScreen}/> 
               </Box>
               <Box style={{marginLeft:"37%"}}>
-                <FABBombShop GoToScreen={this.changeScreen}/>
-              </Box>
+                <FABPaths GoToScreen={this.changeScreen}/>
+              </Box> 
               <Box>
                 <FABSettings GoToScreen={this.changeScreen} />
               </Box>

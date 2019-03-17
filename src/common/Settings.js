@@ -23,7 +23,7 @@ export default class FABSettings extends Component {
             active={this.state.active}
             direction="up"
             containerStyle={{ }}
-            style={{ backgroundColor: '#E78F4D' }}
+            style={{ backgroundColor: '#E6E386' }}
             position="bottomLeft"
             onPress={() => this.setState({ active: !this.state.active })}>
             <Icon name="ios-options" />

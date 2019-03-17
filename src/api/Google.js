@@ -3,6 +3,8 @@ import firebase from 'firebase';
 
 const scopes = ['profile','email'];
 
+//add new user to DB from here
+
 const loginAsync = async ()=>{
     try {
         const result = await Google.logInAsync({

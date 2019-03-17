@@ -24,7 +24,7 @@ export default class FABStartGame extends Component {
             active={this.state.active}
             direction="up"
             containerStyle={{ }}
-            style={{ backgroundColor: '#5067FF'}}
+            style={{ backgroundColor: '#8BBAE3'}}
             position="bottomRight"
             onPress={() => this.setState({ active: !this.state.active })}>
             <Icon name="logo-game-controller-b" />
@@ -33,9 +33,6 @@ export default class FABStartGame extends Component {
             </Button>
             <Button onPress={this.AlertTwoPlayers} on style={{ backgroundColor: '#A2C593' }}>
               <Icon style={{fontSize:29}}  name="ios-contacts" />
-            </Button>
-            <Button onPress={this.Paths} on style={{ backgroundColor: '#FFC593' }}>
-              <Icon style={{fontSize:29}}  name="ios-infinite" />
             </Button>
           </Fab>
         </View>

@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import AppIntroSlider from '../../node_modules/react-native-app-intro-slider/AppIntroSlider';
 import App from '../../App';
-
+ 
 const styles = StyleSheet.create({
   image: {
     width: 300,

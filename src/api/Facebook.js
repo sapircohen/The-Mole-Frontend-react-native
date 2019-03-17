@@ -3,6 +3,8 @@ import firebase from 'firebase';
 
 const permissions = ['public_profile','email'];
 
+//add new user to DB from here
+
 const loginAsync = async () =>{
     try {
         const {type,token } = await Facebook.logInWithReadPermissionsAsync(Constants.manifest.facebookAppId,{permissions});
