@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import AppIntroSlider from '../../node_modules/react-native-app-intro-slider/AppIntroSlider';
 import App from '../../App';
+ import { Font } from "expo";
  
 const styles = StyleSheet.create({
   image: {

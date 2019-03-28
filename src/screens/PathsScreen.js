@@ -6,7 +6,10 @@ import Autocomplete from 'react-native-autocomplete-input';
 import { ListItem,Avatar } from 'react-native-elements'
 import { images } from "../../src/constant/images";
 import {Box} from 'react-native-design-utility';
+import {wikiLoader} from '../common/WikiLoader';
 
+
+let newStateArray = [];
 
 const styles = StyleSheet.create({
     container: {
@@ -118,75 +121,84 @@ export default class Paths extends React.Component{
           })
         }
     }
-    SearchPath = ()=>{      
+    SearchPath = ()=>{   
+       
         this.setState({
-            paths:[this.state.query,this.state.secondQuery],
-            path:[],
             isReady:false
-        },()=>
-        {
-        this.state.paths.map((article,i)=>{
-            if (article.length>0) {
-            let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+article+'&prop=pageimages&format=json&pithumbsize=100';
-            console.log(API);
-            fetch(API)
-                .then(response => response.json())
-                .then(data => {
-                console.log(data);
-                
-                //getting the page id for extracting information about the article 
-                var pageid = Object.keys(data.query.pages)[0];
-                console.log(data.query.pages[pageid]);
-                if (data.query.pages[pageid].missing === "") {
-                    alert("no good");
-                    return;
-                }
-                //getting the full url to redirect user onPress
-                fullWikiUri = 'https://en.wikipedia.org/wiki/';
-                let wiki = data.query.pages[pageid].title;
-                fullWikiUri = fullWikiUri + wiki;
-                let pic = 'https://www.freeiconspng.com/uploads/no-image-icon-4.png';
-                if (typeof data.query.pages[pageid].thumbnail !== "undefined") {
-                    pic = data.query.pages[pageid].thumbnail.source;
-                }
-                
-                //updating the list to be rendered
-                let wikiArticleForList = {
-                    name:data.query.pages[pageid].title,
-                    avatar_url:pic,
-                    wikiUrl:fullWikiUri
-                }
-                this.setState(prevState => ({
-                    path:[...prevState.path,wikiArticleForList],
-                    isReady:true
-                }))
+        },()=>{ 
+        let source = this.state.query.replace(' ','%20').toString();
+        let target = this.state.secondQuery.replace(' ','%20').toString();
+        let end = '?source='+source+'&target='+target+'';
+        let pathsUri = 'http://proj.ruppin.ac.il/bgroup65/prod/api/SIXDOW'+end;
+        console.log(pathsUri)
+        fetch(pathsUri)
+          .then(response => response.json())
+          .then(data => {
+            this.setState({
+                paths:data,
+                path:[],
+            },()=>
+            {
+            newStateArray = [];
+            this.state.paths.map((article,i)=>{
+                if (article.length>0) {
+                if(i%2==0){
+                let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+article+'&prop=pageimages&format=json&pithumbsize=100';
+                console.log(API);
+                fetch(API)
+                    .then(response => response.json())
+                    .then(data => {
+                                //getting the page id for extracting information about the article 
+                                var pageid = Object.keys(data.query.pages)[0];
+                                //console.log(data.query.pages[pageid]);
+                                if (data.query.pages[pageid].missing === "") {
+                                    alert("no good");
+                                    return;
+                                }
+                                //getting the full url to redirect user onPress
+                                fullWikiUri = 'https://en.wikipedia.org/wiki/';
+                                let wiki = data.query.pages[pageid].title;
+                                fullWikiUri = fullWikiUri + wiki;
+                                let pic = 'https://www.freeiconspng.com/uploads/no-image-icon-4.png';
+                                if (typeof data.query.pages[pageid].thumbnail !== "undefined") {
+                                    pic = data.query.pages[pageid].thumbnail.source;
+                                }
+                                
+                                //updating the list to be rendered
+                                
+                                let wikiArticleForList = {
+                                    name:data.query.pages[pageid].title,
+                                    avatar_url:pic,
+                                    wikiUrl:fullWikiUri
+                                }
+                                newStateArray.push(wikiArticleForList);
+                                this.setState({
+                                    path:newStateArray,
+                                    isReady:true
+                                },()=>{
+                                    console.log(this.state.path)
+                                })
+                            })
+
+                        }
+                    }
+                })
+                })
             })
-        }
+            // .then(()=>{
+                
+            // })
+
         })
-        console.log(this.state.path.length)
-    })
 
-    //need to get path from api (not working for the moment)
-
-        // const source = this.state.query.replace(' ','%20');
-        // const target = this.state.secondQuery.replace(' ','%20');;
-        // const pathsUri = 'http://proj.ruppin.ac.il/bgroup65/prod/api/SIXDOW?source='+source+'&target='+target;
-        // console.log(pathsUri)
-        // fetch(pathsUri)
-        //   .then(response => response.json())
-        //   .then(data => {
-        //     console.log(data);
-        //     this.setState({ 
-        //         path:data
-        //      })
-        //   })
     }
     render(){
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
         if (!this.state.isReady) {
             return(
               <Box f={1} center bg="white">
-                <ActivityIndicator color='purple' size="large"/>
+                <wikiLoader/>
+                {/* <ActivityIndicator color='purple' size="large"/> */}
               </Box>
             )
           }
