@@ -3,8 +3,9 @@ import {Linking,ScrollView,ActivityIndicator} from 'react-native';
 import {  Button, Card, Title, Paragraph } from 'react-native-paper';
 import { Icon } from "native-base";
 import NetworkHeader from '../common/NetworkHeader';
-import {images} from '../constant/images';
+//import {images} from '../constant/images';
 import {Box} from 'react-native-design-utility';
+import WikiLoader from '../common/WikiLoader';
 
 const wikipediaApi = 'https://en.wikipedia.org/w/api.php?format=json&action=query&generator=random&prop=extracts&exintro=&explaintext=&grnnamespace=0';
 const body = { method: 'GET', dataType: 'json'};
@@ -81,7 +82,7 @@ class RandArticle extends React.Component{
     if (!this.state.isReady) {
       return(
         <Box f={1} center bg="white">
-          <ActivityIndicator color='purple' size="large"/>
+          <WikiLoader/>
         </Box>
       )
     }

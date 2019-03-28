@@ -6,7 +6,8 @@ import Autocomplete from 'react-native-autocomplete-input';
 import { ListItem,Avatar } from 'react-native-elements'
 import { images } from "../../src/constant/images";
 import {Box} from 'react-native-design-utility';
-import {wikiLoader} from '../common/WikiLoader';
+import WikiLoader from '../common/WikiLoader';
+import fetchSync from 'fetch-sync';
 
 
 let newStateArray = [];
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
 })
 
 export default class Paths extends React.Component{
+
     static navigationOptions = ({ navigation }) =>{
         return{
             headerTitle: (
@@ -122,7 +124,6 @@ export default class Paths extends React.Component{
         }
     }
     SearchPath = ()=>{   
-       
         this.setState({
             isReady:false
         },()=>{ 
@@ -140,10 +141,11 @@ export default class Paths extends React.Component{
             },()=>
             {
             newStateArray = [];
+            
             this.state.paths.map((article,i)=>{
-                if (article.length>0) {
                 if(i%2==0){
-                let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+article+'&prop=pageimages&format=json&pithumbsize=100';
+                console.log(this.state.paths[i])
+                let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+this.state.paths[i]+'&prop=pageimages&format=json&pithumbsize=100';
                 console.log(API);
                 fetch(API)
                     .then(response => response.json())
@@ -171,33 +173,26 @@ export default class Paths extends React.Component{
                                     avatar_url:pic,
                                     wikiUrl:fullWikiUri
                                 }
+                                console.log(wikiArticleForList.name)
                                 newStateArray.push(wikiArticleForList);
                                 this.setState({
                                     path:newStateArray,
                                     isReady:true
-                                },()=>{
-                                    console.log(this.state.path)
                                 })
                             })
 
                         }
-                    }
-                })
+                    })
                 })
             })
-            // .then(()=>{
-                
-            // })
-
         })
-
     }
     render(){
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
         if (!this.state.isReady) {
             return(
               <Box f={1} center bg="white">
-                <wikiLoader/>
+                <WikiLoader/>
                 {/* <ActivityIndicator color='purple' size="large"/> */}
               </Box>
             )
