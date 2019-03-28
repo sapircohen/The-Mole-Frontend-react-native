@@ -7,7 +7,6 @@ import { ListItem,Avatar } from 'react-native-elements'
 import { images } from "../../src/constant/images";
 import {Box} from 'react-native-design-utility';
 import WikiLoader from '../common/WikiLoader';
-import fetchSync from 'fetch-sync';
 
 
 let newStateArray = [];

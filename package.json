@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "expo": "^32.0.0",
-    "fetch-sync": "^2.0.0",
     "firebase": "^5.8.1",
     "native-base": "^2.8.2",
     "react": "16.5.0",
