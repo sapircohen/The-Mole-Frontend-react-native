@@ -130,61 +130,65 @@ export default class Paths extends React.Component{
         let target = this.state.secondQuery.replace(' ','%20').toString();
         let end = '?source='+source+'&target='+target+'';
         let pathsUri = 'http://proj.ruppin.ac.il/bgroup65/prod/api/SIXDOW'+end;
-        console.log(pathsUri)
         fetch(pathsUri)
-          .then(response => response.json())
-          .then(data => {
+          .then((response) => response.json())
+          .then((data) => {
             this.setState({
                 paths:data,
                 path:[],
-            },()=>
+            },async ()=>
             {
-            newStateArray = [];
-            
-            this.state.paths.map((article,i)=>{
-                if(i%2==0){
-                console.log(this.state.paths[i])
-                let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+this.state.paths[i]+'&prop=pageimages&format=json&pithumbsize=100';
-                console.log(API);
-                fetch(API)
-                    .then(response => response.json())
-                    .then(data => {
-                                //getting the page id for extracting information about the article 
-                                var pageid = Object.keys(data.query.pages)[0];
-                                //console.log(data.query.pages[pageid]);
-                                if (data.query.pages[pageid].missing === "") {
-                                    alert("no good");
-                                    return;
-                                }
-                                //getting the full url to redirect user onPress
-                                fullWikiUri = 'https://en.wikipedia.org/wiki/';
-                                let wiki = data.query.pages[pageid].title;
-                                fullWikiUri = fullWikiUri + wiki;
-                                let pic = 'https://www.freeiconspng.com/uploads/no-image-icon-4.png';
-                                if (typeof data.query.pages[pageid].thumbnail !== "undefined") {
-                                    pic = data.query.pages[pageid].thumbnail.source;
-                                }
-                                
-                                //updating the list to be rendered
-                                
-                                let wikiArticleForList = {
-                                    name:data.query.pages[pageid].title,
-                                    avatar_url:pic,
-                                    wikiUrl:fullWikiUri
-                                }
-                                console.log(wikiArticleForList.name)
-                                newStateArray.push(wikiArticleForList);
-                                this.setState({
-                                    path:newStateArray,
-                                    isReady:true
-                                })
-                            })
-
+                    newStateArray = [];
+                    for (let i = 0; i < this.state.paths.length; i++) {
+                        if(i%2==0){
+                            console.log(this.state.paths[i]);
+                            await this.GetData(this.state.paths[i]);
                         }
-                    })
+                    }
                 })
             })
         })
+    }
+    GetData = (article)=>{
+        console.log(article)
+        let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+article+'&prop=pageimages&format=json&pithumbsize=100';
+        console.log(API);
+        fetch(API)
+        
+            .then(response => response.json())
+            .then(data => {
+                        //getting the page id for extracting information about the article 
+                        var pageid = Object.keys(data.query.pages)[0];
+                       
+                        console.log(data.query.pages[pageid].title);
+
+                        if (data.query.pages[pageid].missing === "") {
+                            alert("no good");
+                            return;
+                        }
+                        //getting the full url to redirect user onPress
+                        fullWikiUri = 'https://en.wikipedia.org/wiki/';
+                        let wiki = data.query.pages[pageid].title;
+                        fullWikiUri = fullWikiUri + wiki;
+                        let pic = 'https://www.freeiconspng.com/uploads/no-image-icon-4.png';
+                        if (typeof data.query.pages[pageid].thumbnail !== "undefined") {
+                            pic = data.query.pages[pageid].thumbnail.source;
+                        }
+                        
+                        //updating the list to be rendered
+                        
+                        let wikiArticleForList = {
+                            name:data.query.pages[pageid].title,
+                            avatar_url:pic,
+                            wikiUrl:fullWikiUri
+                        }
+
+                        newStateArray.push(wikiArticleForList);
+                            this.setState({
+                                path:newStateArray,
+                                isReady:true
+                            })
+                    })
     }
     render(){
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
