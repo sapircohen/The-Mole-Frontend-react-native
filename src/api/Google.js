@@ -42,7 +42,7 @@ const onSignIn = (googleUser) => {
           if (result.additionalUserInfo.isNewUser) {
             //write to our db. 
             //POST method.
-            fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/player', {
+            fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/Player', {
                 method: 'POST',
                 headers: {
                   Accept: 'application/json',
@@ -53,7 +53,6 @@ const onSignIn = (googleUser) => {
                   NickName:result.additionalUserInfo.profile.name,
                   Email: result.user.email,
                   ProfilePic: result.additionalUserInfo.profile.picture,
-                  CreatedAt1:Date.now,
                 }),
             })
             .catch((error) => {
