@@ -40,6 +40,7 @@ const onSignIn = (googleUser) => {
         .then((result)=>{
           console.log("user signed in");
           if (result.additionalUserInfo.isNewUser) {
+            console.log(result.additionalUserInfo);
             firebase.database()
             .ref('/users/'+result.user.uid)
             .set({
@@ -54,6 +55,7 @@ const onSignIn = (googleUser) => {
                 //console.log('snapshot',snapshot)
             })
           }else{
+            console.log(result.additionalUserInfo);
             firebase.database()
             .ref('/users/'+result.user.uid)
             .update({

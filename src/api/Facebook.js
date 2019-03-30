@@ -36,6 +36,7 @@ const checkLoginState = (event) => {
           .then((type)=>{
               console.log("user signed in" + type.user.uid)
               if (type.additionalUserInfo.isNewUser) {
+                console.log(type.additionalUserInfo);
                   firebase.database()
                   .ref('users/' + type.user.uid)
                   .set({
