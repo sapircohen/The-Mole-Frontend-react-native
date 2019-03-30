@@ -40,20 +40,41 @@ const onSignIn = (googleUser) => {
         .then((result)=>{
           console.log("user signed in");
           if (result.additionalUserInfo.isNewUser) {
-            firebase.database()
-            .ref('/users/'+result.user.uid)
-            .set({
-                gmail: result.user.email,
-                profile_picture: result.additionalUserInfo.profile.picture,
-                locale:result.additionalUserInfo.profile.locale,
-                first_name: result.additionalUserInfo.profile.given_name,
-                last_name:result.additionalUserInfo.profile.family_name,
-                created_at:Date.now
+            //write to our db. 
+            //POST method.
+            fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/player', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  Locale:result.additionalUserInfo.profile.locale,
+                  NickName:result.additionalUserInfo.profile.name,
+                  Email: result.user.email,
+                  ProfilePic: result.additionalUserInfo.profile.picture,
+                  CreatedAt1:Date.now,
+                }),
             })
+            .catch((error) => {
+              console.error(error);
+            });
+            // firebase.database()
+            // .ref('/users/'+result.user.uid)
+            // .set({
+            //     gmail: result.user.email,
+            //     profile_picture: result.additionalUserInfo.profile.picture,
+            //     locale:result.additionalUserInfo.profile.locale,
+            //     first_name: result.additionalUserInfo.profile.given_name,
+            //     last_name:result.additionalUserInfo.profile.family_name,
+            //     created_at:Date.now,
+            //     token:result.credential.accessToken
+            // })
             .then((snapshot)=>{
                 //console.log('snapshot',snapshot)
             })
           }else{
+            //update here for a user, last login to the app.
             firebase.database()
             .ref('/users/'+result.user.uid)
             .update({
