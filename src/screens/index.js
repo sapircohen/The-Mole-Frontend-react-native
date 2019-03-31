@@ -73,7 +73,30 @@ const CategoriesNavigator = createStackNavigator(
         }
     }
 )
-
+//Choose a Game screen
+const ChooseAGameNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./ChooseAGame').default,
+        }
+    }
+)
+//Join a  game screen
+const JoinAGameNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./JoinAGame').default,
+        }
+    }
+)
+//Game Board Screen
+const TheMoleGameNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./TheMoleGame').default,
+        }
+    }
+)
 //settings screen . . .
 const SettingsNavigator = createStackNavigator(
     {
@@ -106,7 +129,10 @@ const AppNavigator = createSwitchNavigator(
         Article:ArticleNavigator,
         Categories:CategoriesNavigator,
         BombShop:BombNavigator,
-        Paths:PathsNavigator
+        Paths:PathsNavigator,
+        ChooseAGame:ChooseAGameNavigator,
+        GameBoard:TheMoleGameNavigator,
+        JoinGame:JoinAGameNavigator
     },{
         initialRouteName:'Splash',
     }

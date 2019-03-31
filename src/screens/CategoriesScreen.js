@@ -1,11 +1,19 @@
 import { FlatGrid } from 'react-native-super-grid';
 import React,{Component} from 'react';
-import {View,StyleSheet,ImageBackground} from 'react-native';
-import {Button,Icon} from 'native-base';
+import {View,StyleSheet,ImageBackground,TouchableOpacity} from 'react-native';
+import {Button,Icon,Text} from 'native-base';
 import NetworkHeader from '../common/NetworkHeader';
 import BannerMole from "../common/BannerMole";
+import firebase from 'firebase';
 
 import {images} from '../constant/images';
+
+const STATE = {
+  OPEN:1,
+  JOIN:2,
+  NEXT:4,
+  DONE:3,
+}
 
 export default class Categories extends Component{
     static navigationOptions = ({ navigation }) =>{
@@ -17,39 +25,57 @@ export default class Categories extends Component{
         headerTitleStyle: { color: '#4D5F66',fontSize:20 },
         headerLeft: 
          ( <Button
-            onPress={()=>navigation.navigate('Profile')}
+            onPress={()=>navigation.navigate('ChooseAGame')}
             style={{backgroundColor:"transparent"}}>
               <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
           </Button>
          ),
         }
       }
+
+      StartANewGame = (categoryName)=>{
+        //use firebase right here!
+        const ref = firebase.database().ref("/theMole"+categoryName);
+        console.log(ref);
+        //creating a game:
+          const user = firebase.auth().currentUser;
+          const currentGame = {
+            creator:{
+              uid:user.uid,
+              displayName:user.displayName
+            },
+            state:STATE.OPEN
+          }
+          ref.push().set(currentGame);
+      }
+
       render() {
         const items = [
-          { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo}, 
-          { name: 'GENERAL KNOWLEDGE', code: '#3498db',image:images.generalKnowledgeLogo },
-          { name: 'Music', code: '#34495e' ,image:images.musicLogo},
-          { name: 'Politics', code: '#27ae60' ,image:images.politicsLogo},
-          { name: 'Celebrity', code: '#27ae60' ,image:images.celebrityLogo},
-          { name: 'Films', code: '#27ae60' ,image:images.filmLogo},
-
+          { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo,id:5}, 
+          { name: 'GENERAL KNOWLEDGE', code: '#3498db',image:images.generalKnowledgeLogo,id:3 },
+          { name: 'MUSIC', code: '#34495e' ,image:images.musicLogo,id:4},
+          { name: 'POLITICS', code: '#27ae60' ,image:images.politicsLogo,id:6},
+          { name: 'CELEBRITY', code: '#27ae60' ,image:images.celebrityLogo,id:2},
+          { name: 'FILMS', code: '#27ae60' ,image:images.filmLogo,id:1},
         ];
     
         return (
         <View flex={1}>
-          <BannerMole title={'more categories are coming soon:)'}/>
+          {/* <BannerMole title={'more categories are coming soon:)'}/> */}
           <FlatGrid
             itemDimension={130}
             items={items}
             style={styles.gridView}
-            //staticDimension={300}
-            // fixed
             spacing={20}
             renderItem={({ item, index }) => (
-              <ImageBackground source={item.image} style={{ flex: 1 }} resizeMode='contain'>
-                <View style={[styles.itemContainer,{borderStyle:'solid',bordeeWidth:2}]}>
-                </View>
-              </ImageBackground>
+              <TouchableOpacity onPress={()=>this.StartANewGame(item.name)}>
+                <ImageBackground source={item.image} style={{ flex: 1 }} resizeMode='contain'>
+                  <View style={[styles.itemContainer,{borderStyle:'solid',bordeeWidth:2}]}>
+                  </View>
+                </ImageBackground>
+              </TouchableOpacity>
+
+              
             )}
           />
           </View>
