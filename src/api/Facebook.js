@@ -48,27 +48,24 @@ const checkLoginState = (event) => {
                   NickName:type.additionalUserInfo.profile.name,
                   Email: type.additionalUserInfo.profile.email,
                   ProfilePic: type.additionalUserInfo.profile.picture.data.url,
+                  Uid:firebase.auth().currentUser.uid
                 }),
                 })
                 .catch((error) => {
                   console.error(error);
                 });
-                  firebase.database()
-                  .ref('users/' + type.user.uid)
-                  .set({
-                      gmail:type.user.email,
-                      profile_picture:type.additionalUserInfo.profile.picture,
-                      locale:type.additionalUserInfo.profile.locale,
-                      first_name:type.additionalUserInfo.profile.given_name,
-                      last_name:type.additionalUserInfo.profile.family_name,
-                      created_at:Date.now()
-                  }).catch(error=>{console.log(error)})
               }else{
-                firebase.database()
-                .ref('users/' + type.user.uid)
-                .update({
-                    last_logged_in:Date.now()
+                let LastLogin = 'https://proj/bgroup65/prod/Player?uid='+firebase.auth().currentUser.uid;
+                fetch(LastLogin, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                  },
                 })
+                .catch((error)=>{
+                  console.log(error);
+                });
               }
           })
           .catch((error) =>{

@@ -9,9 +9,10 @@ import FABPaths from '../common/BombShop';
 import firebase from 'firebase';
 import NetworkHeader from '../common/NetworkHeader';
 import { Col, Row, Grid } from "react-native-easy-grid";
+import { Permissions, Notifications } from 'expo';
 
 import {images} from '../constant/images';
-
+//import { registerForPushNotificationsAsync } from "../constant/notifiactions";
 const styles = StyleSheet.create({
   baseColumns:{
     padding:10,
@@ -95,7 +96,48 @@ class ProfileScreen extends Component{
     NavigateToHelp = ()=>{
       this.props.navigation.navigate('Intro');
     }
+    //get token for notifications..
+    registerForPushNotificationsAsync = async ()=>{
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      );
+      let finalStatus = existingStatus;
+    
+      // only ask if permissions have not already been determined, because
+      // iOS won't necessarily prompt the user a second time.
+      if (existingStatus !== 'granted') {
+        // Android remote notification permissions are granted during the app
+        // install, so this will only ask on iOS
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+      }
+    
+      // Stop here if the user did not grant permissions
+      if (finalStatus !== 'granted') {
+        return;
+      }
+    
+      // Get the token that uniquely identifies this device
+      let token = await Notifications.getExpoPushTokenAsync();
+      
+      // POST the token to your backend server from where you can retrieve it to send push notifications.
+      let PUSH_ENDPOINT = 'https://proj/bgroup65/prod/Player?token='+token+'&uid='+firebase.auth().currentUser.uid;
+      
+      console.log("url fo fetch " +PUSH_ENDPOINT);
+      console.log("token: " +token);
+      return fetch(PUSH_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+      .catch((error)=>{
+        console.log(error);
+      });
+    }
     componentDidMount(){
+      this.registerForPushNotificationsAsync();
       //get current user info from firebase auth
         this.setState({
           userName:firebase.auth().currentUser.displayName,
@@ -103,6 +145,7 @@ class ProfileScreen extends Component{
           email:firebase.auth().currentUser.email,
           isReady:true
         })
+
     }
     EditAvatarPic = () =>{
       this.props.navigation.navigate('Avatar');

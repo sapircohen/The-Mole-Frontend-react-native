@@ -89,6 +89,21 @@ class AvatarScreen extends Component{
           this.props.navigation.navigate('Profile');
         }
       }
+
+    changeToAvatar = (avatar)=>{
+        //ajaxCall("POST", "../api/Player?avatarUrl=netta&uid=sapir", "", success, error);
+        let LastLogin = 'https://proj/bgroup65/prod/Player?avatarUrl='+avatar+'&uid='+firebase.auth().currentUser.uid;
+        //         fetch(LastLogin, {
+        //           method: 'POST',
+        //           headers: {
+        //             Accept: 'application/json',
+        //             'Content-Type': 'application/json',
+        //           },
+        //         })
+        //         .catch((error)=>{
+        //           console.log(error);
+        //         });
+    }
     render(){
         return(
             <Container>
@@ -102,6 +117,7 @@ class AvatarScreen extends Component{
                             <Image style={styles.GridViewInsideImageItemStyle} source={item.key} />
                           </Lightbox>
                           <Button 
+                            onPress={()=>this.changeToAvatar(item.key)}
                             title="take me!"
                             style={{paddingBottom:1,paddingTop:1}}
                             type='outline'
