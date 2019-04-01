@@ -69,9 +69,9 @@ const onSignIn = (googleUser) => {
             //     created_at:Date.now,
             //     token:result.credential.accessToken
             // })
-            .then((snapshot)=>{
-                //console.log('snapshot',snapshot)
-            })
+            // .then((snapshot)=>{
+            //     //console.log('snapshot',snapshot)
+            // })
           }else{
             //update here for a user, last login to the app.
             firebase.database()
