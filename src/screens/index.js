@@ -97,6 +97,14 @@ const TheMoleGameNavigator = createStackNavigator(
         }
     }
 )
+//my opened games screen 
+const MyOpenGamesNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./MyOpenGames').default,
+        }
+    }
+)
 //settings screen . . .
 const SettingsNavigator = createStackNavigator(
     {
@@ -132,7 +140,8 @@ const AppNavigator = createSwitchNavigator(
         Paths:PathsNavigator,
         ChooseAGame:ChooseAGameNavigator,
         GameBoard:TheMoleGameNavigator,
-        JoinGame:JoinAGameNavigator
+        JoinGame:JoinAGameNavigator,
+        MyOpenGames:MyOpenGamesNavigator
     },{
         initialRouteName:'Splash',
     }

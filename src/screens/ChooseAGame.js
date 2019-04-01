@@ -11,8 +11,9 @@ const styles = StyleSheet.create({
         'margin':8
     },
     textStyle:{
-        'fontSize':20
-    }
+        'fontSize':20,
+        'color':'#000',
+    },
 })
 const STATE = {
     OPEN:1,
@@ -46,14 +47,27 @@ export default class GameTime extends React.Component{
         JoinAGame = ()=>{
             this.props.navigation.navigate('JoinGame');
         }
+        MyGames = ()=>{
+            this.props.navigation.navigate('MyOpenGames');
+        }
+        GamesWon = ()=>{
+            //redirect to winning screen..
+            //do this in the end!!
+        }
     render(){
         return(
-            <Box f={1} center bg="white">
-                <Button onPress={this.ChooseACategory} style={styles.buttonStyle} block success>
+            <Box f={1} center bg="#70c1b3">
+                <Button onPress={this.ChooseACategory} style={styles.buttonStyle} block bordered dark>
                     <Text style={styles.textStyle}>Create a new game</Text>
                 </Button>
-                <Button onPress={this.JoinAGame} style={styles.buttonStyle} block info>
+                <Button onPress={this.JoinAGame} style={styles.buttonStyle} block bordered dark>
                     <Text style={styles.textStyle}>Join a game</Text>
+                </Button>
+                <Button onPress={this.MyGames} style={styles.buttonStyle} block bordered dark>
+                    <Text style={styles.textStyle}>My opened games</Text>
+                </Button>
+                <Button onPress={this.GamesWon} style={styles.buttonStyle} block bordered dark>
+                    <Text style={styles.textStyle}>Games WON</Text>
                 </Button>
             </Box>
         )

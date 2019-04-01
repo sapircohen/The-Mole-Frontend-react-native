@@ -33,6 +33,7 @@ export default class Categories extends Component{
         }
       }
 
+      //create a new game and insert it to firebase
       StartANewGame = (categoryName)=>{
         //use firebase right here!
         const ref = firebase.database().ref("/theMole"+categoryName);
@@ -42,8 +43,11 @@ export default class Categories extends Component{
           const currentGame = {
             creator:{
               uid:user.uid,
-              displayName:user.displayName
+              displayName:user.displayName,
+              picture:user.photoURL
             },
+            joiner:{},
+            category: categoryName,
             state:STATE.OPEN
           }
           ref.push().set(currentGame);

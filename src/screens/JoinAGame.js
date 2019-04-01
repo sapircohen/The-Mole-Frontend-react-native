@@ -1,12 +1,14 @@
 
 import React,{ Component } from "react";
-import {Image,Text,StyleSheet,View,TouchableOpacity,ImageBackground} from "react-native";
+import {Image,Text,StyleSheet,View,TouchableOpacity,ImageBackground,ScrollView} from "react-native";
 import { FlatGrid } from 'react-native-super-grid';
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
-import {Button,Icon,Container, Header, Content} from 'native-base';
+import {Button,Icon} from 'native-base';
 import firebase from 'firebase';
 import {images} from '../constant/images';
+import WikiLoader from '../common/WikiLoader';
+import { ListItem,Avatar } from 'react-native-elements'
 
 //join an existing game
 let gamesToShow=[];
@@ -17,9 +19,21 @@ const STATE = {
     DONE:3,
   }
 
+  const items = [
+    { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo,id:5}, 
+    { name: 'GENERAL KNOWLEDGE', code: '#3498db',image:images.generalKnowledgeLogo,id:3 },
+    { name: 'MUSIC', code: '#34495e' ,image:images.musicLogo,id:4},
+    { name: 'POLITICS', code: '#27ae60' ,image:images.politicsLogo,id:6},
+    { name: 'CELEBRITY', code: '#27ae60' ,image:images.celebrityLogo,id:2},
+    { name: 'FILMS', code: '#27ae60' ,image:images.filmLogo,id:1},
+  ];
+
 export default class GameBoard extends React.Component{
     state = {
-        show:false
+        show:false,
+        games:[],
+        isGames:false,
+        isReady:true,
     }
     static navigationOptions = ({ navigation }) =>{
         return{
@@ -40,52 +54,78 @@ export default class GameBoard extends React.Component{
         }
     }
     //join a game function 
-    JoinAGame = (key)=>{
+    JoinAGame = (key,categoryNameToJoin)=>{
         //use firebase right here to join existing game in a category to choose from
+        const ref =  firebase.database().ref("/theMole"+categoryNameToJoin);
         const user = firebase.auth().currentUser;
         const gameRef = ref.child(key);
+        
+        //atomic function to prevent two users sign to the same game.
         gameRef.transaction((game)=>{
+            console.log(game)
             if (!game.joiner) {
                 game.state = STATE.JOIN;
                 game.joiner = {
                     uid:user.uid,
-                    displayName:user.displayName
+                    displayName:user.displayName,
+                    picture:user.photoURL
                 }
+                //update values on 
+                gameRef.update(({'joiner': game.joiner}));
+                gameRef.update(({'state': game.state}));
+                this.props.navigation.navigate('GameBoard');
+
             }
         })
-        return game;
     }
-    //show all games 
+    //show all games if exists
     ShowGames=(categoryNameToJoin)=>{
         this.setState({
-            show:true
+            games:[],
+            show:true,
+            isReady:false
         },()=>{
-            const ref = firebase.database().ref("/theMole"+categoryNameToJoin);
-            const openGames = ref.orderByChild("state").equalTo(STATE.OPEN);
-            openGames.on("child_added",(snapshot,key)=>{
-                const data = snapshot.val();
-                //igonre our on games 
-                if (data.creator.uid!=firebase.auth().currentUser) {
-                    //push to an array
-                    game = {
-                        key:snapshot.key,
-                        data
-                    }
-                    gamesToShow.push(game);
-                }
-            })
+        gamesToShow=[];
+        const ref =  firebase.database().ref("/theMole"+categoryNameToJoin);
+        const openGames = ref.orderByChild("state").equalTo(STATE.OPEN);
+        console.log(openGames);
+        openGames.on("child_added",(snapshot,key)=>{
+          const data = snapshot.val();
+          //igonre our on games 
+          if (data.creator.uid!=firebase.auth().currentUser.uid) {
+          //push to an array
+          game = {
+              key:snapshot.key,
+              data,
+              category:categoryNameToJoin
+          }
+          gamesToShow.push(game);
+          this.setState({
+            isGames:true,
+            games:gamesToShow,
+            isReady:true
+          })
+          }
         })
-        console.log(gamesToShow);
+      })
+      setInterval(()=>{
+        if (!this.state.isReady) {
+          this.setState({
+            isReady:true
+          })
+        }
+      },5000)
     }
     render() {
-        const items = [
-          { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo,id:5}, 
-          { name: 'GENERAL KNOWLEDGE', code: '#3498db',image:images.generalKnowledgeLogo,id:3 },
-          { name: 'MUSIC', code: '#34495e' ,image:images.musicLogo,id:4},
-          { name: 'POLITICS', code: '#27ae60' ,image:images.politicsLogo,id:6},
-          { name: 'CELEBRITY', code: '#27ae60' ,image:images.celebrityLogo,id:2},
-          { name: 'FILMS', code: '#27ae60' ,image:images.filmLogo,id:1},
-        ];
+        
+        if (!this.state.isReady) {
+          return(
+            <Box f={1} center bg="white">
+              <WikiLoader/>
+            </Box>
+          )
+        }
+        else{
         if (!this.state.show) {
             return (
                 <View flex={1}>
@@ -106,13 +146,47 @@ export default class GameBoard extends React.Component{
                   </View>
                 );
         }
+        else if(this.state.games.length!==0){
         return(
-            <View>
-                {/* need to show games and on press return key, use render items*/}
-            </View>
+          <View flex={1} style={{margin:"5%"}}>
+          <Text style={{fontSize:25,fontWeight:'bold',textAlign:'center'}}>Join a game</Text>
+          <ScrollView>
+              <View>
+
+                  {this.state.games.map((l, i) => (
+                  <ListItem
+                      onPress={()=>this.JoinAGame(l.key,l.category)}
+                      key={i}
+                      leftAvatar={<Avatar
+                          source={ {uri: l.data.creator.picture} }
+                          size="large"
+                      />}
+                      title={l.data.creator.displayName}
+                      titleStyle={{color:'#3A5173',fontWeight:'bold'}}
+                      subtitle={"Category: " +l.category}
+                      subtitleStyle={{color:'#627365'}}
+                      rightIcon={
+                          <Icon 
+                          name='ios-arrow-round-forward'
+                          style={{fontSize: 25, color: '#000'}}
+                          />
+                      }
+                  />
+                  ))
+                  }
+              </View>
+          </ScrollView>
+      </View>
         )
-        
+      }
+      return(
+        <Box f={1} center bg="white">
+          <Text>No open games:(</Text>
+        </Box>
+      )
     }
+    }
+        
 }
 const styles = StyleSheet.create({
     gridView: {
