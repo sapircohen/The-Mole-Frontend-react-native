@@ -69,10 +69,9 @@ const onSignIn = (googleUser) => {
             //     created_at:Date.now,
             //     token:result.credential.accessToken
             // })
-            // .then((snapshot)=>{
-            //     //console.log('snapshot',snapshot)
-            // })
+            
           }else{
+            console.log(result.additionalUserInfo);
             //update here for a user, last login to the app.
             firebase.database()
             .ref('/users/'+result.user.uid)

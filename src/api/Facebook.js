@@ -36,6 +36,23 @@ const checkLoginState = (event) => {
           .then((type)=>{
               console.log("user signed in" + type.user.uid)
               if (type.additionalUserInfo.isNewUser) {
+                console.log(type.additionalUserInfo);
+                fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/Player', {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  Locale:"",
+                  NickName:type.additionalUserInfo.profile.name,
+                  Email: type.additionalUserInfo.profile.email,
+                  ProfilePic: type.additionalUserInfo.profile.picture.data.url,
+                }),
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
                   firebase.database()
                   .ref('users/' + type.user.uid)
                   .set({

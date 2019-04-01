@@ -1,5 +1,5 @@
 import React,{ Component } from "react";
-import {Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView,ActivityIndicator} from "react-native";
+import {Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView} from "react-native";
 import {Button,Icon, Text} from 'native-base';
 import  NetworkHeader from '../common/NetworkHeader';
 import Autocomplete from 'react-native-autocomplete-input';
