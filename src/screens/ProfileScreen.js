@@ -102,7 +102,7 @@ class ProfileScreen extends Component{
         Permissions.NOTIFICATIONS
       );
       let finalStatus = existingStatus;
-    
+        console.log(finalStatus)
       // only ask if permissions have not already been determined, because
       // iOS won't necessarily prompt the user a second time.
       if (existingStatus !== 'granted') {
@@ -110,13 +110,15 @@ class ProfileScreen extends Component{
         // install, so this will only ask on iOS
         const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
         finalStatus = status;
+        console.log(status)
       }
-    
+      console.log(finalStatus)
+
       // Stop here if the user did not grant permissions
       if (finalStatus !== 'granted') {
         return;
       }
-    
+      
       // Get the token that uniquely identifies this device
       let token = await Notifications.getExpoPushTokenAsync();
       
@@ -137,7 +139,10 @@ class ProfileScreen extends Component{
       });
     }
     componentDidMount(){
+      console.log(firebase.auth().currentUser.uid)
       this.registerForPushNotificationsAsync();
+      Notifications.addListener(this.listen);
+
       //get current user info from firebase auth
         this.setState({
           userName:firebase.auth().currentUser.displayName,
@@ -145,6 +150,9 @@ class ProfileScreen extends Component{
           email:firebase.auth().currentUser.email,
           isReady:true
         })
+
+    }
+    listen = ({origin,data})=>{
 
     }
     EditAvatarPic = () =>{

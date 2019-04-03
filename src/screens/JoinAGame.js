@@ -18,7 +18,7 @@ const STATE = {
     NEXT:4,
     DONE:3,
   }
-
+let creatorUid= '';
   const items = [
     { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo,id:5}, 
     { name: 'GENERAL KNOWLEDGE', code: '#3498db',image:images.generalKnowledgeLogo,id:3 },
@@ -62,7 +62,8 @@ export default class GameBoard extends React.Component{
         
         //atomic function to prevent two users sign to the same game.
         gameRef.transaction((game)=>{
-            console.log(game)
+            //console.log(game)
+            creatorUid = game.creator.uid;
             if (!game.joiner) {
                 game.state = STATE.JOIN;
                 game.joiner = {
@@ -73,10 +74,37 @@ export default class GameBoard extends React.Component{
                 //update values on 
                 gameRef.update(({'joiner': game.joiner}));
                 gameRef.update(({'state': game.state}));
+                this.sendPushNotification(categoryNameToJoin);
                 this.props.navigation.navigate('GameBoard');
 
             }
         })
+
+
+    }
+    sendPushNotification = (category)=>{
+      //FIRST GET TOKEN FROM DB
+      //uid for example:BbBC8Zxlweh5GBTQAMrgPJ7oPUm2
+      
+      const token = fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/Player/?uid='+creatorUid)
+      .then(()=>{
+        let response= fetch("https://exp.host/--/api/v2/push/getReceipts",{
+          method:'POST',
+          headers:{
+            Accept:'application/json',
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({
+            to:token,
+            sound:'default',
+            title:'New game',
+            body:'Come play with ' + firebase.auth().currentUser + ' in ' + category + ' category game'
+          })
+        })
+        .catch((error)=>{
+          console.log(error);
+        })
+      })
     }
     //show all games if exists
     ShowGames=(categoryNameToJoin)=>{
