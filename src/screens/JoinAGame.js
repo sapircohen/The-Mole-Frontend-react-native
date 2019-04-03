@@ -10,14 +10,21 @@ import {images} from '../constant/images';
 import WikiLoader from '../common/WikiLoader';
 import { ListItem,Avatar } from 'react-native-elements'
 
-//join an existing game
+import { storageSet } from "../constant/Storage";
+
 let gamesToShow=[];
+
+//games state
 const STATE = {
-    OPEN:1,
-    JOIN:2,
-    NEXT:4,
-    DONE:3,
-  }
+  OPEN:1,
+  JOIN:2,
+  START:3,
+  NEXTCreator:4,
+  NEXTJoiner:5,
+  WINCreator:6,
+  WINJoiner:7
+}
+
 let creatorUid= '';
   const items = [
     { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo,id:5}, 
@@ -53,6 +60,9 @@ export default class GameBoard extends React.Component{
             ),
         }
     }
+
+
+
     //join a game function 
     JoinAGame = (key,categoryNameToJoin)=>{
         //use firebase right here to join existing game in a category to choose from
@@ -74,14 +84,26 @@ export default class GameBoard extends React.Component{
                 //update values on 
                 gameRef.update(({'joiner': game.joiner}));
                 gameRef.update(({'state': game.state}));
+                
+                //send push notification for the creator in case the app is on background
+                //change this to firebase messeging
                 this.sendPushNotification(categoryNameToJoin);
+                
+                //store values of specific game in AysncStorage
+                storageSet('key', key);
+                storageSet('category', categoryNameToJoin);
+                
+
+                //get to game board
                 this.props.navigation.navigate('GameBoard');
 
             }
         })
-
-
     }
+    
+      
+
+    //SEND PUSH TO CREATOR TO COME AND PLAY
     sendPushNotification = (category)=>{
       //FIRST GET TOKEN FROM DB
       //uid for example:BbBC8Zxlweh5GBTQAMrgPJ7oPUm2
@@ -206,16 +228,19 @@ export default class GameBoard extends React.Component{
           </ScrollView>
       </View>
         )
-      }
+      }   
       return(
         <Box f={1} center bg="white">
           <Text>No open games:(</Text>
         </Box>
       )
     }
-    }
-        
+  }
 }
+
+
+
+//STYLES
 const styles = StyleSheet.create({
     gridView: {
       marginTop: 20,
