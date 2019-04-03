@@ -1,5 +1,5 @@
 import React,{ Component } from "react";
-import {Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView} from "react-native";
+import {Platform,Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView} from "react-native";
 import {Button,Icon, Text} from 'native-base';
 import  NetworkHeader from '../common/NetworkHeader';
 import Autocomplete from 'react-native-autocomplete-input';
@@ -108,8 +108,8 @@ export default class Paths extends React.Component{
         const API = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='+serachTerm+'&limit=10&namespace=0&format=json';
 
         if (serachTerm.length>0) {
-        console.log(serachTerm);
-        console.log(API);
+        //console.log(serachTerm);
+        //console.log(API);
         fetch(API)
           .then(response => response.json())
           .then(data => {
@@ -132,27 +132,30 @@ export default class Paths extends React.Component{
         let pathsUri = 'http://proj.ruppin.ac.il/bgroup65/prod/api/SIXDOW'+end;
         fetch(pathsUri)
           .then((response) => response.json())
-          .then((data) => {
+          .then(async (data) => {
             this.setState({
                 paths:data,
                 path:[],
-            },async ()=>
+            },()=>
             {
                     newStateArray = [];
+                    let originalArrayForSort=[];
+                    //console.log(this.state.paths)
                     for (let i = 0; i < this.state.paths.length; i++) {
-                        if(i%2==0){
-                            console.log(this.state.paths[i]);
-                            await this.GetData(this.state.paths[i]);
-                        }
+                            if(i%2==0){
+                                originalArrayForSort.push(this.state.paths[i]);
+                                this.GetData(this.state.paths[i],i);
+                            }
                     }
+  
                 })
             })
         })
     }
-    GetData = (article)=>{
-        console.log(article)
+    GetData = (article,index)=>{
+        //console.log(article)
         let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+article+'&prop=pageimages&format=json&pithumbsize=100';
-        console.log(API);
+        //console.log(API);
         fetch(API)
         
             .then(response => response.json())
@@ -160,7 +163,7 @@ export default class Paths extends React.Component{
                         //getting the page id for extracting information about the article 
                         var pageid = Object.keys(data.query.pages)[0];
                        
-                        console.log(data.query.pages[pageid].title);
+                        //console.log(data.query.pages[pageid].title);
 
                         if (data.query.pages[pageid].missing === "") {
                             alert("no good");
@@ -180,15 +183,22 @@ export default class Paths extends React.Component{
                         let wikiArticleForList = {
                             name:data.query.pages[pageid].title,
                             avatar_url:pic,
-                            wikiUrl:fullWikiUri
+                            wikiUrl:fullWikiUri,
+                            index:index
                         }
 
                         newStateArray.push(wikiArticleForList);
-                            this.setState({
-                                path:newStateArray,
-                                isReady:true
-                            })
+                            
                     })
+                .then(()=>{
+                        console.log(newStateArray);
+                        newStateArray.sort((num1, num2) => num1.index < num2.index ? -1 : 1);
+                        console.log(newStateArray);
+                        this.setState({
+                            //path:newStateArray,
+                            isReady:true
+                        })
+                })
     }
     render(){
         const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
@@ -196,7 +206,6 @@ export default class Paths extends React.Component{
             return(
               <Box f={1} center bg="white">
                 <WikiLoader/>
-                {/* <ActivityIndicator color='purple' size="large"/> */}
               </Box>
             )
           }
@@ -248,7 +257,7 @@ export default class Paths extends React.Component{
                     <ScrollView>
                         <View>
                         {
-                            this.state.path.map((l, i) => (
+                            newStateArray.map((l, i) => (
                             <ListItem
                                 onPress={()=> Linking.openURL(l.wikiUrl)}
                                 key={i}
