@@ -122,31 +122,31 @@ class ProfileScreen extends Component{
       }
       
       // Get the token that uniquely identifies this device
-      let token = await Notifications.getExpoPushTokenAsync()
-      .catch((error)=>{
-        alert(error);
-      });
-      alert(`I'm the token: ${token}`)
-      
-      // POST the token to your backend server from where you can retrieve it to send push notifications.
+      let token = await Notifications.getExpoPushTokenAsync();
+      alert(token)
       alert(firebase.auth().currentUser.uid);
-      let PUSH_ENDPOINT = 'https://proj/bgroup65/prod/Player?token='+token+'&uid='+firebase.auth().currentUser.uid;
+     
+     
+      // POST the token to your backend server from where you can retrieve it to send push notifications.      
     
-      return fetch(PUSH_ENDPOINT, {
+      return fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerToken', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+         Token: token,
+         Uid:firebase.auth().currentUser.uid
+        }),
       })
       .catch((error)=>{
-        console.log(error);
+        alert(error);
       });
     }
     componentDidMount(){
       console.log(firebase.auth().currentUser.uid)
       this.registerForPushNotificationsAsync();
-      Notifications.addListener(this.listen);
 
       //get current user info from firebase auth
         this.setState({
@@ -155,9 +155,6 @@ class ProfileScreen extends Component{
           email:firebase.auth().currentUser.email,
           isReady:true
         })
-
-    }
-    listen = ({origin,data})=>{
 
     }
     EditAvatarPic = () =>{

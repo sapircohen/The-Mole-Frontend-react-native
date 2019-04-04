@@ -12,12 +12,22 @@ class SplashScreen extends Component{
     checkAuth = ()=>{
         firebase.auth().onAuthStateChanged(user=>{
             if(user){
-                this.props.navigation.navigate('Profile',{
-                    params:{
-                        userName:user.displayName,
-                        userPic:user.photoURL,
-                    }
-                });
+                alert("hello")
+                let LastLogin = 'https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerLastLogin';
+                fetch(LastLogin, {
+                    method: 'POST',
+                    headers: {
+                      Accept: 'application/json',
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                     Uid:firebase.auth().currentUser.uid
+                    }),
+                  })
+                  .catch((error)=>{
+                    alert(error);
+                  });                
+                  this.props.navigation.navigate('Profile');
             }
             else{
                 this.props.navigation.navigate('Auth')

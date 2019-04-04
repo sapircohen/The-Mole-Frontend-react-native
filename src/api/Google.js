@@ -60,17 +60,9 @@ const onSignIn = (googleUser) => {
               console.error(error);
             });
           }else{
+            alert("hello");
             let LastLogin = 'https://proj/bgroup65/prod/Player?uid='+firebase.auth().currentUser.uid;
-                fetch(LastLogin, {
-                  method: 'POST',
-                  headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                  },
-                })
-                .catch((error)=>{
-                  console.log(error);
-                });
+            fetch(LastLogin).catch((error)=>{console.log(error)})
           }
         })
         .catch((error) =>{
