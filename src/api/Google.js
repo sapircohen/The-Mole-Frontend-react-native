@@ -53,34 +53,28 @@ const onSignIn = (googleUser) => {
                   NickName:result.additionalUserInfo.profile.name,
                   Email: result.user.email,
                   ProfilePic: result.additionalUserInfo.profile.picture,
+                  Uid: firebase.auth().currentUser.uid
                 }),
             })
             .catch((error) => {
               console.error(error);
             });
-            // firebase.database()
-            // .ref('/users/'+result.user.uid)
-            // .set({
-            //     gmail: result.user.email,
-            //     profile_picture: result.additionalUserInfo.profile.picture,
-            //     locale:result.additionalUserInfo.profile.locale,
-            //     first_name: result.additionalUserInfo.profile.given_name,
-            //     last_name:result.additionalUserInfo.profile.family_name,
-            //     created_at:Date.now,
-            //     token:result.credential.accessToken
-            // })
-            
           }else{
-            console.log(result.additionalUserInfo);
-            //update here for a user, last login to the app.
-            firebase.database()
-            .ref('/users/'+result.user.uid)
-            .update({
-                last_logged_in: Date.now()
-            })
+            let LastLogin = 'https://proj/bgroup65/prod/Player?uid='+firebase.auth().currentUser.uid;
+                fetch(LastLogin, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                  },
+                })
+                .catch((error)=>{
+                  console.log(error);
+                });
           }
         })
         .catch((error) =>{
+          console.log(error);
           // Handle Errors here.
           var errorCode = error.code;
           var errorMessage = error.message;
@@ -88,7 +82,6 @@ const onSignIn = (googleUser) => {
           var email = error.email;
           // The firebase.auth.AuthCredential type that was used.
           var credential = error.credential;
-          // ...
         });
       } else {
         console.log('User already signed-in Firebase.');

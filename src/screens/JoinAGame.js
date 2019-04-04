@@ -10,15 +10,22 @@ import {images} from '../constant/images';
 import WikiLoader from '../common/WikiLoader';
 import { ListItem,Avatar } from 'react-native-elements'
 
-//join an existing game
-let gamesToShow=[];
-const STATE = {
-    OPEN:1,
-    JOIN:2,
-    NEXT:4,
-    DONE:3,
-  }
+import { storageSet } from "../constant/Storage";
 
+let gamesToShow=[];
+
+//games state
+const STATE = {
+  OPEN:1,
+  JOIN:2,
+  START:3,
+  NEXTCreator:4,
+  NEXTJoiner:5,
+  WINCreator:6,
+  WINJoiner:7
+}
+
+let creatorUid= '';
   const items = [
     { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo,id:5}, 
     { name: 'GENERAL KNOWLEDGE', code: '#3498db',image:images.generalKnowledgeLogo,id:3 },
@@ -53,6 +60,9 @@ export default class GameBoard extends React.Component{
             ),
         }
     }
+
+
+
     //join a game function 
     JoinAGame = (key,categoryNameToJoin)=>{
         //use firebase right here to join existing game in a category to choose from
@@ -62,7 +72,8 @@ export default class GameBoard extends React.Component{
         
         //atomic function to prevent two users sign to the same game.
         gameRef.transaction((game)=>{
-            console.log(game)
+            //console.log(game)
+            creatorUid = game.creator.uid;
             if (!game.joiner) {
                 game.state = STATE.JOIN;
                 game.joiner = {
@@ -73,10 +84,49 @@ export default class GameBoard extends React.Component{
                 //update values on 
                 gameRef.update(({'joiner': game.joiner}));
                 gameRef.update(({'state': game.state}));
+                
+                //send push notification for the creator in case the app is on background
+                //change this to firebase messeging
+                this.sendPushNotification(categoryNameToJoin);
+                
+                //store values of specific game in AysncStorage
+                storageSet('key', key);
+                storageSet('category', categoryNameToJoin);
+                
+
+                //get to game board
                 this.props.navigation.navigate('GameBoard');
 
             }
         })
+    }
+    
+      
+
+    //SEND PUSH TO CREATOR TO COME AND PLAY
+    sendPushNotification = (category)=>{
+      //FIRST GET TOKEN FROM DB
+      //uid for example:BbBC8Zxlweh5GBTQAMrgPJ7oPUm2
+      
+      const token = fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/Player/?uid='+creatorUid)
+      .then(()=>{
+        let response= fetch("https://exp.host/--/api/v2/push/getReceipts",{
+          method:'POST',
+          headers:{
+            Accept:'application/json',
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({
+            to:token,
+            sound:'default',
+            title:'New game',
+            body:'Come play with ' + firebase.auth().currentUser + ' in ' + category + ' category game'
+          })
+        })
+        .catch((error)=>{
+          console.log(error);
+        })
+      })
     }
     //show all games if exists
     ShowGames=(categoryNameToJoin)=>{
@@ -178,16 +228,19 @@ export default class GameBoard extends React.Component{
           </ScrollView>
       </View>
         )
-      }
+      }   
       return(
         <Box f={1} center bg="white">
           <Text>No open games:(</Text>
         </Box>
       )
     }
-    }
-        
+  }
 }
+
+
+
+//STYLES
 const styles = StyleSheet.create({
     gridView: {
       marginTop: 20,

@@ -6,20 +6,19 @@ import {Button,Icon,Container, Header, Content,} from 'native-base';
 import firebase from 'firebase';
 import {images} from '../constant/images';
 
-const styles = StyleSheet.create({
-    buttonStyle:{
-        'margin':8
-    },
-    textStyle:{
-        'fontSize':20,
-        'color':'#000',
-    },
-})
+import AwesomeAlert from 'react-native-awesome-alerts';
+
+
+
+//game states
 const STATE = {
     OPEN:1,
     JOIN:2,
-    NEXT:4,
-    DONE:3,
+    START:3,
+    NEXTCreator:4,
+    NEXTJoiner:5,
+    WINCreator:6,
+    WINJoiner:7
   }
 export default class GameTime extends React.Component{
     static navigationOptions = ({ navigation }) =>{
@@ -73,3 +72,14 @@ export default class GameTime extends React.Component{
         )
     }
 }
+
+//STYLE
+const styles = StyleSheet.create({
+    buttonStyle:{
+        'margin':8
+    },
+    textStyle:{
+        'fontSize':20,
+        'color':'#000',
+    },
+})
