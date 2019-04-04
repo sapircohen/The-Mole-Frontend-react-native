@@ -98,11 +98,13 @@ class ProfileScreen extends Component{
     }
     //get token for notifications..
     registerForPushNotificationsAsync = async ()=>{
+
       const { status: existingStatus } = await Permissions.getAsync(
         Permissions.NOTIFICATIONS
       );
       let finalStatus = existingStatus;
-        console.log(finalStatus)
+      console.log(finalStatus)
+      alert(finalStatus)
       // only ask if permissions have not already been determined, because
       // iOS won't necessarily prompt the user a second time.
       if (existingStatus !== 'granted') {
@@ -120,13 +122,16 @@ class ProfileScreen extends Component{
       }
       
       // Get the token that uniquely identifies this device
-      let token = await Notifications.getExpoPushTokenAsync();
+      let token = await Notifications.getExpoPushTokenAsync()
+      .catch((error)=>{
+        alert(error);
+      });
+      alert(`I'm the token: ${token}`)
       
       // POST the token to your backend server from where you can retrieve it to send push notifications.
+      alert(firebase.auth().currentUser.uid);
       let PUSH_ENDPOINT = 'https://proj/bgroup65/prod/Player?token='+token+'&uid='+firebase.auth().currentUser.uid;
-      
-      console.log("url fo fetch " +PUSH_ENDPOINT);
-      console.log("token: " +token);
+    
       return fetch(PUSH_ENDPOINT, {
         method: 'POST',
         headers: {

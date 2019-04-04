@@ -14,7 +14,7 @@ import { storageSet } from "../constant/Storage";
 
 let gamesToShow=[];
 
-//games state
+//game states
 const STATE = {
   OPEN:1,
   JOIN:2,
@@ -87,7 +87,7 @@ export default class GameBoard extends React.Component{
                 
                 //send push notification for the creator in case the app is on background
                 //change this to firebase messeging
-                this.sendPushNotification(categoryNameToJoin);
+                this.sendPushNotification(categoryNameToJoin,creatorUid);
                 
                 //store values of specific game in AysncStorage
                 storageSet('key', key);
@@ -104,12 +104,13 @@ export default class GameBoard extends React.Component{
       
 
     //SEND PUSH TO CREATOR TO COME AND PLAY
-    sendPushNotification = (category)=>{
+    sendPushNotification = (category,creator)=>{
       //FIRST GET TOKEN FROM DB
       //uid for example:BbBC8Zxlweh5GBTQAMrgPJ7oPUm2
-      
-      const token = fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/Player/?uid='+creatorUid)
-      .then(()=>{
+      console.log(creator);
+      fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/Player/?uid=8pcfbcdH25fPQ0FIykjiqH8ggH53'+creator)
+      .then((token)=>{
+        console.log(token);
         let response= fetch("https://exp.host/--/api/v2/push/getReceipts",{
           method:'POST',
           headers:{

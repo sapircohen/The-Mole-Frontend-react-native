@@ -6,9 +6,6 @@ import {Button,Icon,Container, Header, Content,} from 'native-base';
 import firebase from 'firebase';
 import {images} from '../constant/images';
 
-import AwesomeAlert from 'react-native-awesome-alerts';
-
-
 
 //game states
 const STATE = {
@@ -19,8 +16,13 @@ const STATE = {
     NEXTJoiner:5,
     WINCreator:6,
     WINJoiner:7
-  }
+}
+
+
 export default class GameTime extends React.Component{
+    state={
+
+    }
     static navigationOptions = ({ navigation }) =>{
         return{
           headerTitle: (
