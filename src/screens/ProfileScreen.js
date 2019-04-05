@@ -10,6 +10,8 @@ import firebase from 'firebase';
 import NetworkHeader from '../common/NetworkHeader';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { Permissions, Notifications } from 'expo';
+import NotificationPopupToShow from "../constant/notificationPopUp";
+
 
 import {images} from '../constant/images';
 //import { registerForPushNotificationsAsync } from "../constant/notifiactions";
@@ -88,6 +90,7 @@ class ProfileScreen extends Component{
       }
     }
     state = {
+      showAlert:false,
       userName:"",
       userPic:"",
       email:"",
@@ -104,7 +107,6 @@ class ProfileScreen extends Component{
       );
       let finalStatus = existingStatus;
       console.log(finalStatus)
-      alert(finalStatus)
       // only ask if permissions have not already been determined, because
       // iOS won't necessarily prompt the user a second time.
       if (existingStatus !== 'granted') {
@@ -169,7 +171,9 @@ class ProfileScreen extends Component{
         )
       }
         return(
+          
             <Box f={1} bg="white">
+              <NotificationPopupToShow body="Welcome Back" title="Hey you"/>
               <Box f={1} style={{marginTop:"15%"}} center>
                 <Avatar size='xlarge' 
                 rounded
@@ -182,6 +186,7 @@ class ProfileScreen extends Component{
               />
               <Text h5 style={{fontWeight:"bold",marginTop:"5%"}}>{this.state.userName}</Text>
             </Box>
+            
                   <Content contentContainerStyle={{ flex: 1}}>
                     <Grid style={{justifyContent:'space-evenly'}}>
                       <Col style={styles.colStyleForGrid}>
@@ -230,7 +235,6 @@ class ProfileScreen extends Component{
                 <FABSettings GoToScreen={this.changeScreen} />
               </Box>
             </Box>
-            <NotificationPopupToShow />
           </Box>
           
         )

@@ -26,7 +26,9 @@ class SplashScreen extends Component{
                   .catch((error)=>{
                     alert(error);
                   });                
-                  this.props.navigation.navigate('Profile');
+                  this.props.navigation.navigate('Profile',{
+                    lastScreen: 'Splash' 
+                  });
             }
             else{
                 this.props.navigation.navigate('Auth')
