@@ -7,6 +7,7 @@ import {images} from './src/constant/images';
 import {cacheImages} from './src/utils/cachImage';
 import firebase from 'firebase';
 import {FirebaseConfig} from './src/constant/ApiKeys';
+import NotificationPopupToShow from "./src/constant/notificationPopUp";
 
 //initializing firebase for auth
 firebase.initializeApp(FirebaseConfig);

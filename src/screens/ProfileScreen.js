@@ -140,8 +140,8 @@ class ProfileScreen extends Component{
         alert(error);
       });
     }
+
     componentDidMount(){
-      console.log(firebase.auth().currentUser.uid)
       this.registerForPushNotificationsAsync();
 
       //get current user info from firebase auth
@@ -153,6 +153,7 @@ class ProfileScreen extends Component{
         })
 
     }
+    
     EditAvatarPic = () =>{
       this.props.navigation.navigate('Avatar');
     }
@@ -229,7 +230,9 @@ class ProfileScreen extends Component{
                 <FABSettings GoToScreen={this.changeScreen} />
               </Box>
             </Box>
+            <NotificationPopupToShow />
           </Box>
+          
         )
     }
 }
