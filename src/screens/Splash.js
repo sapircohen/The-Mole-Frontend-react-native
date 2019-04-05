@@ -12,7 +12,6 @@ class SplashScreen extends Component{
     checkAuth = ()=>{
         firebase.auth().onAuthStateChanged(user=>{
             if(user){
-                alert("hello")
                 let LastLogin = 'https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerLastLogin';
                 fetch(LastLogin, {
                     method: 'POST',

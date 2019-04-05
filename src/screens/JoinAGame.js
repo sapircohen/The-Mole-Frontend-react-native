@@ -105,20 +105,18 @@ export default class GameBoard extends React.Component{
 
     //SEND PUSH TO CREATOR TO COME AND PLAY
     sendPushNotification = (category,creator)=>{
-      //FIRST GET TOKEN FROM DB
-      //uid for example:BbBC8Zxlweh5GBTQAMrgPJ7oPUm2
-      console.log(creator);
-      fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/Player/?uid=8pcfbcdH25fPQ0FIykjiqH8ggH53'+creator)
+      
+      fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerGetToken/?uid='+creator)
       .then((token)=>{
-        console.log(token);
-        let response= fetch("https://exp.host/--/api/v2/push/getReceipts",{
+        console.log(token._bodyInit);
+        fetch("https://exp.host/--/api/v2/push/getReceipts",{
           method:'POST',
           headers:{
             Accept:'application/json',
             'Content-Type':'application/json'
           },
           body:JSON.stringify({
-            to:token,
+            to:token._bodyInit,
             sound:'default',
             title:'New game',
             body:'Come play with ' + firebase.auth().currentUser + ' in ' + category + ' category game'

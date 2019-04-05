@@ -123,10 +123,6 @@ class ProfileScreen extends Component{
       
       // Get the token that uniquely identifies this device
       let token = await Notifications.getExpoPushTokenAsync();
-      alert(token)
-      alert(firebase.auth().currentUser.uid);
-     
-     
       // POST the token to your backend server from where you can retrieve it to send push notifications.      
     
       return fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerToken', {

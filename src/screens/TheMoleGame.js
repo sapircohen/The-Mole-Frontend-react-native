@@ -53,8 +53,6 @@ export default class GameBoard extends React.Component{
   GetItemsFromStorage = async ()=>{
     let key = await storageGet('key');
     let category =  await storageGet('category');
-    console.log(key)
-    console.log(category)
     this.watchGame(key,category);
   }
   
