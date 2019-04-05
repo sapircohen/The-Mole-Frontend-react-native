@@ -108,15 +108,15 @@ export default class GameBoard extends React.Component{
       
       fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerGetToken/?uid='+creator)
       .then((token)=>{
-        console.log(token._bodyInit);
+        console.log(JSON.parse(token._bodyInit));
+        let tokenToSend = JSON.parse(token._bodyInit);
         fetch("https://exp.host/--/api/v2/push/getReceipts",{
-          method:'POST',
-          headers:{
-            Accept:'application/json',
-            'Content-Type':'application/json'
+          headers: {
+            'Content-Type': 'application/json',
           },
+          method: 'POST',
           body:JSON.stringify({
-            to:token._bodyInit,
+            to:tokenToSend,
             sound:'default',
             title:'New game',
             body:'Come play with ' + firebase.auth().currentUser + ' in ' + category + ' category game'

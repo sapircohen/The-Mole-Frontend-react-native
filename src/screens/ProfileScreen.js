@@ -10,7 +10,7 @@ import firebase from 'firebase';
 import NetworkHeader from '../common/NetworkHeader';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { Permissions, Notifications } from 'expo';
-import NotificationPopupToShow from "../constant/notificationPopUp";
+//import NotificationPopupToShow from "../constant/notificationPopUp";
 
 
 import {images} from '../constant/images';
@@ -94,7 +94,7 @@ class ProfileScreen extends Component{
       userName:"",
       userPic:"",
       email:"",
-      isReady:false
+      isReady:false,
     }
     NavigateToHelp = ()=>{
       this.props.navigation.navigate('Intro');
@@ -144,6 +144,7 @@ class ProfileScreen extends Component{
     }
 
     componentDidMount(){
+      //console.log("Profile: ", this.props.navigation.getParam())
       this.registerForPushNotificationsAsync();
 
       //get current user info from firebase auth
@@ -163,6 +164,9 @@ class ProfileScreen extends Component{
      this.props.navigation.navigate(screenName);
     }
     render(){
+      //const { lastScreen } = this.props.navigation.state.params;
+
+
       if (!this.state.isReady) {
         return(
           <Box f={1} center bg="white">
@@ -173,7 +177,8 @@ class ProfileScreen extends Component{
         return(
           
             <Box f={1} bg="white">
-              <NotificationPopupToShow body="Welcome Back" title="Hey you"/>
+                {/* {lastScreen==='Splash' ? <NotificationPopupToShow body="Welcome Back" title="Hey you"/>:<Text></Text>} */}
+
               <Box f={1} style={{marginTop:"15%"}} center>
                 <Avatar size='xlarge' 
                 rounded

@@ -7,7 +7,6 @@ import {images} from './src/constant/images';
 import {cacheImages} from './src/utils/cachImage';
 import firebase from 'firebase';
 import {FirebaseConfig} from './src/constant/ApiKeys';
-import NotificationPopupToShow from "./src/constant/notificationPopUp";
 
 //initializing firebase for auth
 firebase.initializeApp(FirebaseConfig);
@@ -16,18 +15,23 @@ firebase.initializeApp(FirebaseConfig);
 export default class App extends React.Component {
 
   state ={
-    isReady:false
+    isReady:false,
+    notification: {},
   }
   componentDidMount(){
     this.cacheAssets();
+
   }
+
   cacheAssets = async () =>{
     const imagesAssets = cacheImages(Object.values(images));
     await Promise.all([...imagesAssets]);
     this.setState({isReady:true});
+
   }
 
   render() {
+    
     if (!this.state.isReady) {
       return(
         <Box f={1} center bg="white">

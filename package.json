@@ -34,7 +34,7 @@
     "react-native-push-notification-popup": "^1.2.0",
     "react-native-snap-carousel": "^3.7.5",
     "react-native-super-grid": "^3.0.3",
-    "react-navigation": "^3.0.9",
+    "react-navigation": "^3.6.1",
     "react-sync-fetch": "^1.2.0"
   },
   "devDependencies": {
