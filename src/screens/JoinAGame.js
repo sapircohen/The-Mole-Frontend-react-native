@@ -110,11 +110,15 @@ export default class GameBoard extends React.Component{
       .then((token)=>{
         console.log(JSON.parse(token._bodyInit));
         let tokenToSend = JSON.parse(token._bodyInit);
-        fetch("https://exp.host/--/api/v2/push/getReceipts",{
+        console.log(tokenToSend);
+        const PUSH_ENDPOINT = 'https://expo.io/--/api/v2/push/getReceipts';
+        //"https://exp.host/--/api/v2/push/getReceipts"
+        fetch(PUSH_ENDPOINT,{
           headers: {
             'Content-Type': 'application/json',
           },
           method: 'POST',
+          mode:'no-cors',
           body:JSON.stringify({
             to:tokenToSend,
             sound:'default',
