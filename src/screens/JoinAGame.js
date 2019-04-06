@@ -41,6 +41,8 @@ export default class GameBoard extends React.Component{
         games:[],
         isGames:false,
         isReady:true,
+        notification:{},
+        creatorToken:''
     }
     static navigationOptions = ({ navigation }) =>{
         return{
@@ -61,7 +63,13 @@ export default class GameBoard extends React.Component{
         }
     }
 
+    componentDidMount(){
+      this._notificationSubscription = Notifications.addListener(this._handleNotification);
+    }
 
+    _handleNotification = (notification) => {
+      this.setState({ notification: notification });
+    }
 
     //join a game function 
     JoinAGame = (key,categoryNameToJoin)=>{
@@ -86,52 +94,94 @@ export default class GameBoard extends React.Component{
                 gameRef.update(({'state': game.state}));
                 
                 //send push notification for the creator in case the app is on background
-                //change this to firebase messeging
-                this.sendPushNotification(categoryNameToJoin,creatorUid);
+                this.sendPushNotificationFromClient(categoryNameToJoin,creatorUid);
                 
                 //store values of specific game in AysncStorage
                 storageSet('key', key);
                 storageSet('category', categoryNameToJoin);
                 
-
-                //get to game board
+                //get to game board. need to wait for the creator to come too.
                 this.props.navigation.navigate('GameBoard');
 
             }
         })
     }
     
-      
-
-    //SEND PUSH TO CREATOR TO COME AND PLAY
-    sendPushNotification = (category,creator)=>{
-      
+    //SEND PUSH TO CREATOR TO COME AND PLAY from Client
+    sendPushNotificationFromServer = (category,creator)=>{
       fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerGetToken/?uid='+creator)
       .then((token)=>{
-        console.log(JSON.parse(token._bodyInit));
-        let tokenToSend = JSON.parse(token._bodyInit);
-        console.log(tokenToSend);
-        const PUSH_ENDPOINT = 'https://expo.io/--/api/v2/push/getReceipts';
-        //"https://exp.host/--/api/v2/push/getReceipts"
-        fetch(PUSH_ENDPOINT,{
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          method: 'POST',
-          mode:'no-cors',
-          body:JSON.stringify({
-            to:tokenToSend,
-            sound:'default',
-            title:'New game',
-            body:'Come play with ' + firebase.auth().currentUser + ' in ' + category + ' category game'
+        this.setState({
+          creatorToken:JSON.parse(token._bodyInit)
+        },()=>{
+          let pnd = {
+            to: this.state.creatorToken,
+            title: 'New Game',
+            body: 'Come play with ' + firebase.auth().currentUser.displayName + ' in ' + category + ' category game',
+           };
+          
+       
+         // POST TO RUPPIN SERVER
+         fetch('http://proj.ruppin.ac.il/bgroup65/prod/sendpushnotification', {
+            method: 'POST',
+            body: JSON.stringify(pnd),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
           })
-        })
-        .catch((error)=>{
-          console.log(error);
+            .then(response => response.json())
+            .then(json => {
+                if (json != null) {
+                    console.log(`
+                    returned from Ruppin server\n
+                    json= ${JSON.stringify( json)}`);
+
+                } else {
+                    alert('err json');
+                }
+            });//END FETCH TO RUPPIN
+
+        })//END STATE CHANGE
+      })//END FETCH TOKEN
+    }
+    //SEND PUSH TO CREATOR TO COME AND PLAY from Client
+    sendPushNotificationFromClient = (category,creator)=>{
+      fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerGetToken/?uid='+creator)
+      .then((token)=>{
+        this.setState({
+          creatorToken:JSON.parse(token._bodyInit)
+        },()=>{
+          let per = {
+            to: this.state.creatorToken,
+            title: 'New Game',
+            body: 'Come play with ' + firebase.auth().currentUser.displayName + ' in ' + category + ' category game',
+           };
+          
+       
+         // POST adds a random id to the object sent
+         fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          body: JSON.stringify(per),
+          headers: {
+              "Content-type": "application/json; charset=UTF-8"
+           }
+          })
+          .then(response => response.json())
+          .then(json => {
+              if (json != null) {
+                  console.log(`
+                  returned from server\n
+                  json.data= ${JSON.stringify( json.data)}`);
+
+              } else {
+                  alert('err json');
+              }
+          });
         })
       })
     }
-    //show all games if exists
+
+    //show all games if exists for chosen category 
     ShowGames=(categoryNameToJoin)=>{
         this.setState({
             games:[],
@@ -169,8 +219,8 @@ export default class GameBoard extends React.Component{
         }
       },5000)
     }
+
     render() {
-        
         if (!this.state.isReady) {
           return(
             <Box f={1} center bg="white">
