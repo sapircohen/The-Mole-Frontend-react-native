@@ -101,6 +101,7 @@ export default class GameBoard extends React.Component{
     }
     
     //SEND PUSH TO CREATOR TO COME AND PLAY from Client
+    //currently not working
     sendPushNotificationFromServer = (category,creator)=>{
       fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerGetToken/?uid='+creator)
       .then((token)=>{
