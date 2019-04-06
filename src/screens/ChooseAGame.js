@@ -20,9 +20,7 @@ const STATE = {
 
 
 export default class GameTime extends React.Component{
-    state={
 
-    }
     static navigationOptions = ({ navigation }) =>{
         return{
           headerTitle: (

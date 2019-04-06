@@ -7,7 +7,6 @@ import {images} from './src/constant/images';
 import {cacheImages} from './src/utils/cachImage';
 import firebase from 'firebase';
 import {FirebaseConfig} from './src/constant/ApiKeys';
-
 //initializing firebase for auth
 firebase.initializeApp(FirebaseConfig);
 
@@ -20,9 +19,8 @@ export default class App extends React.Component {
   }
   componentDidMount(){
     this.cacheAssets();
-
   }
-
+  
   cacheAssets = async () =>{
     const imagesAssets = cacheImages(Object.values(images));
     await Promise.all([...imagesAssets]);
@@ -41,7 +39,7 @@ export default class App extends React.Component {
     }
     return (
       <UtilityThemeProvider>
-        <Navigation />
+        <Navigation  />
       </UtilityThemeProvider>
     );
   }

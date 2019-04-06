@@ -9,6 +9,7 @@ import firebase from 'firebase';
 import {images} from '../constant/images';
 import WikiLoader from '../common/WikiLoader';
 import { ListItem,Avatar } from 'react-native-elements'
+import { Notifications } from 'expo';
 
 import { storageSet } from "../constant/Storage";
 
@@ -63,14 +64,6 @@ export default class GameBoard extends React.Component{
         }
     }
 
-    componentDidMount(){
-      this._notificationSubscription = Notifications.addListener(this._handleNotification);
-    }
-
-    _handleNotification = (notification) => {
-      this.setState({ notification: notification });
-    }
-
     //join a game function 
     JoinAGame = (key,categoryNameToJoin)=>{
         //use firebase right here to join existing game in a category to choose from
@@ -94,13 +87,13 @@ export default class GameBoard extends React.Component{
                 gameRef.update(({'state': game.state}));
                 
                 //send push notification for the creator in case the app is on background
-                this.sendPushNotificationFromClient(categoryNameToJoin,creatorUid);
+                this.sendPushNotificationFromClient(categoryNameToJoin,creatorUid,key);
                 
                 //store values of specific game in AysncStorage
+                
                 storageSet('key', key);
                 storageSet('category', categoryNameToJoin);
                 
-                //get to game board. need to wait for the creator to come too.
                 this.props.navigation.navigate('GameBoard');
 
             }
@@ -111,13 +104,13 @@ export default class GameBoard extends React.Component{
     sendPushNotificationFromServer = (category,creator)=>{
       fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerGetToken/?uid='+creator)
       .then((token)=>{
-        this.setState({
-          creatorToken:JSON.parse(token._bodyInit)
-        },()=>{
+        this.setState({creatorToken:JSON.parse(token._bodyInit)});
+        console.log(JSON.parse(token._bodyInit));
           let pnd = {
-            to: this.state.creatorToken,
+            to: JSON.parse(token._bodyInit),
             title: 'New Game',
             body: 'Come play with ' + firebase.auth().currentUser.displayName + ' in ' + category + ' category game',
+            data:''
            };
           
        
@@ -142,19 +135,18 @@ export default class GameBoard extends React.Component{
             });//END FETCH TO RUPPIN
 
         })//END STATE CHANGE
-      })//END FETCH TOKEN
     }
     //SEND PUSH TO CREATOR TO COME AND PLAY from Client
-    sendPushNotificationFromClient = (category,creator)=>{
+    sendPushNotificationFromClient = (category,creator,key)=>{
       fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerGetToken/?uid='+creator)
       .then((token)=>{
-        this.setState({
-          creatorToken:JSON.parse(token._bodyInit)
-        },()=>{
+        this.setState({creatorToken:JSON.parse(token._bodyInit)})
+          console.log(JSON.parse(token._bodyInit));
           let per = {
-            to: this.state.creatorToken,
+            to: JSON.parse(token._bodyInit),
             title: 'New Game',
             body: 'Come play with ' + firebase.auth().currentUser.displayName + ' in ' + category + ' category game',
+            data:{key:key,category:category}
            };
           
        
@@ -178,7 +170,6 @@ export default class GameBoard extends React.Component{
               }
           });
         })
-      })
     }
 
     //show all games if exists for chosen category 

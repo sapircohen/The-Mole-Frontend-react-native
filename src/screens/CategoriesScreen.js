@@ -5,6 +5,7 @@ import {Button,Icon,Text} from 'native-base';
 import NetworkHeader from '../common/NetworkHeader';
 import BannerMole from "../common/BannerMole";
 import firebase from 'firebase';
+import { storageSet } from "../constant/Storage";
 
 import {images} from '../constant/images';
 
@@ -51,6 +52,7 @@ export default class Categories extends Component{
             state:STATE.OPEN
           }
           ref.push().set(currentGame);
+         
       }
 
       render() {

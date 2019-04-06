@@ -63,7 +63,7 @@ export default class GameBoard extends React.Component{
     gameRef.on('value',(snapshot)=>{
       const game = snapshot.val();
       switch (game.state) {
-        case STATE.JOIN: this.setState({isStarted:true})
+        case STATE.JOIN: this.setState({isStarted:false})
           break;
         case STATE.START: this.setState({isStarted:true})
           break;
