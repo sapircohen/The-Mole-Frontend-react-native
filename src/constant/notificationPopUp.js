@@ -1,8 +1,8 @@
 
 import React,{Component} from 'react';
-import { View,Text } from 'react-native';
-import NotificationPopup from 'react-native-push-notification-popup';
-import {images} from '../constant/images';
+import { View } from 'react-native';
+import NotificationPopup from 'react-native-push-notification-popup/src/components/index';
+
 
 export default class NotificationPopupToShow extends React.Component{
   componentDidMount(){
@@ -10,31 +10,20 @@ export default class NotificationPopupToShow extends React.Component{
   }
 
   ShowPopUp = ()=>{
-    this.popup.show({
-      onPress: ()=> {this.PressedNotification()},
-      appIconSource:images.logo,
-      appTitle: 'The Mole',
-      timeText: 'Now',
-      title: this.props.title,
-      body: this.props.body + '😀',
-    });
+    alert(this.props.popup);
+    // this.popup.show({
+    //   onPress: function() {console.log('Pressed')},
+    //   appIconSource:images.logo,
+    //   appTitle: 'Some App',
+    //   timeText: 'Now',
+    //   title: 'Hello World',
+    //   body: 'This is a sample message.\nTesting emoji 😀',
+    // });
   }
-  PressedNotification = ()=>{
-    
-    switch (this.popup.state.title) {
-      case 'Notification':
-        alert("hello notification");
-        break;
-      case 'Start A Game':
-        alert("hello Start A Game");
-      break;
-      default:
-        break;
-    }
-  }
+
   render() {
     return (
-      <View style={{position:'absolute',zIndex:4}}>
+      <View>
         <NotificationPopup ref={ref => this.popup = ref} />
       </View>
     );
