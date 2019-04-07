@@ -2,6 +2,7 @@ import React,{ Component } from 'react';
 import {Box,Text} from 'react-native-design-utility'
 import firebase from 'firebase';
 
+import { storageSet } from "../constant/Storage";
 import OnBoardingLogo from '../common/OnBoardingLogo'
 import { Notifications } from "expo";
 
@@ -23,8 +24,12 @@ class SplashScreen extends Component{
         this.checkAuth();
         this._notificationSubscription = Notifications.addListener(this._handleNotification);
     }
-    _handleNotification =  ({origin,data}) => {
-      
+    _handleNotification = ({origin,data}) => {
+        //set for creator 
+        storageSet('key', data.key);
+        storageSet('category', data.category);
+        
+        //update game state 
         const ref =  firebase.database().ref("/theMole"+data.category);
         const gameRef = ref.child(data.key);
         gameRef.update(({'state': STATE.START}));

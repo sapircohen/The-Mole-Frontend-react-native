@@ -9,6 +9,8 @@ import {images} from '../constant/images';
 import WikiLoader from '../common/WikiLoader';
 import { storageGet } from "../constant/Storage";
 
+import CountdownTimer from "../common/countdown";
+
 //1. start a game from categories screen
 //2. manage the game state in this component
 //3. HANDLE STATES!
@@ -47,8 +49,6 @@ export default class GameBoard extends React.Component{
   }
   componentDidMount(){
     this.GetItemsFromStorage();
-    
-    //get key and category from AysncStorage
   }
   GetItemsFromStorage = async ()=>{
     let key = await storageGet('key');
@@ -93,7 +93,7 @@ export default class GameBoard extends React.Component{
     }
     return(
       <Box f={1} center>
-        <Text>GAME BOARD</Text>
+        <CountdownTimer/>
       </Box>
     )
   }
