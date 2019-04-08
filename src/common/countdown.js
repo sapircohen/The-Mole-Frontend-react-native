@@ -3,12 +3,16 @@ import { StyleSheet, View } from "react-native";
 import TimerCountdown from "react-native-timer-countdown";
 
 
-const CountdownTimer = () => (
-    <View style={styles.container}>
+class CountdownTimer extends React.Component{
+    Expire = ()=>{
+      this.props.Expired();
+    }
+    render(){
+    return(<View style={styles.container}>
       <TimerCountdown
-        initialMilliseconds={1000 * 60}
-        onTick={(milliseconds) => console.log("tick", milliseconds)}
-        onExpire={() => console.log("complete")}
+        initialMilliseconds={1000 * 30}
+        // onTick={}
+        onExpire={() => this.Expire()}
         formatMilliseconds={(milliseconds) => {
           const remainingSec = Math.round(milliseconds / 1000);
           const seconds = parseInt((remainingSec % 60).toString(), 10);
@@ -23,8 +27,9 @@ const CountdownTimer = () => (
         allowFontScaling={true}
         style={{ fontSize: 20 }}
       />
-    </View>
-  );
+    </View>)
+    }
+  }
    
   const styles = StyleSheet.create({
     container: {
