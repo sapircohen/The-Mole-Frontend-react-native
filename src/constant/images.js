@@ -32,5 +32,6 @@ export const images ={
         bomb5:require('../../assets/images/5Bombs.png'),
         bomb7:require('../../assets/images/7Bombs.png'),
         SIXDOW:require('../../assets/images/SixDegreesOfWikipedia.png'),
-        noImage: require('../../assets/images/noImage.png')
+        noImage: require('../../assets/images/noImage.png'),
+        path:require('../../assets/images/vertex-path.png')
 }
