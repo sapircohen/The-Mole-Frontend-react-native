@@ -39,7 +39,7 @@ class CountdownTimer extends React.Component{
    
   const styles = StyleSheet.create({
     container: {
-      borderWidth:1,
+     // borderWidth:1,
       flex: 1,
       backgroundColor: "#fff",
       alignItems: "center",
