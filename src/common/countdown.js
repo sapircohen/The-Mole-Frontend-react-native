@@ -7,6 +7,12 @@ class CountdownTimer extends React.Component{
     Expire = ()=>{
       this.props.Expired();
     }
+    shouldComponentUpdate(){
+      if (this.props.startAgain) {
+        return true
+      }
+      return false;
+    }
     render(){
     return(<View style={styles.container}>
       <TimerCountdown
@@ -33,6 +39,7 @@ class CountdownTimer extends React.Component{
    
   const styles = StyleSheet.create({
     container: {
+      borderWidth:1,
       flex: 1,
       backgroundColor: "#fff",
       alignItems: "center",

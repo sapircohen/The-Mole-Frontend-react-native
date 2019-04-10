@@ -13,9 +13,9 @@ import Dialog, {DialogTitle, DialogFooter, DialogButton, DialogContent } from 'r
 
 
 let InfoTitle='Google';
-let InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles=Google&redirects='
+let InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects='
 const body = { method: 'GET', dataType: 'json'};
-const myRequest = new Request(InfoApi, body); 
+let myRequest = new Request(InfoApi, body); 
 
 const STATE = {
     OPEN:1,
@@ -67,7 +67,11 @@ export default class GameBoard extends React.Component{
     dialogContent:'',
     dialogTitle:'',
     pathVisible:false,
-    dataSource:list
+    dataSource:list,
+    timerStart:false,
+    creatorPath:[],
+    joinerPath:[]
+
   }
   static navigationOptions = ({ navigation }) =>{
     return{
@@ -93,7 +97,8 @@ export default class GameBoard extends React.Component{
   openPathHistory = ()=>{
     this.setState({
       modalVisible:false,
-      pathVisible:true
+      pathVisible:true,
+      timerStart:false
     })
   }
   GetItemsFromStorage = async ()=>{
@@ -108,13 +113,15 @@ export default class GameBoard extends React.Component{
     if (firebase.auth().currentUser.uid == gamer.joiner.uid) {
       this.setState({
         isCreatorTurn:false,
-        wait:false
+        wait:false,
+        timerStart:true
       })
     }
     if (firebase.auth().currentUser.uid == gamer.creator.uid) {
       this.setState({
         isCreatorTurn:false,
-        wait:true
+        wait:true,
+        timerStart:true
       })
     }
   }
@@ -122,13 +129,15 @@ export default class GameBoard extends React.Component{
       if (firebase.auth().currentUser.uid == gamer.creator.uid) {
         this.setState({
           isCreatorTurn:true,
-          wait:false
+          wait:false,
+          timerStart:true
         })
       }
       if (firebase.auth().currentUser.uid == gamer.joiner.uid) {
         this.setState({
           isCreatorTurn:true,
-          wait:true
+          wait:true,
+          timerStart:true
         })
       }
   }
@@ -162,7 +171,19 @@ export default class GameBoard extends React.Component{
     
   }
   startGame = (game)=>{
-    this.setState({isStarted:true},()=>{
+    this.setState({isStarted:true,timerStart:true},()=>{
+      fetch('http://proj.ruppin.ac.il/bgroup65/prod/api/NetworkStartAGame?categoryNAME=NBA')
+      .then(response => response.json())
+      .then((data)=>{
+        console.log(data)
+        this.setState({
+          creatorPath:data[0],
+          joinerPath:data[1]
+        })
+      })
+      .catch((err)=>{
+        console.log(err)
+      })
       //fetch 6 random articles and check if path count is the same.
       
       //do it on server side.
@@ -176,16 +197,18 @@ export default class GameBoard extends React.Component{
   changeTurn = ()=>{
     //check if we have a winner first
     //if we don't than update game state
-    if (this.state.isCreatorTurn) {
+    this.setState({timerStart:true},()=>{
+      if (this.state.isCreatorTurn) {
         const ref =  firebase.database().ref("/theMole"+categoryPlayed);
         const gameRef = ref.child(currentGamekey);
         gameRef.update(({'state': STATE.NEXTJoiner}));
-    }
-    else{
-        const ref =  firebase.database().ref("/theMole"+categoryPlayed);
-        const gameRef = ref.child(currentGamekey);
-        gameRef.update(({'state': STATE.NEXTCreator}));
-    }
+      }
+      else{
+          const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+          const gameRef = ref.child(currentGamekey);
+          gameRef.update(({'state': STATE.NEXTCreator}));
+      }
+    });
   }
   TimerExpired = ()=>{
     if (this.state.isCreatorTurn) {
@@ -198,22 +221,23 @@ export default class GameBoard extends React.Component{
         const gameRef = ref.child(currentGamekey);
         gameRef.update(({'state': STATE.NEXTCreator}));
     }
+    this.setState({timerStart:true})
   }
   getArticleInfo = ()=>{
     //get article info from wikipedia.
-    
     fetch(myRequest)
     .then(response => response.json())
     .then(data => {
       console.log(data)
       var pageid = Object.keys(data.query.pages)[0];
-      this.setState({
+      this.setState({          
+        timerStart:false,
         dialogContent:data.query.pages[pageid].extract,
         dialogTitle:InfoTitle,
       },()=>{
         this.setState({
           modalVisible:true,
-          pathVisible:false
+          pathVisible:false,
         })
       })
     })  
@@ -221,7 +245,8 @@ export default class GameBoard extends React.Component{
   cancelInfo = ()=>{
     this.setState({
       modalVisible: false,
-      pathVisible:false
+      pathVisible:false,
+      timerStart:false
     });
   }
   render(){
@@ -309,7 +334,7 @@ export default class GameBoard extends React.Component{
             <Text style={{textAlign:'center',fontSize:24,color:'green'}}>{this.state.yourPathCount}</Text>
           </View>
           <View style={{flex:0.2,marginTop:'7%'}}>
-           { (!this.timeStop) ? <CountdownTimer Expired={this.TimerExpired}/> : <Text></Text>}
+           { (!this.timeStop) ? <CountdownTimer startAgain={this.state.timerStart} Expired={this.TimerExpired}/> : <Text></Text>}
           </View>
           <View style={{flex:0.4,marginTop:'7%'}}>
             <Text style={{textAlign:'center',fontSize:21}}>Opponent</Text>
