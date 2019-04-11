@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,FlatList} from "react-native";
+import {StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,TouchableHighlight} from "react-native";
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
 import {Button,Icon,List, ListItem, Left, Body, Right, Thumbnail} from 'native-base';
@@ -71,8 +71,10 @@ export default class GameBoard extends React.Component{
     timerStart:false,
     creatorPath:[],
     creatorTarget:'',
+    creatorCurrentNode:'',
     joinerPath:[],
     joinerTarget:'',
+    joinerCurrentNode:'',
     user:firebase.auth().currentUser.uid,
     joinerUid:'',
     creatorUid:'',
@@ -179,42 +181,27 @@ export default class GameBoard extends React.Component{
     
   }
   startGame = (game)=>{
-    console.log(this.state.category)
     this.setState({
         timerStart:true,
         joinerUid:game.joiner.uid,
         creatorUid:game.creator.uid,
+        joinerPath:game.JoinerPath.path,
+        joinerTarget:game.JoinerPath.target,
+        joinerCurrentNode:game.JoinerPath.target,
+        creatorPath:game.CreatorPath.path,
+        creatorTarget:game.CreatorPath.target,
+        creatorCurrentNode:game.CreatorPath.target,
+        oponentPathCount: this.state.user == game.joiner.uid ? game.CreatorPath.length : game.JoinerPath.length,
+        yourPathCount: this.state.user == game.joiner.uid ? game.JoinerPath.length : game.CreatorPath.length,
 
       },()=>{
-      fetch('http://proj.ruppin.ac.il/bgroup65/prod/api/NetworkStartAGame?categoryNAME='+this.state.category)
-      .then(response => response.json())
-      .then((data)=>{
-        console.log(data[0][0]);
-        console.log(data[1][0]);
-        this.setState({
-          isStarted:true,
-          creatorPath:data[0],
-          joinerPath:data[1],
-          creatorTarget:data[0][0],
-          joinerTarget:data[1][0],
-          yourPathCount:data[0].length,
-          oponentPathCount:data[1].length
-        },()=>{
-          //fetch target pics and data from wiki
-        })
+          this.setState({
+            isStarted:true
+          })
+          const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+          const gameRef = ref.child(currentGamekey);
+          gameRef.update(({'state': STATE.NEXTCreator}));
       })
-      .catch((err)=>{
-        console.log(err)
-      })
-      //fetch 6 random articles and check if path count is the same.
-      
-      //do it on server side.
-
-      //after fetch, first turn is the creator's turn
-      const ref =  firebase.database().ref("/theMole"+categoryPlayed);
-      const gameRef = ref.child(currentGamekey);
-      gameRef.update(({'state': STATE.NEXTCreator}));
-    })
   }
   changeTurn = ()=>{
     //check if we have a winner first
@@ -246,8 +233,13 @@ export default class GameBoard extends React.Component{
     this.setState({timerStart:true})
   }
   getArticleInfo = ()=>{
-    //get article info from wikipedia.
-    fetch(myRequest)
+  //  //get article info from wikipedia.
+    // InfoTitle = this.state.creatorTarget;
+    // const title = this.state.creatorTarget.replace(' ','20%');
+    // InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+title+'&redirects=';
+    // myRequest = new Request(InfoApi, body); 
+    
+  fetch(myRequest)
     .then(response => response.json())
     .then(data => {
       console.log(data)
@@ -263,6 +255,56 @@ export default class GameBoard extends React.Component{
         })
       })
     })  
+  }
+  getDataOnTarget = ()=>{
+    if (this.state.creatorUid == this.state.creatorUid) {
+      InfoTitle = this.state.creatorTarget;
+      InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects=';
+      console.log(InfoApi);
+      myRequest = new Request(InfoApi, body); 
+      
+      fetch(myRequest)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        var pageid = Object.keys(data.query.pages)[0];
+        this.setState({          
+          timerStart:false,
+          dialogContent:data.query.pages[pageid].extract,
+          dialogTitle:InfoTitle,
+        },()=>{
+          this.setState({
+            modalVisible:true,
+            pathVisible:false,
+          })
+        })
+      })  
+    }
+    if (this.state.user == this.state.joinerUid) {
+      //fetch for this.state.creatorTarget
+      InfoTitle = this.state.joinerTarget;
+      //const title = InfoTitle.replace(' ','20%');
+      InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects=';
+      console.log(InfoApi);
+      myRequest = new Request(InfoApi, body); 
+      
+      fetch(myRequest)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        var pageid = Object.keys(data.query.pages)[0];
+        this.setState({          
+          timerStart:false,
+          dialogContent:data.query.pages[pageid].extract,
+          dialogTitle:InfoTitle,
+        },()=>{
+          this.setState({
+            modalVisible:true,
+            pathVisible:false,
+          })
+        })
+      })  
+    }
   }
   cancelInfo = ()=>{
     this.setState({
@@ -281,7 +323,7 @@ export default class GameBoard extends React.Component{
     }
     return(
       <View style={{flex:1}}>
-      <Dialog 
+        <Dialog 
             width={0.9}
             height={400}
             visible={this.state.pathVisible}
@@ -318,37 +360,29 @@ export default class GameBoard extends React.Component{
       </Dialog>
         <Dialog 
             width={0.9}
-            height={400}
+            height={300}
             visible={this.state.modalVisible}
             dialogTitle={<DialogTitle title={this.state.dialogTitle} />}
-            footer={
-              <DialogFooter>
-                <DialogButton
-                  text="CANCEL"
-                  onPress={() => {this.cancelInfo()}}
-                />
-                <DialogButton
-                  text="OK"
-                  onPress={() => {this.cancelInfo()}}
-                />
-              </DialogFooter>
-            }
           >
             <DialogContent>
               <ScrollView>
                 <Text>
                   {this.state.dialogContent}
                 </Text>
-                <DialogButton
-                  text="CANCEL"
-                  onPress={() => {this.cancelInfo()}}
-                />
-                <DialogButton
-                  text="OK"
-                  onPress={() => {this.cancelInfo()}}
-                />
+                
               </ScrollView>
+              <DialogFooter>
+                  <DialogButton
+                    text="CANCEL"
+                    onPress={() => {this.cancelInfo()}}
+                  />
+                  <DialogButton
+                    text="OK"
+                    onPress={() => {this.cancelInfo()}}
+                  />
+                </DialogFooter>
             </DialogContent>
+            
       </Dialog>
         <View style={{flex:0.2,flexDirection:'row',marginTop:10}}>
           <View style={{flex:0.4,marginTop:'7%'}}>
@@ -375,44 +409,25 @@ export default class GameBoard extends React.Component{
             <View flex={0.8} style={{flexDirection:'row'}}>
               <View flex={0.2}></View>
               <View flex={0.6}>
-                <TouchableOpacity>
-                  <ImageBackground source={images.nbaLogo} style={{ flex: 1 }} resizeMode='cover'>
+                <TouchableHighlight onPress={this.getDataOnTarget}>
+                  <ImageBackground source={images.nbaLogo} style={{ flex: 1,height:100 }} resizeMode='stretch'>
                     <View style={[styles.itemContainer,{borderStyle:'solid',borderWidth:2}]}>
                     </View>
                   </ImageBackground>
-                </TouchableOpacity>
+                </TouchableHighlight>
               </View>
               <View flex={0.2}></View>
             </View>
           </View>
-              <View flex={0.2}></View>
+          <View flex={0.2}></View>
         </View>
         <View style={{flex:0.4,justifyContent:'space-between',alignContent:'center'}}>
           {
             this.state.wait 
           ? 
             <Text></Text>
-            // <View flex={0.3} style={{alignContent:'space-between',flexDirection:'row'}}>
-            //   <View flex={0.3}></View>
-            //   <View flex={0.4} style={{alignContent:'center'}}>
-            //     <View flex={0.2} style={{textAlign:'center'}} >
-            //       <Text style={{fontWeight:'bold',fontSize:20}}>Target</Text>
-            //     </View>
-            //     <View flex={0.6}>
-            //       <TouchableOpacity>
-            //         <ImageBackground source={images.logo} resizeMode='contain' style={{borderRadius:2,width:100,height:100}}>
-            //           <View style={{borderStyle:'solid',borderWidth:2}}></View>
-            //         </ImageBackground>
-            //       </TouchableOpacity>
-            //     </View>
-            //     <View flex={0.2} style={{fontWeight:'bold',textAlign:'center'}}>
-            //       {this.state.user==this.state.creatorUid ?<Text >{this.state.creatorTarget}</Text>:<Text>{this.state.joinerTarget}</Text>}
-            //     </View>
-            //   </View>
-            //   <View flex={0.3}></View>
-            // </View>
           :
-            (<View flex={1} style={{marginTop:40,borderWidth:1,justifyContent:'space-around'}}>
+            (<View flex={1} style={{marginTop:25,justifyContent:'space-around'}}>
               <FlatGrid
                 itemDimension={100}
                 items={Vertecies}
@@ -426,7 +441,7 @@ export default class GameBoard extends React.Component{
                       <View style={[styles.itemContainer,{borderStyle:'solid',borderWidth:2}]}>
                         
                       </View>
-                      <Text>{item.name}</Text>
+                      <Text style={{textAlign:'center',fontSize:16}}>{item.name}</Text>
                     </ImageBackground>
                   </TouchableOpacity>
                 )}
@@ -440,7 +455,7 @@ export default class GameBoard extends React.Component{
                 <Button
                   onPress={this.openPathHistory}
                   style={{backgroundColor:"transparent"}}>
-                  <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-flag" />
+                  <Icon style={{color:"#4D5366",fontSize:35}}  name="ios-flag" />
                 </Button>
               </View>
               <View flex={0.4}>
@@ -460,7 +475,7 @@ export default class GameBoard extends React.Component{
 //STYLE
 const styles = StyleSheet.create({
   gridView: {
-    marginTop: 20,
+    marginTop: 60,
     flex: 1,
   },
   itemContainer: {

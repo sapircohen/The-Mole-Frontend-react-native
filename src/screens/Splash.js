@@ -29,12 +29,38 @@ class SplashScreen extends Component{
         storageSet('key', data.key);
         storageSet('category', data.category);
         
-        //update game state 
+        //update game state and starting paths
         const ref =  firebase.database().ref("/theMole"+data.category);
         const gameRef = ref.child(data.key);
-        gameRef.update(({'state': STATE.START}));
+
+        fetch('http://proj.ruppin.ac.il/bgroup65/prod/api/NetworkStartAGame?categoryNAME='+data.category)
+          .then(response => response.json())
+          .then((data)=>{
+            alert(data[0]);
+            joinerPath = {
+              path: data[1],
+              target:data[0][0],
+              length:data[1].length,
+              pathHistory:[]
+            }
+            creatorPath = {
+              path: data[0],
+              target:data[1][0],
+              length:data[0].length,
+              pathHistory:[]
+            }
+            alert(gameRef)
+            gameRef.update(({'JoinerPath': joinerPath}));
+            gameRef.update(({'CreatorPath': creatorPath}));
+          })
+          .then(()=>{
+            gameRef.update(({'state': STATE.START}));
+            this.props.navigation.navigate('GameBoard');
+          })
+          .catch((err)=>{
+            console.log(err)
+          })
         
-        this.props.navigation.navigate('GameBoard');
     }
     checkAuth = ()=>{
         firebase.auth().onAuthStateChanged(user=>{
