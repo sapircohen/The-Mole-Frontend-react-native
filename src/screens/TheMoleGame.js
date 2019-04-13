@@ -1,5 +1,5 @@
 import React from "react";
-import {StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,TouchableHighlight} from "react-native";
+import {Alert,StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,TouchableHighlight} from "react-native";
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
 import {Button,Icon,List, ListItem, Left, Body, Right, Thumbnail} from 'native-base';
@@ -18,13 +18,14 @@ const body = { method: 'GET', dataType: 'json'};
 let myRequest = new Request(InfoApi, body); 
 
 const STATE = {
+    REMOVE:0,
     OPEN:1,
     JOIN:2,
     START:3,
     NEXTCreator:4,
     NEXTJoiner:5,
     WINCreator:6,
-    WINJoiner:7
+    WINJoiner:7,
 }
 let list = [
   {
@@ -72,12 +73,12 @@ export default class GameBoard extends React.Component{
     historyPaths:list,
     timerStart:false,
     creatorPath:[],
-    creatorTarget:'',
+    creatorTarget:{},
     creatorNext:'',
     creatorCurrentNode:'',
     creatorVerteciesToChooseFrom:[],
     joinerPath:[],
-    joinerTarget:'',
+    joinerTarget:{},
     joinerNext:'',
     joinerCurrentNode:'',
     joinerVerteciesToChooseFrom:[],
@@ -180,11 +181,21 @@ export default class GameBoard extends React.Component{
           break;
         case STATE.NEXTCreator: this.nextCreatorTurn(game);
           break;
+        case STATE.REMOVE: this.gameRemoved(game);
+          break;
         default:
           break;
       }
     })
-    
+  }
+  gameRemoved = ()=>{
+    Alert.alert(
+      'Player left the game!',
+      '',
+      [
+        {text: 'OK', onPress: () => {this.props.navigation.navigate('Profile')}},
+      ],
+    );   
   }
   startGame = (game)=>{
     this.setState({
@@ -192,11 +203,9 @@ export default class GameBoard extends React.Component{
         joinerUid:game.joiner.uid,
         creatorUid:game.creator.uid,
         joinerPath:game.JoinerPath.path,
-        joinerTarget:game.JoinerPath.target,
         joinerNext:game.JoinerPath.next,
         joinerCurrentNode:game.JoinerPath.target,
         creatorPath:game.CreatorPath.path,
-        creatorTarget:game.CreatorPath.target,
         creatorNext:game.CreatorPath.next,
         creatorCurrentNode:game.CreatorPath.target,
         oponentPathCount: this.state.user == game.joiner.uid ? game.CreatorPath.length : game.JoinerPath.length,
@@ -204,69 +213,123 @@ export default class GameBoard extends React.Component{
 
       },()=>{
           this.setState({
-            isStarted:true,
             joinerVerteciesToChooseFrom:[this.state.joinerNext,...game.JoinerPath.verteciesToChooseFrom],
             creatorVerteciesToChooseFrom:[this.state.creatorNext,...game.CreatorPath.verteciesToChooseFrom],
-          })
-          const ref =  firebase.database().ref("/theMole"+categoryPlayed);
-          const gameRef = ref.child(currentGamekey);
-          gameRef.update(({'state': STATE.NEXTCreator}));
-      },()=>{
-        //get pics for each article
-        listJoiner = [];
-        listCreator = [];
-        this.state.joinerVerteciesToChooseFrom.map((item,key)=>{
-          let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
-          fetch(API)
-            .then(response => response.json())
-            .then(data => {
-            var pgid = Object.keys(data.query.pages)[0];
-            if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
-              let article = {
-                title:item,
-                image:data.query.pages[pgid].thumbnail.source
-              }
-              listJoiner.push(article);
-              // this.setState({
-              //   imageUrl:data.query.pages[pgid].thumbnail.source,
-              //   isReady:true
-              // })
-            }
-            else {
-              let article = {
-                title:item,
-                image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
-              }
-              listJoiner.push(article);
-            }
-          })
-        })
-        this.state.creatorVerteciesToChooseFrom.map((item,key)=>{
-          let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
-          fetch(API)
-            .then(response => response.json())
-            .then(data => {
-            var pgid = Object.keys(data.query.pages)[0];
-            if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
-              let article = {
-                title:item,
-                image:data.query.pages[pgid].thumbnail.source
-              }
-              listCreator.push(article);
-            }
-            else {
-              let article = {
-                title:item,
-                image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
-              }
-              listCreator.push(article);
-            }
-          })
-        })
-        this.setState({
-          isReady:true
-        })
+        },()=>{
+          this.fetchDataFromWiki(game);
+          window.setTimeout(()=>{
+            console.log(this.state.creatorTarget);
+            console.log(this.state.joinerTarget);
+            this.setState({
+              isStarted:true
+            })
+            const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+            const gameRef = ref.child(currentGamekey);
+            gameRef.update(({'state': STATE.NEXTCreator}));
+        },5000)
       })
+    })
+  }
+  fetchDataFromWiki = (game)=>{
+    //get pics for each article
+    listJoiner = [];
+    listCreator = [];
+    //fetch joiner vertecies to choose from
+    this.state.joinerVerteciesToChooseFrom.map((item,key)=>{
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+      fetch(API)
+        .then(response => response.json())
+        .then(data => {
+        var pgid = Object.keys(data.query.pages)[0];
+        if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+          let article = {
+            title:item,
+            image:data.query.pages[pgid].thumbnail.source
+          }
+          listJoiner.push(article);
+        }
+        else {
+          let article = {
+            title:item,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
+          }
+          listJoiner.push(article);
+        }
+      })
+    })
+    //fetch creator vertecies to choose from
+    this.state.creatorVerteciesToChooseFrom.map((item,key)=>{
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+      fetch(API)
+        .then(response => response.json())
+        .then(data => {
+        var pgid = Object.keys(data.query.pages)[0];
+        if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+          let article = {
+            title:item,
+            image:data.query.pages[pgid].thumbnail.source
+          }
+          listCreator.push(article);
+        }
+        else {
+          let article = {
+            title:item,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
+          }
+          listCreator.push(article);
+        }
+      })
+    })
+    //fetch creator target 
+    let API1 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.CreatorPath.target+'&prop=pageimages&format=json&pithumbsize=400';
+      fetch(API1)
+        .then(response => response.json())
+        .then(data => {
+        var pgid = Object.keys(data.query.pages)[0];
+        if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+          let article = {
+            title:game.CreatorPath.target,
+            image:data.query.pages[pgid].thumbnail.source
+          }
+          this.setState({
+            creatorTarget:article
+          })
+        }
+        else {
+          let article = {
+            title:game.CreatorPath.target,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
+          }
+          this.setState({
+            creatorTarget:article
+          })  
+        }
+    })
+    //fetch joiner target 
+    let API2 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.JoinerPath.target+'&prop=pageimages&format=json&pithumbsize=400';
+    fetch(API2)
+      .then(response => response.json())
+      .then(data => {
+      var pgid = Object.keys(data.query.pages)[0];
+      if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+        let article = {
+          title:game.JoinerPath.target,
+          image:data.query.pages[pgid].thumbnail.source
+        }
+        this.setState({
+          joinerTarget:article
+        })
+      }
+      else {
+        let article = {
+          title:game.JoinerPath.target,
+          image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
+        }
+        this.setState({
+          joinerTarget:article
+        })
+      }
+    })
   }
   changeTurn = ()=>{
     //check if we have a winner first
@@ -295,56 +358,70 @@ export default class GameBoard extends React.Component{
         const gameRef = ref.child(currentGamekey);
         gameRef.update(({'state': STATE.NEXTCreator}));
     }
-    this.setState({timerStart:true})
   }
   getArticleInfo = (title)=>{
     //get article info from wikipedia.
-    InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+title+'&redirects=';
-    myRequest = new Request(InfoApi, body); 
-    fetch(myRequest)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        var pageid = Object.keys(data.query.pages)[0];
-        this.setState({          
-          timerStart:false,
-          dialogContent:data.query.pages[pageid].extract,
-          dialogTitle:title,
-        },()=>{
-          this.setState({
-            modalVisible:true,
-            pathVisible:false,
+    this.setState({
+      timerStart:false,       
+    },()=>{
+      InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+title+'&redirects=';
+      myRequest = new Request(InfoApi, body); 
+      fetch(myRequest)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          var pageid = Object.keys(data.query.pages)[0];
+          this.setState({   
+            timerStart:false,       
+            dialogContent:data.query.pages[pageid].extract,
+            dialogTitle:title,
+          },()=>{
+            this.setState({
+              timerStart:false,
+              modalVisible:true,
+              pathVisible:false,
+            })
           })
-        })
-    })  
+      })
+    })
+     
   }
   getDataOnTarget = ()=>{
     if (this.state.creatorUid == this.state.creatorUid) {
-      InfoTitle = this.state.creatorTarget;
-      InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects=';
-      console.log(InfoApi);
-      myRequest = new Request(InfoApi, body); 
-      
-      fetch(myRequest)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data)
-        var pageid = Object.keys(data.query.pages)[0];
-        this.setState({          
-          timerStart:false,
-          dialogContent:data.query.pages[pageid].extract,
-          dialogTitle:InfoTitle,
-        },()=>{
+      this.setState({
+        timerStart:false,          
+      },()=>{
+        InfoTitle = this.state.creatorTarget.title;
+        InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects=';
+        console.log(InfoApi);
+        myRequest = new Request(InfoApi, body); 
+        fetch(myRequest)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          var pageid = Object.keys(data.query.pages)[0];
           this.setState({
-            modalTargetVisible:true,
-            pathVisible:false,
+            timerStart:false,          
+            dialogContent:data.query.pages[pageid].extract,
+            dialogTitle:InfoTitle,
+          },()=>{
+            this.setState({
+              timerStart:false,
+              modalTargetVisible:true,
+              pathVisible:false,
+            })
           })
-        })
-      })  
+        })  
+      })
+      
     }
+    
     if (this.state.user == this.state.joinerUid) {
-      //fetch for this.state.creatorTarget
-      InfoTitle = this.state.joinerTarget;
+      this.setState({
+        timerStart:false,
+      },()=>{
+        //fetch for this.state.creatorTarget
+      InfoTitle = this.state.joinerTarget.title;
       //const title = InfoTitle.replace(' ','20%');
       InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects=';
       console.log(InfoApi);
@@ -355,25 +432,27 @@ export default class GameBoard extends React.Component{
       .then(data => {
         console.log(data)
         var pageid = Object.keys(data.query.pages)[0];
-        this.setState({          
-          timerStart:false,
+        this.setState({
+          timerStart:false,         
           dialogContent:data.query.pages[pageid].extract,
           dialogTitle:InfoTitle,
         },()=>{
           this.setState({
+            timerStart:false,
             modalTargetVisible:true,
             pathVisible:false,
           })
         })
-      })  
+        })  
+      })
     }
   }
   cancelInfo = ()=>{
     this.setState({
+      timerStart:false,
       modalVisible: false,
       modalTargetVisible:false,
       pathVisible:false,
-      timerStart:false
     });
   }
   nextMove = (title)=>{
@@ -430,7 +509,7 @@ export default class GameBoard extends React.Component{
               </ScrollView>     
             </DialogContent>
       </Dialog>
-      <Dialog 
+        <Dialog 
             width={0.9}
             height={300}
             visible={this.state.modalTargetVisible}
@@ -496,13 +575,13 @@ export default class GameBoard extends React.Component{
               <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center'}}>Target</Text>
             </View>
             <View flex={0.2} style={{fontWeight:'bold',textAlign:'center'}}>
-              {this.state.user==this.state.creatorUid ?<Text style={{textAlign:'center',fontSize:15}}>{this.state.creatorTarget}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget}</Text>}
+              {this.state.user==this.state.creatorUid ?<Text style={{textAlign:'center',fontSize:15}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
             </View>
             <View flex={0.8} style={{flexDirection:'row'}}>
               <View flex={0.2}></View>
               <View flex={0.6}>
                 <TouchableHighlight onPress={this.getDataOnTarget}>
-                  <ImageBackground source={images.nbaLogo} style={{ flex: 1,height:100 }} resizeMode='stretch'>
+                  <ImageBackground source={{uri: (this.state.user==this.state.creatorUid ? this.state.creatorTarget.image : this.state.joinerTarget.image)}} style={{ flex: 1,height:100 }} resizeMode='stretch'>
                     <View style={[styles.itemContainer,{borderStyle:'solid',borderWidth:2}]}>
                     </View>
                   </ImageBackground>
@@ -529,12 +608,12 @@ export default class GameBoard extends React.Component{
                 spacing={10}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity onPress={()=>this.getArticleInfo(item.title)}>
-                    <ImageBackground source={item.image} style={{ flex: 1 }} resizeMode='contain'>
+                    <ImageBackground source={{uri:item.image}} style={{ flex: 1}} resizeMode='strech'>
                       <View style={[styles.itemContainer,{borderStyle:'solid',borderWidth:2}]}>
                         
                       </View>
-                      <Text style={{textAlign:'center',fontSize:16}}>{item.title}</Text>
                     </ImageBackground>
+                    <Text style={{textAlign:'center',fontSize:16}}>{item.title}</Text>
                   </TouchableOpacity>
                 )}
               />

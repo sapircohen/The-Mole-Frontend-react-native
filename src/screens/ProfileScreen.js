@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import {Box} from 'react-native-design-utility'
-import { StyleSheet,ImageBackground,ActivityIndicator,Image} from 'react-native';
+import { Alert,StyleSheet,ImageBackground,ActivityIndicator,Image} from 'react-native';
 import {Button,Icon, Content} from 'native-base';
 import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
@@ -146,7 +146,6 @@ class ProfileScreen extends Component{
     componentDidMount(){
       //console.log("Profile: ", this.props.navigation.getParam())
       this.registerForPushNotificationsAsync();
-
       //get current user info from firebase auth
         this.setState({
           userName:firebase.auth().currentUser.displayName,

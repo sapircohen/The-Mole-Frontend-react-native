@@ -3,15 +3,9 @@ import { StyleSheet, View } from "react-native";
 import TimerCountdown from "react-native-timer-countdown";
 
 
-class CountdownTimer extends React.Component{
+class CountdownTimerPure extends React.PureComponent{
     Expire = ()=>{
       this.props.Expired();
-    }
-    shouldComponentUpdate(){
-      if (!this.props.startAgain) {
-        return false;
-      }
-      return true;
     }
     render(){
     return(<View style={styles.container}>
@@ -19,7 +13,6 @@ class CountdownTimer extends React.Component{
         initialMilliseconds={1000 * 30}
         // onTick={}
         onExpire={() => this.Expire()}
-        
         formatMilliseconds={(milliseconds) => {
           const remainingSec = Math.round(milliseconds / 1000);
           const seconds = parseInt((remainingSec % 60).toString(), 10);
@@ -48,4 +41,4 @@ class CountdownTimer extends React.Component{
     }
   });
    
-export default CountdownTimer;
+export default CountdownTimerPure;
