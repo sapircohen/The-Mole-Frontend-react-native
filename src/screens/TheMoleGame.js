@@ -50,7 +50,8 @@ let Vertecies = [
   { name: '5 Vertex', code: '#34495e' ,image:images.bomb5},
 ];
 
-let pathList = []
+let listJoiner = [];
+let listCreator = [];
 
 let currentGamekey = '';
 let categoryPlayed='';
@@ -58,6 +59,7 @@ let categoryPlayed='';
 export default class GameBoard extends React.Component{
   state = {
     isStarted:false,
+    modalTargetVisible:false,
     yourPathCount:0,
     oponentPathCount:0,
     isCreatorTurn:true,
@@ -71,10 +73,14 @@ export default class GameBoard extends React.Component{
     timerStart:false,
     creatorPath:[],
     creatorTarget:'',
+    creatorNext:'',
     creatorCurrentNode:'',
+    creatorVerteciesToChooseFrom:[],
     joinerPath:[],
     joinerTarget:'',
+    joinerNext:'',
     joinerCurrentNode:'',
+    joinerVerteciesToChooseFrom:[],
     user:firebase.auth().currentUser.uid,
     joinerUid:'',
     creatorUid:'',
@@ -187,20 +193,79 @@ export default class GameBoard extends React.Component{
         creatorUid:game.creator.uid,
         joinerPath:game.JoinerPath.path,
         joinerTarget:game.JoinerPath.target,
+        joinerNext:game.JoinerPath.next,
         joinerCurrentNode:game.JoinerPath.target,
         creatorPath:game.CreatorPath.path,
         creatorTarget:game.CreatorPath.target,
+        creatorNext:game.CreatorPath.next,
         creatorCurrentNode:game.CreatorPath.target,
         oponentPathCount: this.state.user == game.joiner.uid ? game.CreatorPath.length : game.JoinerPath.length,
         yourPathCount: this.state.user == game.joiner.uid ? game.JoinerPath.length : game.CreatorPath.length,
 
       },()=>{
           this.setState({
-            isStarted:true
+            isStarted:true,
+            joinerVerteciesToChooseFrom:[this.state.joinerNext,...game.JoinerPath.verteciesToChooseFrom],
+            creatorVerteciesToChooseFrom:[this.state.creatorNext,...game.CreatorPath.verteciesToChooseFrom],
           })
           const ref =  firebase.database().ref("/theMole"+categoryPlayed);
           const gameRef = ref.child(currentGamekey);
           gameRef.update(({'state': STATE.NEXTCreator}));
+      },()=>{
+        //get pics for each article
+        listJoiner = [];
+        listCreator = [];
+        this.state.joinerVerteciesToChooseFrom.map((item,key)=>{
+          let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+          fetch(API)
+            .then(response => response.json())
+            .then(data => {
+            var pgid = Object.keys(data.query.pages)[0];
+            if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+              let article = {
+                title:item,
+                image:data.query.pages[pgid].thumbnail.source
+              }
+              listJoiner.push(article);
+              // this.setState({
+              //   imageUrl:data.query.pages[pgid].thumbnail.source,
+              //   isReady:true
+              // })
+            }
+            else {
+              let article = {
+                title:item,
+                image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
+              }
+              listJoiner.push(article);
+            }
+          })
+        })
+        this.state.creatorVerteciesToChooseFrom.map((item,key)=>{
+          let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+          fetch(API)
+            .then(response => response.json())
+            .then(data => {
+            var pgid = Object.keys(data.query.pages)[0];
+            if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+              let article = {
+                title:item,
+                image:data.query.pages[pgid].thumbnail.source
+              }
+              listCreator.push(article);
+            }
+            else {
+              let article = {
+                title:item,
+                image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
+              }
+              listCreator.push(article);
+            }
+          })
+        })
+        this.setState({
+          isReady:true
+        })
       })
   }
   changeTurn = ()=>{
@@ -232,28 +297,25 @@ export default class GameBoard extends React.Component{
     }
     this.setState({timerStart:true})
   }
-  getArticleInfo = ()=>{
-  //  //get article info from wikipedia.
-    // InfoTitle = this.state.creatorTarget;
-    // const title = this.state.creatorTarget.replace(' ','20%');
-    // InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+title+'&redirects=';
-    // myRequest = new Request(InfoApi, body); 
-    
-  fetch(myRequest)
-    .then(response => response.json())
-    .then(data => {
-      console.log(data)
-      var pageid = Object.keys(data.query.pages)[0];
-      this.setState({          
-        timerStart:false,
-        dialogContent:data.query.pages[pageid].extract,
-        dialogTitle:InfoTitle,
-      },()=>{
-        this.setState({
-          modalVisible:true,
-          pathVisible:false,
+  getArticleInfo = (title)=>{
+    //get article info from wikipedia.
+    InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+title+'&redirects=';
+    myRequest = new Request(InfoApi, body); 
+    fetch(myRequest)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        var pageid = Object.keys(data.query.pages)[0];
+        this.setState({          
+          timerStart:false,
+          dialogContent:data.query.pages[pageid].extract,
+          dialogTitle:title,
+        },()=>{
+          this.setState({
+            modalVisible:true,
+            pathVisible:false,
+          })
         })
-      })
     })  
   }
   getDataOnTarget = ()=>{
@@ -274,7 +336,7 @@ export default class GameBoard extends React.Component{
           dialogTitle:InfoTitle,
         },()=>{
           this.setState({
-            modalVisible:true,
+            modalTargetVisible:true,
             pathVisible:false,
           })
         })
@@ -299,7 +361,7 @@ export default class GameBoard extends React.Component{
           dialogTitle:InfoTitle,
         },()=>{
           this.setState({
-            modalVisible:true,
+            modalTargetVisible:true,
             pathVisible:false,
           })
         })
@@ -309,9 +371,19 @@ export default class GameBoard extends React.Component{
   cancelInfo = ()=>{
     this.setState({
       modalVisible: false,
+      modalTargetVisible:false,
       pathVisible:false,
       timerStart:false
     });
+  }
+  nextMove = (title)=>{
+    //1. check if chosen node equal to target
+    //IF NOT:
+    //2. update current node
+    //3. get path from current node to target
+    //4. get more random vertecies to show as options
+    //5. change turn's
+
   }
   render(){
     if (!this.state.isStarted) {
@@ -358,6 +430,27 @@ export default class GameBoard extends React.Component{
               </ScrollView>     
             </DialogContent>
       </Dialog>
+      <Dialog 
+            width={0.9}
+            height={300}
+            visible={this.state.modalTargetVisible}
+            dialogTitle={<DialogTitle title={this.state.dialogTitle} />}
+          >
+            <DialogContent>
+              <ScrollView>
+                <Text>
+                  {this.state.dialogContent}
+                </Text>
+                <DialogFooter>
+                  <DialogButton
+                    text="OK"
+                    onPress={() => {this.cancelInfo()}}
+                  />
+                </DialogFooter>
+              </ScrollView>
+            </DialogContent>
+            
+      </Dialog>
         <Dialog 
             width={0.9}
             height={300}
@@ -369,9 +462,7 @@ export default class GameBoard extends React.Component{
                 <Text>
                   {this.state.dialogContent}
                 </Text>
-                
-              </ScrollView>
-              <DialogFooter>
+                <DialogFooter>
                   <DialogButton
                     text="CANCEL"
                     onPress={() => {this.cancelInfo()}}
@@ -381,6 +472,7 @@ export default class GameBoard extends React.Component{
                     onPress={() => {this.cancelInfo()}}
                   />
                 </DialogFooter>
+              </ScrollView>
             </DialogContent>
             
       </Dialog>
@@ -430,18 +522,18 @@ export default class GameBoard extends React.Component{
             (<View flex={1} style={{marginTop:25,justifyContent:'space-around'}}>
               <FlatGrid
                 itemDimension={100}
-                items={Vertecies}
+                items={this.state.user==this.state.creatorUid ? listCreator : listJoiner }
                 style={styles.gridView}
                 //staticDimension={300}
                 // fixed
                 spacing={10}
                 renderItem={({ item, index }) => (
-                  <TouchableOpacity onPress={()=>this.getArticleInfo()}>
+                  <TouchableOpacity onPress={()=>this.getArticleInfo(item.title)}>
                     <ImageBackground source={item.image} style={{ flex: 1 }} resizeMode='contain'>
                       <View style={[styles.itemContainer,{borderStyle:'solid',borderWidth:2}]}>
                         
                       </View>
-                      <Text style={{textAlign:'center',fontSize:16}}>{item.name}</Text>
+                      <Text style={{textAlign:'center',fontSize:16}}>{item.title}</Text>
                     </ImageBackground>
                   </TouchableOpacity>
                 )}

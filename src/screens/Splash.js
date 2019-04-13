@@ -33,19 +33,23 @@ class SplashScreen extends Component{
         const ref =  firebase.database().ref("/theMole"+data.category);
         const gameRef = ref.child(data.key);
 
-        fetch('http://proj.ruppin.ac.il/bgroup65/prod/api/NetworkStartAGame?categoryNAME='+data.category)
+        fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/NetworkStartAGame?categoryNAME='+data.category)
           .then(response => response.json())
           .then((data)=>{
             alert(data[0]);
             joinerPath = {
               path: data[1],
+              verteciesToChooseFrom:data[3],
               target:data[0][0],
+              next:data[1][1],
               length:data[1].length,
               pathHistory:[]
             }
             creatorPath = {
               path: data[0],
+              verteciesToChooseFrom:data[2],
               target:data[1][0],
+              next:data[0][1],
               length:data[0].length,
               pathHistory:[]
             }
