@@ -230,6 +230,33 @@ export default class GameBoard extends React.Component{
       })
     })
   }
+  fetchListForcCreatorFromWiki = ()=>{
+    //get pics for each article
+    listCreator = [];
+    //fetch creator vertecies to choose from
+    this.state.creatorVerteciesToChooseFrom.map((item,key)=>{
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+      fetch(API)
+        .then(response => response.json())
+        .then(data => {
+        var pgid = Object.keys(data.query.pages)[0];
+        if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+          let article = {
+            title:item,
+            image:data.query.pages[pgid].thumbnail.source
+          }
+          listCreator.push(article);
+        }
+        else {
+          let article = {
+            title:item,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
+          }
+          listCreator.push(article);
+        }
+      })
+    })
+  }
   fetchDataFromWiki = (game)=>{
     //get pics for each article
     listJoiner = [];
@@ -455,8 +482,68 @@ export default class GameBoard extends React.Component{
       pathVisible:false,
     });
   }
+  //ajaxCall("Get", "../api/network/?source="+source+"&target="+target+"&categoryName=NBA", "", success, error);
   nextMove = (title)=>{
     //1. check if chosen node equal to target
+    this.setState({
+      timerStart:false,
+      modalVisible: false,
+      modalTargetVisible:false,
+      pathVisible:false,
+    },()=>{
+      //check who's turn is it..
+      if (this.state.user==this.state.creatorUid && !this.state.wait) {
+        alert(title);
+        if (this.state.creatorTarget==title) {
+          //we have a winner.
+        }
+        else{
+          fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source="'+title+'&target='+this.state.creatorTarget+'categoryNAME='+this.state.category)
+          .then(response => response.json())
+          .then((data)=>{
+            let firstVertex = data[0][1];
+            let TwoMore = data[1];
+
+            this.setState({
+              creatorVerteciesToChooseFrom:[firstVertex,...TwoMore],
+              yourPathCount:data[0].length
+            })
+          })
+        }
+      }
+      if (this.state.user==this.state.joinerUid && this.state.wait) {
+        this.setState({
+          oponentPathCount:3
+        })
+      }
+
+
+      if (this.state.user==this.state.joinerUid && !this.state.wait) {
+        alert(title);
+        if (this.state.joinerTarget==title) {
+          //we have a winner.
+        }
+        else{
+          fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source="'+title+'&target='+this.state.joinerTarget+'categoryNAME='+this.state.category)
+          .then(response => response.json())
+          .then((data)=>{
+            let firstVertex = data[0][1];
+            let TwoMore = data[1];
+
+            this.setState({
+              joinerVerteciesToChooseFrom:[firstVertex,...TwoMore],
+              yourPathCount:data[0].length
+            })
+          })
+        }
+      }
+      if (this.state.user==this.state.creatorUid && this.state.wait) {
+        this.setState({
+          oponentPathCount:3
+        })
+      }
+    })
+
     //IF NOT:
     //2. update current node
     //3. get path from current node to target
@@ -548,7 +635,7 @@ export default class GameBoard extends React.Component{
                   />
                   <DialogButton
                     text="OK"
-                    onPress={() => {this.cancelInfo()}}
+                    onPress={() => {this.nextMove(this.state.dialogTitle)}}
                   />
                 </DialogFooter>
               </ScrollView>
