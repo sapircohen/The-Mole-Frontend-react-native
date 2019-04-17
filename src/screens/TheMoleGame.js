@@ -11,7 +11,6 @@ import { FlatGrid } from 'react-native-super-grid';
 import CountdownTimer from "../common/countdown";
 import Dialog, {DialogTitle, DialogFooter, DialogButton, DialogContent } from 'react-native-popup-dialog';
 
-
 let InfoTitle='Google';
 let InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects='
 const body = { method: 'GET', dataType: 'json'};
@@ -28,11 +27,11 @@ const STATE = {
     WINJoiner:7,
 }
 let list = [];
-let Vertecies = [
-  { name: '1 Vertex', code: '#1abc9c' ,image:images.bomb1}, 
-  { name: '3 Vertex', code: '#3498db',image:images.bomb3 },
-  { name: '5 Vertex', code: '#34495e' ,image:images.bomb5},
-];
+// let Vertecies = [
+//   { name: '1 Vertex', code: '#1abc9c' ,image:images.bomb1}, 
+//   { name: '3 Vertex', code: '#3498db',image:images.bomb3 },
+//   { name: '5 Vertex', code: '#34495e' ,image:images.bomb5},
+// ];
 
 let listJoiner = [];
 let listCreator = [];
@@ -107,7 +106,29 @@ export default class GameBoard extends React.Component{
     })
   }
   winner = (game)=>{
-
+    this.setState({
+      modalTargetVisible:false,
+      modalVisible:false
+    },()=>{
+      //if game winner is the creator
+      if (game.state == STATE.WINCreator) {
+        if (this.state.user==this.state.creatorUid) {
+          this.props.navigation.navigate('Winner');
+        }
+        if (this.state.user==this.state.joinerUid) {
+          this.props.navigation.navigate('Loser');
+        }
+      }
+      //if game winner is the joiner
+      if (game.state == STATE.WINJoiner) {
+        if (this.state.user==this.state.joinerUid) {
+          this.props.navigation.navigate('Winner');
+        }
+        if (this.state.user==this.state.creatorUid) {
+          this.props.navigation.navigate('Loser');
+        }
+      }
+    })
   }
   nextJoinerTurn =  (gamer)=>{
     if (firebase.auth().currentUser.uid == gamer.joiner.uid) {
@@ -522,7 +543,7 @@ export default class GameBoard extends React.Component{
         //1. check if chosen node equal to target
         if (this.state.creatorTarget.title==title) {
           //we have a winner.
-          alert("winner!");
+          gameRef.update(({'state': STATE.WINCreator}));
           //show confetty
           //show staff to oponent
         }
@@ -561,7 +582,7 @@ export default class GameBoard extends React.Component{
         //1. check if chosen node equal to target
         if (this.state.joinerTarget.title==title) {
           //we have a winner.
-          alert("winner!");
+          gameRef.update(({'state': STATE.WINJoiner}));
         }
         else{
           let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source='+title+'&target='+this.state.joinerTarget.title+'&categoryNAME='+this.state.category;

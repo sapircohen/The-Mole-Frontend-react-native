@@ -105,6 +105,22 @@ const MyOpenGamesNavigator = createStackNavigator(
         }
     }
 )
+//loser screen 
+const LoserNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./loserScreen').default,
+        }
+    }
+)
+//winner screen 
+const WinnerNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./winnerScreen').default,
+        }
+    }
+)
 //settings screen . . .
 const SettingsNavigator = createStackNavigator(
     {
@@ -141,7 +157,9 @@ const AppNavigator = createSwitchNavigator(
         ChooseAGame:ChooseAGameNavigator,
         GameBoard:TheMoleGameNavigator,
         JoinGame:JoinAGameNavigator,
-        MyOpenGames:MyOpenGamesNavigator
+        MyOpenGames:MyOpenGamesNavigator,
+        Winner:WinnerNavigator,
+        Loser:LoserNavigator
     },{
         initialRouteName:'Splash',
     }
