@@ -70,14 +70,18 @@ class SplashScreen extends Component{
           // Works on both iOS and Android
           Alert.alert(
             'New Game!',
-            'My Alert Msg',
+            'You have an open invite to a game in ' + data.category+ ' category',
             [
               {
-                text: 'Cancel',
+                text: 'Cancel game',
                 onPress: () => {this._handleNotificationForeGround(false,data.key,data.category)},
                 style: 'cancel',
               },
-              {text: 'OK', onPress: () => {this._handleNotificationForeGround(true,data.key,data.category)}},
+              {
+                text: "Let's go!", 
+                onPress: () => {this._handleNotificationForeGround(true,data.key,data.category)},
+                style:'default'
+              },
             ],
             {cancelable: true},
           );          
@@ -90,7 +94,6 @@ class SplashScreen extends Component{
         fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/NetworkStartAGame?categoryNAME='+data.category)
           .then(response => response.json())
           .then((data)=>{
-            alert(data[0]);
             joinerPath = {
               path: data[1],
               verteciesToChooseFrom:data[3],
@@ -107,7 +110,6 @@ class SplashScreen extends Component{
               length:data[0].length,
               pathHistory:[]
             }
-            alert(gameRef)
             gameRef.update(({'JoinerPath': joinerPath}));
             gameRef.update(({'CreatorPath': creatorPath}));
           })

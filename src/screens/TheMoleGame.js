@@ -27,24 +27,7 @@ const STATE = {
     WINCreator:6,
     WINJoiner:7,
 }
-let list = [
-  {
-      avatar_url:images.avatar1,
-      name:'avatar 1'
-  },
-  {
-      avatar_url: images.avatar2,
-      name:'avatar 2'
-  },
-  {
-      avatar_url:images.avatar3,
-      name:'avatar 3'
-  },
-  {
-      avatar_url:images.avatar4,
-      name:'avatar 4'
-  }
-]
+let list = [];
 let Vertecies = [
   { name: '1 Vertex', code: '#1abc9c' ,image:images.bomb1}, 
   { name: '3 Vertex', code: '#3498db',image:images.bomb3 },
@@ -85,8 +68,8 @@ export default class GameBoard extends React.Component{
     user:firebase.auth().currentUser.uid,
     joinerUid:'',
     creatorUid:'',
-    category:''
-
+    category:'',
+    newList:false
   }
   static navigationOptions = ({ navigation }) =>{
     return{
@@ -131,14 +114,15 @@ export default class GameBoard extends React.Component{
       this.setState({
         isCreatorTurn:false,
         wait:false,
-        timerStart:true
+        timerStart:true,
+        oponentPathCount:gamer.currentCreatorPathCount
       })
     }
     if (firebase.auth().currentUser.uid == gamer.creator.uid) {
       this.setState({
         isCreatorTurn:false,
         wait:true,
-        timerStart:true
+        timerStart:true,
       })
     }
   }
@@ -147,14 +131,15 @@ export default class GameBoard extends React.Component{
         this.setState({
           isCreatorTurn:true,
           wait:false,
-          timerStart:true
+          timerStart:true,
+          oponentPathCount:gamer.currentJoinerPathCount
         })
       }
       if (firebase.auth().currentUser.uid == gamer.joiner.uid) {
         this.setState({
           isCreatorTurn:true,
           wait:true,
-          timerStart:true
+          timerStart:true,
         })
       }
   }
@@ -225,7 +210,13 @@ export default class GameBoard extends React.Component{
             })
             const ref =  firebase.database().ref("/theMole"+categoryPlayed);
             const gameRef = ref.child(currentGamekey);
-            gameRef.update(({'state': STATE.NEXTCreator}));
+            gameRef.update(({
+              'currentJoinerPathCount': game.JoinerPath.length,
+              'currentCreatorPathCount': game.CreatorPath.length,
+              'state': STATE.NEXTCreator
+            }));
+
+            //gameRef.update(({'state': STATE.NEXTCreator}));
         },5000)
       })
     })
@@ -254,6 +245,39 @@ export default class GameBoard extends React.Component{
           }
           listCreator.push(article);
         }
+      })
+      .then(()=>{
+        this.setState({newList:true})
+      })
+    })
+  }
+  fetchListForJoinerFromWiki = ()=>{
+    //get pics for each article
+    listJoiner = [];
+    //fetch creator vertecies to choose from
+    this.state.joinerVerteciesToChooseFrom.map((item,key)=>{
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+      fetch(API)
+        .then(response => response.json())
+        .then(data => {
+        var pgid = Object.keys(data.query.pages)[0];
+        if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
+          let article = {
+            title:item,
+            image:data.query.pages[pgid].thumbnail.source
+          }
+          listJoiner.push(article);
+        }
+        else {
+          let article = {
+            title:item,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
+          }
+          listJoiner.push(article);
+        }
+      })
+      .then(()=>{
+        this.setState({newList:true})
       })
     })
   }
@@ -366,6 +390,7 @@ export default class GameBoard extends React.Component{
         const ref =  firebase.database().ref("/theMole"+categoryPlayed);
         const gameRef = ref.child(currentGamekey);
         gameRef.update(({'state': STATE.NEXTJoiner}));
+        
       }
       else{
           const ref =  firebase.database().ref("/theMole"+categoryPlayed);
@@ -482,9 +507,10 @@ export default class GameBoard extends React.Component{
       pathVisible:false,
     });
   }
-  //ajaxCall("Get", "../api/network/?source="+source+"&target="+target+"&categoryName=NBA", "", success, error);
   nextMove = (title)=>{
-    //1. check if chosen node equal to target
+    const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+    const gameRef = ref.child(currentGamekey);
+    
     this.setState({
       timerStart:false,
       modalVisible: false,
@@ -493,54 +519,80 @@ export default class GameBoard extends React.Component{
     },()=>{
       //check who's turn is it..
       if (this.state.user==this.state.creatorUid && !this.state.wait) {
-        alert(title);
-        if (this.state.creatorTarget==title) {
+        //1. check if chosen node equal to target
+        if (this.state.creatorTarget.title==title) {
           //we have a winner.
+          alert("winner!");
+          //show confetty
+          //show staff to oponent
         }
         else{
-          fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source="'+title+'&target='+this.state.creatorTarget+'categoryNAME='+this.state.category)
+          let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetPath/?source='+title+'&target='+this.state.creatorTarget.title+'&categoryNAME='+this.state.category;
+          console.log(uri);
+          fetch(uri)
           .then(response => response.json())
           .then((data)=>{
-            let firstVertex = data[0][1];
-            let TwoMore = data[1];
-
-            this.setState({
-              creatorVerteciesToChooseFrom:[firstVertex,...TwoMore],
-              yourPathCount:data[0].length
-            })
+            if (data[0][0]=='not found') {
+              alert('no path from ' + title + ' to ' + this.state.creatorTarget.title + ' try another article..')
+            }
+            else{
+              article={
+                title:title,
+                image:images.logo
+              }
+              list.push(article);
+              gameRef.update(({'currentCreatorPathCount': data[0].length}));
+              let firstVertex = data[0][1];
+              let TwoMore = data[1];
+              this.setState({
+                creatorVerteciesToChooseFrom:[firstVertex,...TwoMore],
+                yourPathCount:data[0].length
+              },()=>{
+                this.fetchListForcCreatorFromWiki();
+                this.changeTurn();
+              })
+            }
           })
         }
       }
-      if (this.state.user==this.state.joinerUid && this.state.wait) {
-        this.setState({
-          oponentPathCount:3
-        })
-      }
 
-
+      //JOINER METHODS
       if (this.state.user==this.state.joinerUid && !this.state.wait) {
-        alert(title);
-        if (this.state.joinerTarget==title) {
+        //1. check if chosen node equal to target
+        if (this.state.joinerTarget.title==title) {
           //we have a winner.
+          alert("winner!");
         }
         else{
-          fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source="'+title+'&target='+this.state.joinerTarget+'categoryNAME='+this.state.category)
+          let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source='+title+'&target='+this.state.joinerTarget.title+'&categoryNAME='+this.state.category;
+          console.log(uri);
+          fetch(uri)
           .then(response => response.json())
           .then((data)=>{
-            let firstVertex = data[0][1];
-            let TwoMore = data[1];
+            if (data[0][0]=='not found') {
+              alert('no path from ' + title + ' to ' + this.state.joinerTarget.title + ' try another article..')
+            }
+            else{
+              article={
+                title:title,
+                image:images.logo
+              }
+              list.push(article);
+              console.log(data);
+              gameRef.update(({'currentJoinerPathCount': data[0].length}));
+              let firstVertex = data[0][1];
+              let TwoMore = data[1];
 
-            this.setState({
-              joinerVerteciesToChooseFrom:[firstVertex,...TwoMore],
-              yourPathCount:data[0].length
-            })
+              this.setState({
+                joinerVerteciesToChooseFrom:[firstVertex,...TwoMore],
+                yourPathCount:data[0].length
+              },()=>{
+                this.fetchListForJoinerFromWiki();
+                this.changeTurn();
+              })
+            }
           })
         }
-      }
-      if (this.state.user==this.state.creatorUid && this.state.wait) {
-        this.setState({
-          oponentPathCount:3
-        })
       }
     })
 
@@ -575,10 +627,10 @@ export default class GameBoard extends React.Component{
               <List key={index}>
                     <ListItem avatar>
                       <Left>
-                        <Thumbnail source={item.avatar_url} />
+                        <Thumbnail source={item.image} />
                       </Left>
                       <Body>
-                        <Text>{item.name}</Text>
+                        <Text>{item.title}</Text>
                         <Text note></Text>
                       </Body>
                       <Right>
@@ -721,7 +773,13 @@ export default class GameBoard extends React.Component{
                   <Text>Go Back</Text> 
                 </Button>
               </View>
-              <View flex={0.3}></View>
+              <View flex={0.3}>
+              <Button
+                  onPress={this.openPathHistory}
+                  style={{backgroundColor:"transparent"}}>
+                  <Icon style={{color:"#4D5366",fontSize:35}}  name="ios-sync" />
+                </Button>
+              </View>
             </View>
         </View>
     </View>
