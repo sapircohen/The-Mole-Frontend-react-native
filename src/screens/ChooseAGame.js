@@ -2,7 +2,7 @@ import React,{ Component } from "react";
 import {Image,Text,StyleSheet} from "react-native";
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
-import {Button,Icon,Container, Header, Content,} from 'native-base';
+import {Button,Icon,Container, Header, Content} from 'native-base';
 import firebase from 'firebase';
 import {images} from '../constant/images';
 
@@ -54,7 +54,7 @@ export default class GameTime extends React.Component{
         }
     render(){
         return(
-            <Box f={1} center bg="#70c1b3">
+            <Box f={1} center bg="#fff">
                 <Button onPress={this.ChooseACategory} style={styles.buttonStyle} block bordered dark>
                     <Text style={styles.textStyle}>Create a new game</Text>
                 </Button>
@@ -75,10 +75,11 @@ export default class GameTime extends React.Component{
 //STYLE
 const styles = StyleSheet.create({
     buttonStyle:{
-        'margin':8
+        'margin':10,
     },
     textStyle:{
         'fontSize':20,
         'color':'#000',
+        'fontWeight':'100'
     },
 })

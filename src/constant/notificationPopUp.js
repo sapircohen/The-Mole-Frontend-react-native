@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { View } from 'react-native';
 import NotificationPopup from 'react-native-push-notification-popup';
