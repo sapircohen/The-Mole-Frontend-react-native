@@ -1,6 +1,8 @@
 import React,{Component} from "react";
 import {Alert,StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,TouchableHighlight} from "react-native";
 import firebase from 'firebase';
+import { AnimatedEmoji } from 'react-native-animated-emoji';
+ 
 
 export default class LoserScreen extends React.Component{
     state={
@@ -8,16 +10,26 @@ export default class LoserScreen extends React.Component{
     }
     componentDidMount(){
         this.getCashMoleFromLoser();
+
+    }
+    onAnimationCompleted = ()=>{
+        this.props.navigation.navigate('Profile');
     }
     getCashMoleFromLoser=()=>{
         //decrease cashMole by -25 and set +0 wins
         const cash = -25;
         const win = 0;
-        const endpoint = 'http://proj.ruppin.ac.il/bgroup65/prod/api/playerWinOrLose?win='+win+'&cashMole='+cash+'&uid='+firebase.auth().currentUser.uid;
-          fetch(endpoint)
+        const endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/playerWinOrLose?win='+win+'&cashMole='+cash+'&uid='+firebase.auth().currentUser.uid;
+          fetch(endpoint,{
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            })
             .then(response => response.json())
             .then((data)=>{
-                alert('You got +1 WIN and +25 CashMole!')
+                alert('You Lost -25 CashMole:(')
             })
             .catch((error)=>{
               console.log(error);
@@ -25,9 +37,15 @@ export default class LoserScreen extends React.Component{
     }
     render(){
         return(
-            <View flex={1}>
-                <Text>You Lost!</Text>
-            </View>
+                <AnimatedEmoji
+                    
+                    index={5} // index to identity emoji component
+                    style={{ bottom: 300 }} // start bottom position
+                    name={'disappointed_relieved'} // emoji name
+                    size={30} // font size
+                    duration={5000} // ms
+                    onAnimationCompleted={this.onAnimationCompleted} // completion handler
+                />
         )
     }
 }

@@ -50,8 +50,7 @@ export default class GameTime extends React.Component{
             this.props.navigation.navigate('MyOpenGames');
         }
         GamesWon = ()=>{
-            //redirect to winning screen..
-            //do this in the end!!
+            this.props.navigation.navigate('GamesWon');
         }
     render(){
         return(

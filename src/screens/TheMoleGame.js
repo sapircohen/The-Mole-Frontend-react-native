@@ -16,8 +16,6 @@ let InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=e
 const body = { method: 'GET', dataType: 'json'};
 let myRequest = new Request(InfoApi, body); 
 
-//ajaxCall("Get", "../api/networkGetRandomVerteciesFromVertex/?source=Lebron James&categoryName=NBA", "", success, error);
-
 const STATE = {
     REMOVE:0,
     OPEN:1,
@@ -29,12 +27,6 @@ const STATE = {
     WINJoiner:7,
 }
 let list = [];
-// let Vertecies = [
-//   { name: '1 Vertex', code: '#1abc9c' ,image:images.bomb1}, 
-//   { name: '3 Vertex', code: '#3498db',image:images.bomb3 },
-//   { name: '5 Vertex', code: '#34495e' ,image:images.bomb5},
-// ];
-
 let listJoiner = [];
 let listCreator = [];
 
@@ -108,6 +100,9 @@ export default class GameBoard extends React.Component{
     })
   }
   winner = (game)=>{
+    const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+    const gameRef = ref.child(currentGamekey);
+            
     this.setState({
       modalTargetVisible:false,
       modalVisible:false
@@ -116,6 +111,15 @@ export default class GameBoard extends React.Component{
       if (game.state == STATE.WINCreator) {
         if (this.state.user==this.state.creatorUid) {
           this.props.navigation.navigate('Winner');
+          let path = [];
+          path.push(game.JoinerPath.target);
+          this.state.historyPaths.map((p)=>{
+            path.push(p.title);
+          })
+          path.push(this.state.creatorTarget.title);
+          gameRef.update(({
+            'pathWon': path,
+          }));
         }
         if (this.state.user==this.state.joinerUid) {
           this.props.navigation.navigate('Loser');
@@ -124,7 +128,17 @@ export default class GameBoard extends React.Component{
       //if game winner is the joiner
       if (game.state == STATE.WINJoiner) {
         if (this.state.user==this.state.joinerUid) {
+          
           this.props.navigation.navigate('Winner');
+          let path = [];
+          path.push(game.CreatorPath.target);
+          this.state.historyPaths.map((p)=>{
+            path.push(p.title);
+          })
+          path.push(this.state.joinerTarget.title);
+          gameRef.update(({
+            'pathWon': path,
+          }));
         }
         if (this.state.user==this.state.creatorUid) {
           this.props.navigation.navigate('Loser');
@@ -238,8 +252,6 @@ export default class GameBoard extends React.Component{
               'currentCreatorPathCount': game.CreatorPath.length,
               'state': STATE.NEXTCreator
             }));
-
-            //gameRef.update(({'state': STATE.NEXTCreator}));
         },5000)
       })
     })
@@ -569,7 +581,8 @@ export default class GameBoard extends React.Component{
               let TwoMore = data[1];
               this.setState({
                 creatorVerteciesToChooseFrom:[firstVertex,...TwoMore],
-                yourPathCount:data[0].length
+                yourPathCount:data[0].length,
+                creatorCurrentNode:title
               },()=>{
                 this.fetchListForcCreatorFromWiki();
                 this.changeTurn();
@@ -608,7 +621,8 @@ export default class GameBoard extends React.Component{
 
               this.setState({
                 joinerVerteciesToChooseFrom:[firstVertex,...TwoMore],
-                yourPathCount:data[0].length
+                yourPathCount:data[0].length,
+                joinerCurrentNode:title
               },()=>{
                 this.fetchListForJoinerFromWiki();
                 this.changeTurn();
@@ -625,6 +639,36 @@ export default class GameBoard extends React.Component{
     //4. get more random vertecies to show as options
     //5. change turn's
 
+  }
+  getNewCards = ()=>{
+    let endpoint = '';
+    if (this.state.user == this.state.creatorUid) {
+      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex/?source='+this.state.creatorCurrentNode+'&categoryName='+categoryPlayed;
+    }
+    if (this.state.user == this.state.joinerUid) {
+      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex/?source='+this.state.joinerCurrentNode+'&categoryName='+categoryPlayed;
+    }
+    fetch(endpoint)
+      .then(response => response.json())
+      .then((data)=>{
+        if (this.state.user == this.state.creatorUid) {
+          this.setState({
+            creatorVerteciesToChooseFrom:data
+          },()=>{
+            this.fetchListForcCreatorFromWiki();
+          })        
+        }
+        if (this.state.user == this.state.joinerUid) {
+          this.setState({
+            joinerVerteciesToChooseFrom:data
+          },()=>{
+            this.fetchListForJoinerFromWiki();
+          })
+        }
+      })
+      .catch((error)=>{
+        console.log(error);
+      })
   }
   render(){
     if (!this.state.isStarted) {
@@ -798,7 +842,7 @@ export default class GameBoard extends React.Component{
               </View>
               <View flex={0.3}>
               <Button
-                  onPress={this.openPathHistory}
+                  onPress={this.getNewCards}
                   style={{backgroundColor:"transparent"}}>
                   <Icon style={{color:"#4D5366",fontSize:35}}  name="ios-sync" />
                 </Button>

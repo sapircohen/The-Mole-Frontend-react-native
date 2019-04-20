@@ -1,5 +1,5 @@
 import React,{ Component } from 'react';
-import {Box,Text} from 'react-native-design-utility'
+import {Box} from 'react-native-design-utility'
 import firebase from 'firebase';
 import {Alert} from 'react-native';
 import { storageSet } from "../constant/Storage";

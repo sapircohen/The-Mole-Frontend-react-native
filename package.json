@@ -17,6 +17,7 @@
     "native-base": "^2.8.2",
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-native-animated-emoji": "^0.1.4",
     "react-native-app-intro-slider": "^1.0.1",
     "react-native-autocomplete-input": "^3.6.0",
     "react-native-bouncing-preloader": "^1.0.1",

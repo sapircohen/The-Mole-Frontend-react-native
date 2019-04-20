@@ -14,18 +14,23 @@ export default class Winner extends React.Component{
             showConffeti:true
         },()=>{
             window.setTimeout(()=>{
-                this.setState({
-                    showConffeti:false
-                })
-            },3000)
+                this.props.navigation.navigate('Profile');
+            },5000)
         })
     }
     setCashMoleForWinner = ()=>{
         //increase wins and cashMole for the winner
         const cash = 25;
         const win = 1;
-        const endpoint = 'http://proj.ruppin.ac.il/bgroup65/prod/api/playerWinOrLose?win='+win+'&cashMole='+cash+'&uid='+firebase.auth().currentUser.uid;
-          fetch(endpoint)
+        const endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/playerWinOrLose?win='+win+'&cashMole='+cash+'&uid='+firebase.auth().currentUser.uid;
+        console.log(endpoint);  
+        fetch(endpoint,{
+                method: 'POST',
+                headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                },
+            })
             .then(response => response.json())
             .then((data)=>{
                 alert('You got +1 WIN and +25 CashMole!')

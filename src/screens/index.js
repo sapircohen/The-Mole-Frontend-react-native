@@ -121,6 +121,14 @@ const WinnerNavigator = createStackNavigator(
         }
     }
 )
+//games won screen 
+const GamesWonNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=> require('./GamesWon').default,
+        }
+    }
+)
 //settings screen . . .
 const SettingsNavigator = createStackNavigator(
     {
@@ -159,7 +167,8 @@ const AppNavigator = createSwitchNavigator(
         JoinGame:JoinAGameNavigator,
         MyOpenGames:MyOpenGamesNavigator,
         Winner:WinnerNavigator,
-        Loser:LoserNavigator
+        Loser:LoserNavigator,
+        GamesWon:GamesWonNavigator
     },{
         initialRouteName:'Splash',
     }

@@ -161,26 +161,29 @@ class ProfileScreen extends Component{
             
                   <Content contentContainerStyle={{ flex: 1}}>
                     <Grid style={{justifyContent:'space-evenly'}}>
+                      <Col></Col>
                       <Col style={styles.colStyleForGrid}>
                         <Row>
                           <Col >
-                            <Text style={styles.textStyleForGrid}>{this.state.playerCash}</Text>
                             <ImageBackground resizeMode='contain' style={{ flex: 1 }} source={images.dollar_coins}>
                             <Row></Row>
-                            </ImageBackground>      
+                            <Text style={styles.textStyleForGrid}>{this.state.playerCash}</Text>     
+                            </ImageBackground> 
                             </Col>                 
                         </Row>
                       </Col>
                       <Col style={styles.colStyleForGrid}>
                         <Row>
-                          <Col >
-                            <Text style={styles.textStyleForGrid}>{this.state.playerWins}</Text>
-                            <ImageBackground resizeMode='contain' style={{ flex: 1 }} source={images.prize}>
-                              <Row></Row>
+                          <Col>
+                            <ImageBackground resizeMode='contain' style={{ flex: 1}} source={images.prize}>
+                              <Row>
+                              </Row>
+                              <Text style={styles.textStyleForGrid}>{this.state.playerWins}</Text>
                             </ImageBackground>
                           </Col>                        
                         </Row>
                       </Col>
+                      <Col></Col>
                       {/* <Col style={styles.colStyleForGrid}>
                         <Row>
                           <Col >
@@ -251,7 +254,9 @@ const styles = StyleSheet.create({
   textStyleForGrid:{
     textAlign:'center',
     color:'black',
-    fontSize:20
+    fontSize:25,
+    fontWeight:'bold',
+    marginBottom:30
   },
   colStyleForGrid:{
     backgroundColor:'transparent',

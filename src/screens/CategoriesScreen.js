@@ -1,11 +1,10 @@
 import { FlatGrid } from 'react-native-super-grid';
 import React,{Component} from 'react';
 import {View,StyleSheet,ImageBackground,TouchableOpacity} from 'react-native';
-import {Button,Icon,Text} from 'native-base';
+import {Button,Icon} from 'native-base';
 import NetworkHeader from '../common/NetworkHeader';
-import BannerMole from "../common/BannerMole";
 import firebase from 'firebase';
-import { storageSet } from "../constant/Storage";
+import NotificationPopupToShow from "../constant/notificationPopUp";
 
 import {images} from '../constant/images';
 
@@ -33,26 +32,36 @@ export default class Categories extends Component{
          ),
         }
       }
-
+      state = {
+        showPop:false,
+        category:'',
+      }
       //create a new game and insert it to firebase
       StartANewGame = (categoryName)=>{
         //use firebase right here!
-        const ref = firebase.database().ref("/theMole"+categoryName);
-        console.log(ref);
-        //creating a game:
-          const user = firebase.auth().currentUser;
-          const currentGame = {
-            creator:{
-              uid:user.uid,
-              displayName:user.displayName,
-              picture:user.photoURL
-            },
-            joiner:{},
-            category: categoryName,
-            state:STATE.OPEN
-          }
-          ref.push().set(currentGame);
-         
+        this.setState({
+          showPop:false,
+          category:categoryName
+        },()=>{
+          const ref = firebase.database().ref("/theMole"+categoryName);
+          console.log(ref);
+          //creating a game:
+            const user = firebase.auth().currentUser;
+            const currentGame = {
+              creator:{
+                uid:user.uid,
+                displayName:user.displayName,
+                picture:user.photoURL
+              },
+              joiner:{},
+              category: categoryName,
+              state:STATE.OPEN
+            }
+            ref.push().set(currentGame);
+            this.setState({
+              showPop:true,
+            })
+        })
       }
 
       render() {
@@ -66,28 +75,28 @@ export default class Categories extends Component{
         ];
     
         return (
-        <View flex={1}>
-          {/* <BannerMole title={'more categories are coming soon:)'}/> */}
-          <FlatGrid
-            itemDimension={130}
-            items={items}
-            style={styles.gridView}
-            spacing={20}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity onPress={()=>this.StartANewGame(item.name)}>
-                <ImageBackground source={item.image} style={{ flex: 1 }} resizeMode='contain'>
-                  <View style={[styles.itemContainer,{borderStyle:'solid',bordeeWidth:2}]}>
-                  </View>
-                </ImageBackground>
-              </TouchableOpacity>
-
-              
-            )}
-          />
+          <View flex={1}>
+            {this.state.showPop && <NotificationPopupToShow category={this.state.category}/>}
+            <FlatGrid
+              itemDimension={130}
+              items={items}
+              style={styles.gridView}
+              spacing={20}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity onPress={()=>this.StartANewGame(item.name)}>
+                  <ImageBackground source={item.image} style={{ flex: 1 }} resizeMode='contain'>
+                    <View style={[styles.itemContainer,{borderStyle:'solid',bordeeWidth:2}]}>
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>              
+              )}
+            />
           </View>
         );
     }
 }
+
+//STYLE
 const styles = StyleSheet.create({
     gridView: {
       marginTop: 20,
