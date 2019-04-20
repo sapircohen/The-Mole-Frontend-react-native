@@ -10,7 +10,18 @@ export default class LoserScreen extends React.Component{
         this.getCashMoleFromLoser();
     }
     getCashMoleFromLoser=()=>{
-        //fetch POST take 25 cash moles from user
+        //decrease cashMole by -25 and set +0 wins
+        const cash = -25;
+        const win = 0;
+        const endpoint = 'http://proj.ruppin.ac.il/bgroup65/prod/api/playerWinOrLose?win='+win+'&cashMole='+cash+'&uid='+firebase.auth().currentUser.uid;
+          fetch(endpoint)
+            .then(response => response.json())
+            .then((data)=>{
+                alert('You got +1 WIN and +25 CashMole!')
+            })
+            .catch((error)=>{
+              console.log(error);
+            })
     }
     render(){
         return(

@@ -10,57 +10,10 @@ import firebase from 'firebase';
 import NetworkHeader from '../common/NetworkHeader';
 import { Col, Row, Grid } from "react-native-easy-grid";
 import { Permissions, Notifications } from 'expo';
-//import NotificationPopupToShow from "../constant/notificationPopUp";
-
 
 import {images} from '../constant/images';
-//import { registerForPushNotificationsAsync } from "../constant/notifiactions";
-const styles = StyleSheet.create({
-  baseColumns:{
-    padding:10,
 
-  },
-  dataViewCash:{
-    alignItems:'center',
-    borderStyle:'solid',
-    borderColor:'grey',
-    padding:10,
-    borderRadius:10,
-    backgroundColor:'#4F86EC'
-  },
-  dataViewBombs:{
-    alignItems:'center',
-    borderStyle:'solid',
-    borderColor:'grey',
-    //borderWidth:1,
-    padding:10,
-    borderRadius:10,
-    backgroundColor:'#F2BD42'
-  },
-  dataViewWins:{
-    backgroundColor:'green',
-    alignItems:'center',
-    borderStyle:'solid',
-    borderColor:'grey',
-    backgroundColor:'#D95040',
-    padding:10,
-    borderRadius:10,
-    marginTop:"15%"
-  },
-  textStyleForGrid:{
-    textAlign:'center',
-    color:'black',
-    fontSize:20
-  },
-  colStyleForGrid:{
-    backgroundColor:'transparent',
-    borderStyle:'solid',
-    borderRadius:20,
-    // borderWidth:1,
-    margin:8,
-    //backgroundColor:'#70A380'
-  }
-})
+
 
 
 class ProfileScreen extends Component{
@@ -95,6 +48,8 @@ class ProfileScreen extends Component{
       userPic:"",
       email:"",
       isReady:false,
+      playerCash:'?',
+      playerWins:'?'
     }
     NavigateToHelp = ()=>{
       this.props.navigation.navigate('Intro');
@@ -152,6 +107,19 @@ class ProfileScreen extends Component{
           userPic:firebase.auth().currentUser.photoURL,
           email:firebase.auth().currentUser.email,
           isReady:true
+        },()=>{
+          const endpoint = 'http://proj.ruppin.ac.il/bgroup65/prod/api/playergetplayer?uid='+firebase.auth().currentUser.uid;
+          fetch(endpoint)
+            .then(response => response.json())
+            .then((data)=>{
+              this.setState({
+                playerCash:data.CashMole,
+                playerWins:data.NumOfWinnings
+              })
+            })
+            .catch((error)=>{
+              console.log(error);
+            })
         })
 
     }
@@ -196,25 +164,23 @@ class ProfileScreen extends Component{
                       <Col style={styles.colStyleForGrid}>
                         <Row>
                           <Col >
-                            <Text style={styles.textStyleForGrid}>400</Text>
+                            <Text style={styles.textStyleForGrid}>{this.state.playerCash}</Text>
                             <ImageBackground resizeMode='contain' style={{ flex: 1 }} source={images.dollar_coins}>
                             <Row></Row>
                             </ImageBackground>      
                             </Col>                 
                         </Row>
                       </Col>
-
                       <Col style={styles.colStyleForGrid}>
                         <Row>
                           <Col >
-                            <Text style={styles.textStyleForGrid}>400</Text>
+                            <Text style={styles.textStyleForGrid}>{this.state.playerWins}</Text>
                             <ImageBackground resizeMode='contain' style={{ flex: 1 }} source={images.prize}>
                               <Row></Row>
                             </ImageBackground>
                           </Col>                        
                         </Row>
                       </Col>
-
                       {/* <Col style={styles.colStyleForGrid}>
                         <Row>
                           <Col >
@@ -247,3 +213,52 @@ class ProfileScreen extends Component{
 
 
 export default ProfileScreen;
+
+
+//STYLE
+const styles = StyleSheet.create({
+  baseColumns:{
+    padding:10,
+
+  },
+  dataViewCash:{
+    alignItems:'center',
+    borderStyle:'solid',
+    borderColor:'grey',
+    padding:10,
+    borderRadius:10,
+    backgroundColor:'#4F86EC'
+  },
+  dataViewBombs:{
+    alignItems:'center',
+    borderStyle:'solid',
+    borderColor:'grey',
+    //borderWidth:1,
+    padding:10,
+    borderRadius:10,
+    backgroundColor:'#F2BD42'
+  },
+  dataViewWins:{
+    backgroundColor:'green',
+    alignItems:'center',
+    borderStyle:'solid',
+    borderColor:'grey',
+    backgroundColor:'#D95040',
+    padding:10,
+    borderRadius:10,
+    marginTop:"15%"
+  },
+  textStyleForGrid:{
+    textAlign:'center',
+    color:'black',
+    fontSize:20
+  },
+  colStyleForGrid:{
+    backgroundColor:'transparent',
+    borderStyle:'solid',
+    borderRadius:20,
+    // borderWidth:1,
+    margin:8,
+    //backgroundColor:'#70A380'
+  }
+})

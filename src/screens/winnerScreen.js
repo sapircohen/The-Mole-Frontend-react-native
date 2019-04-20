@@ -9,6 +9,7 @@ export default class Winner extends React.Component{
         userUID:firebase.auth().currentUser.uid
     }
     componentDidMount(){
+        this.setCashMoleForWinner();
         this.setState({
             showConffeti:true
         },()=>{
@@ -16,12 +17,22 @@ export default class Winner extends React.Component{
                 this.setState({
                     showConffeti:false
                 })
-                this.setCashMoleForWinner();
             },3000)
         })
     }
     setCashMoleForWinner = ()=>{
-        //fetch POST 
+        //increase wins and cashMole for the winner
+        const cash = 25;
+        const win = 1;
+        const endpoint = 'http://proj.ruppin.ac.il/bgroup65/prod/api/playerWinOrLose?win='+win+'&cashMole='+cash+'&uid='+firebase.auth().currentUser.uid;
+          fetch(endpoint)
+            .then(response => response.json())
+            .then((data)=>{
+                alert('You got +1 WIN and +25 CashMole!')
+            })
+            .catch((error)=>{
+              console.log(error);
+            })
     }
     render(){
         if (this.state.showConffeti) {

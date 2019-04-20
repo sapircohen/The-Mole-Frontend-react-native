@@ -16,6 +16,8 @@ let InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=e
 const body = { method: 'GET', dataType: 'json'};
 let myRequest = new Request(InfoApi, body); 
 
+//ajaxCall("Get", "../api/networkGetRandomVerteciesFromVertex/?source=Lebron James&categoryName=NBA", "", success, error);
+
 const STATE = {
     REMOVE:0,
     OPEN:1,
