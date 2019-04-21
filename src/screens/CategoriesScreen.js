@@ -27,7 +27,7 @@ export default class Categories extends Component{
          ( <Button
             onPress={()=>navigation.navigate('ChooseAGame')}
             style={{backgroundColor:"transparent"}}>
-              <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
+              <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
           </Button>
          ),
         }
@@ -76,7 +76,7 @@ export default class Categories extends Component{
     
         return (
           <View flex={1}>
-            {this.state.showPop && <NotificationPopupToShow category={this.state.category}/>}
+            {this.state.showPop && <NotificationPopupToShow title="New Game!" category={this.state.category}/>}
             <FlatGrid
               itemDimension={130}
               items={items}

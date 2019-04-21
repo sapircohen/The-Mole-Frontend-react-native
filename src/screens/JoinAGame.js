@@ -58,7 +58,7 @@ export default class GameBoard extends React.Component{
             ( <Button
                 onPress={()=>navigation.navigate('ChooseAGame')}
                 style={{backgroundColor:"transparent"}}>
-                <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
+                <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
             </Button>
             ),
         }

@@ -34,7 +34,7 @@ export default class GameTime extends React.Component{
             ( <Button
                 onPress={()=>navigation.navigate('Profile')}
                 style={{backgroundColor:"transparent"}}>
-                <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
+                <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
             </Button>
             ),
           }
@@ -54,7 +54,7 @@ export default class GameTime extends React.Component{
         }
     render(){
         return(
-            <Box f={1} center bg="#fff">
+            <Box f={1} center bg="#E6E4E0">
                 <Button onPress={this.ChooseACategory} style={styles.buttonStyle} block bordered dark>
                     <Text style={styles.textStyle}>Create a new game</Text>
                 </Button>

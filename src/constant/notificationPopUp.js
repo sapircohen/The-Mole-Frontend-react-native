@@ -14,10 +14,10 @@ export default class NotificationPopupToShow extends React.Component{
     this.popup.show({
       onPress: function() {console.log('Pressed')},
       appIconSource:images.logo,
-      appTitle: 'New Game',
+      appTitle: this.props.title,
       timeText: 'Now',
-      title: this.props.category + " new game created!",
-      body: '😀',
+      title: this.props.category && (this.props.category + " new game created!"),
+      body:this.props.body && (this.props.body + '😀'),
     });
   }
 

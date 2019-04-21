@@ -1,5 +1,5 @@
 import React,{Component} from "react";
-import {Text,View} from "react-native";
+import {Alert,Text,View} from "react-native";
 import ConffetiForWinner from "../common/ConffetiForWinner";
 import firebase from 'firebase';
 
@@ -14,8 +14,9 @@ export default class Winner extends React.Component{
             showConffeti:true
         },()=>{
             window.setTimeout(()=>{
+                Alert.alert('Nice!','Great win, You got +25 CashMole😉');
                 this.props.navigation.navigate('Profile');
-            },5000)
+            },4000)
         })
     }
     setCashMoleForWinner = ()=>{
@@ -33,7 +34,6 @@ export default class Winner extends React.Component{
             })
             .then(response => response.json())
             .then((data)=>{
-                alert('You got +1 WIN and +25 CashMole!')
             })
             .catch((error)=>{
               console.log(error);

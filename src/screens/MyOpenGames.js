@@ -1,5 +1,5 @@
 
-import React,{ Component } from "react";
+import React from "react";
 import {Image,Text,View,ScrollView} from "react-native";
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
@@ -47,7 +47,7 @@ export default class GameBoard extends React.Component{
         ( <Button
             onPress={()=>navigation.navigate('ChooseAGame')}
             style={{backgroundColor:"transparent"}}>
-            <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
+            <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
         </Button>
         ),
     }

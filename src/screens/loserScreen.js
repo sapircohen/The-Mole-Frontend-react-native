@@ -1,18 +1,17 @@
-import React,{Component} from "react";
-import {Alert,StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,TouchableHighlight} from "react-native";
+import React from "react";
+import { Alert } from "react-native";
 import firebase from 'firebase';
 import { AnimatedEmoji } from 'react-native-animated-emoji';
- 
 
 export default class LoserScreen extends React.Component{
     state={
-        userUID:firebase.auth().currentUser.uid
+        userUID:firebase.auth().currentUser.uid,
     }
     componentDidMount(){
         this.getCashMoleFromLoser();
-
     }
     onAnimationCompleted = ()=>{
+        Alert.alert('Maybe next time...','You Lost -25 CashMole 😲');
         this.props.navigation.navigate('Profile');
     }
     getCashMoleFromLoser=()=>{
@@ -29,7 +28,6 @@ export default class LoserScreen extends React.Component{
             })
             .then(response => response.json())
             .then((data)=>{
-                alert('You Lost -25 CashMole:(')
             })
             .catch((error)=>{
               console.log(error);
@@ -37,6 +35,7 @@ export default class LoserScreen extends React.Component{
     }
     render(){
         return(
+
                 <AnimatedEmoji
                     
                     index={5} // index to identity emoji component

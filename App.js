@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet,View,Button,ActivityIndicator} from 'react-native';
+import { I18nManager,ActivityIndicator} from 'react-native';
 import {UtilityThemeProvider, Box,Text} from 'react-native-design-utility';
 
 import Navigation from './src/screens/index';
@@ -10,6 +10,7 @@ import {FirebaseConfig} from './src/constant/ApiKeys';
 //initializing firebase for auth
 firebase.initializeApp(FirebaseConfig);
 
+I18nManager.allowRTL(false);
 
 export default class App extends React.Component {
 

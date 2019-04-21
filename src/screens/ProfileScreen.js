@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import {Box} from 'react-native-design-utility'
-import { Alert,StyleSheet,ImageBackground,ActivityIndicator,Image} from 'react-native';
+import { StyleSheet,ImageBackground,ActivityIndicator,Image} from 'react-native';
 import {Button,Icon, Content} from 'native-base';
 import { Avatar,Text} from 'react-native-elements';
 import FABStartGame from '../common/StartAGame';
@@ -30,14 +30,14 @@ class ProfileScreen extends Component{
        ( <Button
           onPress={()=>navigation.navigate('Article')}
           style={{backgroundColor:"transparent"}}>
-            <Icon style={{color:"#8B7FB0",fontSize:35}}  name="md-paper" />
+            <Icon style={{color:"#8D3BC8",fontSize:35}}  name="md-paper" />
         </Button>
        ),
       headerLeft: 
        ( <Button
           onPress={()=>navigation.navigate('Paths')}
           style={{backgroundColor:"transparent"}}>
-          <Icon style={{color:"#8B7FB0",fontSize:35}}  name="ios-infinite" />
+          <Icon style={{color:"#2DA3BD",fontSize:35}}  name="ios-infinite" />
         </Button>
        ),
       }
@@ -184,17 +184,6 @@ class ProfileScreen extends Component{
                         </Row>
                       </Col>
                       <Col></Col>
-                      {/* <Col style={styles.colStyleForGrid}>
-                        <Row>
-                          <Col >
-                            <Text style={styles.textStyleForGrid}>20</Text>
-                            <ImageBackground resizeMode='contain' style={{ flex: 1 }} source={images.bomb}>
-                              <Row></Row>
-                            </ImageBackground>
-                          </Col>                        
-                        </Row>
-                      </Col> */}
-
                     </Grid>
                 </Content>
             <Box f={1} style={{marginBottom:"3%"}}>

@@ -68,7 +68,7 @@ export default class Paths extends React.Component{
            ( <Button
               onPress={()=>navigation.navigate('Profile')}
               style={{backgroundColor:"transparent"}}>
-              <Icon  style={{color:"#B621E8",fontSize:35}}  name="ios-arrow-round-back" />
+              <Icon  style={{color:"#403773",fontSize:35}}  name="ios-arrow-round-back" />
             </Button>
            ),
           }
@@ -128,7 +128,7 @@ export default class Paths extends React.Component{
         },()=>{ 
         let source = this.state.query.replace(' ','%20').toString();
         let target = this.state.secondQuery.replace(' ','%20').toString();
-        let end = '?source='+source+'&target='+target+'';
+        let end = '?source='+this.state.query+'&target='+this.state.secondQuery+'';
         let pathsUri = 'http://proj.ruppin.ac.il/bgroup65/prod/api/SIXDOW'+end;
         fetch(pathsUri)
           .then((response) => response.json())
@@ -211,7 +211,7 @@ export default class Paths extends React.Component{
           }
         return(
             <View flex={1} style={{marginTop:'4%'}}>
-                <Text style={{textAlign:'center',marginTop:'5%',fontSize:24}}>Find the shortest paths{"\n"}From</Text>
+                <Text style={{textAlign:'center',marginTop:'5%',fontSize:24}}>Find the shortest path{"\n\n"}From</Text>
 
                 <View style={styles.container}>
                     <Autocomplete
@@ -251,7 +251,7 @@ export default class Paths extends React.Component{
                     />
                 </View>
                 <View flex={1} style={{margin:"5%"}}>
-                    <Button disabled={this.state.isButtonReady} style={{backgroundColor:"#9FBBFF"}} onPress={this.SearchPath} block >
+                    <Button disabled={this.state.isButtonReady} style={{backgroundColor:"#81BFAF"}} onPress={this.SearchPath} block >
                         <Text style={{fontSize:25,fontWeight:'bold'}}>Let's Go!</Text>
                     </Button>
                     <ScrollView>

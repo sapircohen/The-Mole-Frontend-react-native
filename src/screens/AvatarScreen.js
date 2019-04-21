@@ -61,7 +61,7 @@ class AvatarScreen extends Component{
         icon={
           <Icon
             name="ios-arrow-round-back"
-            style={{color:"#B621E8",fontSize:35}}
+            style={{color:"#403773",fontSize:35}}
           />
         }
     />

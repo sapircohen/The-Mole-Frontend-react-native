@@ -2,7 +2,7 @@ import React from "react";
 import {Alert,StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,TouchableHighlight} from "react-native";
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
-import {Button,Icon,List, ListItem, Left, Body, Right, Thumbnail} from 'native-base';
+import {Button,Icon,List, ListItem, Left, Body, Content} from 'native-base';
 import firebase from 'firebase';
 import {images} from '../constant/images';
 import WikiLoader from '../common/WikiLoader';
@@ -10,6 +10,7 @@ import { storageGet } from "../constant/Storage";
 import { FlatGrid } from 'react-native-super-grid';
 import CountdownTimer from "../common/countdown";
 import Dialog, {DialogTitle, DialogFooter, DialogButton, DialogContent } from 'react-native-popup-dialog';
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 let InfoTitle='Google';
 let InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects='
@@ -191,7 +192,7 @@ export default class GameBoard extends React.Component{
     gameRef.on('value',(snapshot)=>{
       const game = snapshot.val();
       switch (game.state) {
-        case STATE.JOIN: this.setState({isStarted:false})
+        case STATE.JOIN: this.checkGameStart(game);
           break;
         case STATE.START: this.startGame(game);
           break;
@@ -210,10 +211,28 @@ export default class GameBoard extends React.Component{
       }
     })
   }
+  checkGameStart = ()=>{
+    this.setState({isStarted:false},()=>{
+      window.setTimeout(()=>{
+          const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+          const gameRef = ref.child(currentGamekey); 
+          gameRef.on('value',(snapshot)=>{
+            const game = snapshot.val();
+            if (game.state === STATE.JOIN) {
+              const ref2 =  firebase.database().ref("/theMole"+categoryPlayed);
+              const gameRef2 = ref2.child(currentGamekey);
+              gameRef2.update(({
+                'state': STATE.REMOVE
+              }));
+            }
+          })
+      },15000)
+    })
+  }
   gameRemoved = ()=>{
     Alert.alert(
-      'Player left the game!',
-      '',
+      'Current game',
+      'Oponnent left the game..😶',
       [
         {text: 'OK', onPress: () => {this.props.navigation.navigate('Profile')}},
       ],
@@ -221,7 +240,7 @@ export default class GameBoard extends React.Component{
   }
   startGame = (game)=>{
     this.setState({
-        timerStart:true,
+        //timerStart:true,
         joinerUid:game.joiner.uid,
         creatorUid:game.creator.uid,
         joinerPath:game.JoinerPath.path,
@@ -643,10 +662,10 @@ export default class GameBoard extends React.Component{
   getNewCards = ()=>{
     let endpoint = '';
     if (this.state.user == this.state.creatorUid) {
-      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex/?source='+this.state.creatorCurrentNode+'&categoryName='+categoryPlayed;
+      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.creatorCurrentNode+'&categoryName='+categoryPlayed;
     }
     if (this.state.user == this.state.joinerUid) {
-      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex/?source='+this.state.joinerCurrentNode+'&categoryName='+categoryPlayed;
+      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.joinerCurrentNode+'&categoryName='+categoryPlayed;
     }
     fetch(endpoint)
       .then(response => response.json())
@@ -681,8 +700,12 @@ export default class GameBoard extends React.Component{
     return(
       <View style={{flex:1}}>
         <Dialog 
+            footer={<DialogButton
+              text="OK"
+              onPress={() => {this.cancelInfo()}}
+            />  }
             width={0.9}
-            height={400}
+            height={0.8}
             visible={this.state.pathVisible}
             dialogTitle={<DialogTitle title="Paths History" />}
             >
@@ -694,86 +717,88 @@ export default class GameBoard extends React.Component{
               <List key={index}>
                     <ListItem avatar>
                       <Left>
-                        <Thumbnail source={item.image} />
+                        <Text note>{index+1}.</Text>
                       </Left>
                       <Body>
                         <Text>{item.title}</Text>
                         <Text note></Text>
                       </Body>
-                      <Right>
-                        <Text note></Text>
-                      </Right>
                     </ListItem>
               </List>
               )
                 })
-              }
-                  <DialogButton
-                  text="OK"
-                  onPress={() => {this.cancelInfo()}}
-                />         
+              }       
               </ScrollView>     
             </DialogContent>
       </Dialog>
         <Dialog 
             width={0.9}
-            height={300}
+            height={0.8}
             visible={this.state.modalTargetVisible}
             dialogTitle={<DialogTitle title={this.state.dialogTitle} />}
-          >
+            footer={
+              <DialogFooter>
+                <DialogButton
+                  text="OK"
+                  onPress={() => {this.cancelInfo()}}
+                />
+              </DialogFooter>
+            }
+            
+            >
             <DialogContent>
               <ScrollView>
                 <Text>
                   {this.state.dialogContent}
                 </Text>
-                <DialogFooter>
-                  <DialogButton
-                    text="OK"
-                    onPress={() => {this.cancelInfo()}}
-                  />
-                </DialogFooter>
               </ScrollView>
             </DialogContent>
             
-      </Dialog>
+        </Dialog>
         <Dialog 
             width={0.9}
-            height={300}
+            height={0.8}
             visible={this.state.modalVisible}
             dialogTitle={<DialogTitle title={this.state.dialogTitle} />}
-          >
-            <DialogContent>
-              <ScrollView>
-                <Text>
-                  {this.state.dialogContent}
-                </Text>
-                <DialogFooter>
-                  <DialogButton
-                    text="CANCEL"
-                    onPress={() => {this.cancelInfo()}}
-                  />
-                  <DialogButton
+            footer={
+              <DialogFooter style={{zIndex:4}}>
+                <DialogButton
+                  text="CANCEL"
+                  onPress={() => {this.cancelInfo()}}
+                />
+                <DialogButton
                     text="OK"
                     onPress={() => {this.nextMove(this.state.dialogTitle)}}
                   />
-                </DialogFooter>
+              </DialogFooter>
+            }
+          >
+            <DialogContent>
+              <ScrollView>
+                <Text>
+                  {this.state.dialogContent}
+                </Text>
               </ScrollView>
             </DialogContent>
             
       </Dialog>
-        <View style={{flex:0.2,flexDirection:'row',marginTop:10}}>
+       
+      
+         <View style={{flex:0.2,flexDirection:'row',marginTop:10}}>
           <View style={{flex:0.4,marginTop:'7%'}}>
             <Text style={{textAlign:'center',fontSize:21}}>You</Text>
             <Text style={{textAlign:'center',fontSize:24,color:'green'}}>{this.state.yourPathCount}</Text>
           </View>
           <View style={{flex:0.2,marginTop:'7%'}}>
-           { (!this.timeStop) ? <CountdownTimer startAgain={this.state.timerStart} Expired={this.TimerExpired}/> : <Text></Text>}
+            <CountdownTimer startAgain={this.state.timerStart} Expired={this.TimerExpired}/>
           </View>
           <View style={{flex:0.4,marginTop:'7%'}}>
             <Text style={{textAlign:'center',fontSize:21}}>Opponent</Text>
             <Text style={{textAlign:'center',fontSize:24,color:'red'}}>{this.state.oponentPathCount}</Text>
           </View>
-        </View>
+        </View> 
+
+
         <View flex={0.2} style={{alignContent:'space-between',flexDirection:'row'}}>
           <View flex={0.2}></View>
           <View flex={0.6} style={{justifyContent:'center'}}>
@@ -787,7 +812,7 @@ export default class GameBoard extends React.Component{
               <View flex={0.2}></View>
               <View flex={0.6}>
                 <TouchableHighlight onPress={this.getDataOnTarget}>
-                  <ImageBackground source={{uri: (this.state.user==this.state.creatorUid ? this.state.creatorTarget.image : this.state.joinerTarget.image)}} style={{ flex: 1,height:100 }} resizeMode='stretch'>
+                  <ImageBackground source={{uri: (this.state.user==this.state.creatorUid ? this.state.creatorTarget.image : this.state.joinerTarget.image)}} style={{ flex: 1,height:100 }} resizeMode='contain'>
                     <View style={[styles.itemContainer,{borderStyle:'solid',borderWidth:2}]}>
                     </View>
                   </ImageBackground>
@@ -798,6 +823,8 @@ export default class GameBoard extends React.Component{
           </View>
           <View flex={0.2}></View>
         </View>
+       
+       
         <View style={{flex:0.4,justifyContent:'space-between',alignContent:'center'}}>
           {
             this.state.wait 
@@ -826,26 +853,36 @@ export default class GameBoard extends React.Component{
             </View>)
           }
         </View>
-        <View style={{flex:0.1,textAlign:'center'}}>
+        
+        
+        <View style={{flex:0.1,textAlign:'center',marginTop:10}}>
             <View flex={1} style={{alignContent:'space-around',flexDirection:'row'}}>
-              <View flex={0.3}>
+              <View flex={0.3} style={{alignContent:'space-between',flexDirection:'row'}}>
+                <View flex={0.2}></View>
+                <View flex={0.6}>
                 <Button
                   onPress={this.openPathHistory}
                   style={{backgroundColor:"transparent"}}>
-                  <Icon style={{color:"#4D5366",fontSize:35}}  name="ios-flag" />
+                  <Icon style={{color:"#96B2CD",fontSize:35}}  name="ios-flag" />
                 </Button>
+                </View>
+                <View flex={0.2}></View>
               </View>
               <View flex={0.4}>
                 <Button block success onPress={this.changeTurn}>
                   <Text>Go Back</Text> 
                 </Button>
               </View>
-              <View flex={0.3}>
-              <Button
-                  onPress={this.getNewCards}
-                  style={{backgroundColor:"transparent"}}>
-                  <Icon style={{color:"#4D5366",fontSize:35}}  name="ios-sync" />
-                </Button>
+              <View flex={0.3} style={{alignContent:'space-between',flexDirection:'row'}}>
+                <View flex={0.2}></View>
+                <View flex={0.6}>
+                  <Button
+                    onPress={this.getNewCards}
+                    style={{backgroundColor:"transparent"}}>
+                    <Icon style={{color:"#B5F7C3",fontSize:35}}  name="ios-sync" />
+                  </Button>
+                </View>
+                <View flex={0.2}></View>
               </View>
             </View>
         </View>

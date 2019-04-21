@@ -53,7 +53,7 @@ export default class GamesWon extends React.Component{
         ( <Button
             onPress={()=>navigation.navigate('ChooseAGame')}
             style={{backgroundColor:"transparent"}}>
-            <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
+            <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
         </Button>
         ),
         }
@@ -162,7 +162,7 @@ export default class GamesWon extends React.Component{
                                         <Thumbnail source={i} />
                                     </Left> */}
                                     <Body>
-                                        <Text>{item}</Text>
+                                        <Text style={{fontSize:17}}>{item}</Text>
                                         <Text note></Text>
                                     </Body>
                                     <Right>

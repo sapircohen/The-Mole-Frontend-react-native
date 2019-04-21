@@ -16,7 +16,7 @@ export default class SettingsScreen extends Component {
       ( <Button
           onPress={()=>navigation.navigate('Profile')}
           style={{backgroundColor:"transparent"}}>
-            <Icon  style={{color:"#B621E8",fontSize:35}}  name="ios-arrow-round-back" />
+            <Icon  style={{color:"#403773",fontSize:35}}  name="ios-arrow-round-back" />
         </Button>
       ),
       }
