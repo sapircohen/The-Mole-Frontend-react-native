@@ -22,11 +22,11 @@ export default class Categories extends Component{
         headerBackground: (
           <NetworkHeader/>
         ),
-        headerTitleStyle: { color: '#4D5F66',fontSize:20 },
+        headerTitleStyle: { color: '#4D5F66',fontSize:20,justifyContent: 'center' },
         headerLeft: 
          ( <Button
             onPress={()=>navigation.navigate('ChooseAGame')}
-            style={{backgroundColor:"transparent"}}>
+            style={{backgroundColor:"transparent",elevation:0}}>
               <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
           </Button>
          ),

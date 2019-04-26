@@ -22,7 +22,7 @@ if (Platform.OS==='ios') {
   marTop = 24;
   footerHeight = 80;
 }
-let categoryImage = '';
+
 
 const STATE = {
     REMOVE:0,
@@ -109,28 +109,6 @@ export default class GameBoard extends React.Component{
   GetItemsFromStorage = async ()=>{
     let key = await storageGet('key');
     let category =  await storageGet('category');
-    switch (category) {
-      case 'NBA':
-        categoryImage='https://a4.espncdn.com/combiner/i?img=%2Fi%2Fespn%2Fmisc_logos%2F500%2Fnba.png';
-        break;
-      case 'FILMS':
-        categoryImage='https://drhurd.com/wp-content/uploads/2016/01/Oscar-statue.jpg';
-        break;
-      case 'CELEBRITY':
-        categoryImage='https://cdn.worldvectorlogo.com/logos/celebrity-1.svg';
-        break;
-      case 'GENERAL KNOWLEDGE':
-        categoryImage='https://thumbs.dreamstime.com/z/general-knowledge-vector-icon-isolated-transparent-background-general-knowledge-logo-design-general-knowledge-vector-icon-118970857.jpg';
-        break;
-      case 'MUSIC':
-        categoryImage='https://d85wutc1n854v.cloudfront.net/live/products/600x375/WB0PGGM81.png';
-        break;
-      case 'POLITICS':
-        categoryImage='http://www.cfiargentina.org/wp-content/uploads/2015/04/politics.png';
-        break;
-      default:
-        break;
-    }
     this.setState({category:category},()=>{
       this.watchGame(key,category);
     })
@@ -330,7 +308,7 @@ export default class GameBoard extends React.Component{
         else {
           let article = {
             title:item,
-            image:categoryImage,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
           }
           listCreator.push(article);
         }
@@ -360,7 +338,7 @@ export default class GameBoard extends React.Component{
         else {
           let article = {
             title:item,
-            image:categoryImage,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
           }
           listJoiner.push(article);
         }
@@ -391,7 +369,7 @@ export default class GameBoard extends React.Component{
         else {
           let article = {
             title:item,
-            image:categoryImage,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
           }
           listJoiner.push(article);
         }
@@ -414,7 +392,7 @@ export default class GameBoard extends React.Component{
         else {
           let article = {
             title:item,
-            image:categoryImage,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
           }
           listCreator.push(article);
         }
@@ -438,7 +416,7 @@ export default class GameBoard extends React.Component{
         else {
           let article = {
             title:game.CreatorPath.target,
-            image:categoryImage,
+            image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
           }
           this.setState({
             creatorTarget:article
@@ -465,7 +443,7 @@ export default class GameBoard extends React.Component{
       else {
         let article = {
           title:game.JoinerPath.target,
-          image:categoryImage,
+          image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6g5X-oXWXB0OlpfvqY0XmoZik1FiTSwB5YBIN7m4xOunbUXKC'
         }
         this.setState({
           joinerTarget:article
@@ -712,7 +690,8 @@ export default class GameBoard extends React.Component{
       )
     }
     return(
-      <View style={{flex:9}}>
+      <View style={{flex:1}}>
+      {/* Using alert instead */}
         <Dialog 
             footer={<DialogButton
               text="OK"
@@ -745,7 +724,61 @@ export default class GameBoard extends React.Component{
               </ScrollView>    
             </DialogContent>
       </Dialog>
-        <View style={{flex:2,flexDirection:'row',marginTop:10}}>
+        
+        <Dialog 
+            width={0.9}
+            height={0.8}
+            visible={this.state.modalTargetVisible}
+            dialogTitle={<DialogTitle title={this.state.dialogTitle} />}
+            footer={
+              <DialogFooter>
+                <DialogButton
+                  text="OK"
+                  onPress={() => {this.cancelInfo()}}
+                />
+              </DialogFooter>
+            }
+            
+            >
+            <DialogContent>
+              <ScrollView>
+                <Text>
+                  {this.state.dialogContent}
+                </Text>
+              </ScrollView>
+            </DialogContent>
+        </Dialog>
+        
+        <Dialog 
+            width={0.9}
+            height={0.8}
+            visible={this.state.modalVisible}
+            dialogTitle={<DialogTitle title={this.state.dialogTitle} />}
+            footer={
+              <DialogFooter style={{zIndex:4}}>
+                <DialogButton
+                  text="CANCEL"
+                  onPress={() => {this.cancelInfo()}}
+                />
+                <DialogButton
+                    text="OK"
+                    onPress={() => {this.nextMove(this.state.dialogTitle)}}
+                  />
+              </DialogFooter>
+            }
+          >
+            <DialogContent>
+              <ScrollView>
+                <Text>
+                  {this.state.dialogContent}
+                </Text>
+              </ScrollView>
+            </DialogContent>
+            
+      </Dialog>
+       
+      
+        <View style={{flex:0.2,flexDirection:'row',marginTop:10}}>
           <View style={{flex:0.4,marginTop:'7%'}}>
             <Text style={{textAlign:'center',fontSize:21}}>You</Text>
             <Text style={{textAlign:'center',fontSize:24,color:'green'}}>{this.state.yourPathCount}</Text>
@@ -758,16 +791,18 @@ export default class GameBoard extends React.Component{
             <Text style={{textAlign:'center',fontSize:24,color:'red'}}>{this.state.oponentPathCount}</Text>
           </View>
         </View> 
-        <View flex={2} style={{alignContent:'space-between',flexDirection:'row',marginTop:10}}>
+
+
+        <View flex={0.4} style={{alignContent:'space-between',flexDirection:'row',marginTop:20}}>
           <View flex={0.2}></View>
           <View flex={0.6} style={{justifyContent:'center'}}>
             <View flex={0.3}>
               <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center'}}>Target</Text>
             </View>
-            <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
+            <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:4}}>
               {this.state.user==this.state.creatorUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
             </View>
-            <View flex={0.5} style={{flexDirection:'row',marginTop:10}}>
+            <View flex={0.5} style={{flexDirection:'row',marginTop:18}}>
               <View flex={0.3}></View>
               <View flex={0.4}>
                   {this.state.user==this.state.creatorUid ? 
@@ -797,11 +832,11 @@ export default class GameBoard extends React.Component{
         </View>
        
        
-        <View style={{flex:3,marginTop:marTop}}>
+        <View style={{flex:0.4,marginTop:marTop}}>
           {
             this.state.wait 
           ? 
-            <Text style={{textAlign:'center',fontSize:25}}>Wait for your turn🤓</Text>
+            <Text></Text>
           :
             (<View flex={1} style={{marginTop:10}}>
               <FlatGrid
@@ -826,57 +861,22 @@ export default class GameBoard extends React.Component{
           }
         </View>
         
-        <View flex={2} style={{alignContent:'space-between',flexDirection:'row',marginBottom:20}}>
-          <View flex={0.2}></View>
-          <View flex={0.6} style={{justifyContent:'center'}}>
-            <View flex={0.3}>
-              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center'}}>Source</Text>
-            </View>
-            <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
-              {this.state.user==this.state.joinerUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
-            </View>
-            <View flex={0.5} style={{flexDirection:'row',marginTop:10}}>
-              <View flex={0.3}></View>
-              <View flex={0.4}>
-                  {this.state.user==this.state.joinerUid ? 
-                  (
-                    //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1}} resizeMode='stretch'>
-                        <View>
-                        </View>
-                      </ImageBackground>  
-                    //</TouchableHighlight>
-                  )
-                  :
-                  (
-                    //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1}} resizeMode='stretch'>
-                          <View>
-                          </View>
-                      </ImageBackground>
-                    //</TouchableHighlight>
-                  )
-                }
-              </View>
-              <View flex={0.3}>
-              </View>
-            </View>
-          </View>
-        </View>
         
-       
+        <Container style={{backgroundColor:'transparent'}} >
+            <Content />
             <Footer  >
-              <ImageBackground source={images.network} style={{width: '100%', height:footerHeight,color:'transparent'}}>
-                <FooterTab style={{backgroundColor:'transparent'}}>
-                    <Button vertical onPress={this.openPathHistory}>
-                      <Icon style={styles.iconStyle} name="ios-flag" />
-                    </Button>
-                    <Button vertical onPress={this.getNewCards}>
-                      <Icon style={styles.iconStyle} name="ios-sync" />
-                    </Button>
-                </FooterTab>
+            <ImageBackground source={images.network} style={{width: '100%', height:footerHeight,color:'transparent'}}>
+              <FooterTab>
+                  <Button vertical onPress={this.openPathHistory}>
+                    <Icon style={styles.iconStyle} name="ios-flag" />
+                  </Button>
+                  <Button vertical onPress={this.getNewCards}>
+                    <Icon style={styles.iconStyle} name="ios-sync" />
+                  </Button>
+              </FooterTab>
               </ImageBackground>
             </Footer>
+          </Container>
        
     </View>
     )
@@ -905,7 +905,6 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   iconStyle:{
-    backgroundColor:'transparent',
     color:'black',
     fontSize:33
   },

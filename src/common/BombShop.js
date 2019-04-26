@@ -8,7 +8,7 @@ export default class FABPaths extends Component {
   }
   render() {
     return (  
-      <Container>
+      //<Container>
         <View style={{ flex: 1 }}>
           <Fab
             direction="up"
@@ -19,7 +19,7 @@ export default class FABPaths extends Component {
             <Icon name="ios-infinite" />
           </Fab>
         </View>
-      </Container>
+     // </Container>
     );
   }
 }

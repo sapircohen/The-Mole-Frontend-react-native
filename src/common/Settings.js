@@ -17,7 +17,7 @@ export default class FABSettings extends Component {
   }
   render() {
     return (  
-      <Container>
+      //<Container>
         <View style={{ flex: 1 }}>
           <Fab 
             active={this.state.active}
@@ -35,7 +35,7 @@ export default class FABSettings extends Component {
             </Button>
           </Fab>
         </View>
-      </Container>
+      //</Container>
     );
   }
 }

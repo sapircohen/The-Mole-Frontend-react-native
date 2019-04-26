@@ -53,7 +53,7 @@ class AvatarScreen extends Component{
     headerBackground: (
       <NetworkHeader/>
     ),
-    headerTitleStyle: { color: '#000',fontSize:20 },
+    headerTitleStyle: { color: '#000',fontSize:20,textAlign:'center' },
     headerLeft: 
      ( <Button
         onPress={()=>navigation.navigate('Profile')}

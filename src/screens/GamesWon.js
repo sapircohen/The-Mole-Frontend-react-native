@@ -42,17 +42,18 @@ export default class GamesWon extends React.Component{
     }
   static navigationOptions = ({ navigation }) =>{
     return{
-      headerTitle: (
-        <Image style={{ width: 90, height: 50 }} source={images.logo}/>
-      ),
+        headerTitle: (
+            <Image style={{ width: 90, height: 50,flex:1 }} resizeMode='contain' source={images.logo}/>
+          ),
       headerBackground: (
         <NetworkHeader/>
       ),
       headerTitleStyle: { color: '#4D5F66',fontSize:23 },
+      headerRight:<Text></Text>,
       headerLeft: 
         ( <Button
             onPress={()=>navigation.navigate('ChooseAGame')}
-            style={{backgroundColor:"transparent"}}>
+            style={{backgroundColor:"transparent",elevation:0}}>
             <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
         </Button>
         ),

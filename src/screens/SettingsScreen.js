@@ -11,11 +11,11 @@ export default class SettingsScreen extends Component {
       headerBackground: (
         <NetworkHeader/>
       ),
-      headerTitleStyle: { color: '#4D5F66',fontSize:20 },
+      headerTitleStyle: { color: '#4D5F66',fontSize:20,alignSelf:'center' },
       headerLeft: 
       ( <Button
           onPress={()=>navigation.navigate('Profile')}
-          style={{backgroundColor:"transparent"}}>
+          style={{backgroundColor:"transparent",elevation:0}}>
             <Icon  style={{color:"#403773",fontSize:35}}  name="ios-arrow-round-back" />
         </Button>
       ),

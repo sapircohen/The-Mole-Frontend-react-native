@@ -1,5 +1,5 @@
 import React,{ Component } from "react";
-import {Platform,Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView} from "react-native";
+import {Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView,ImageBackground} from "react-native";
 import {Button,Icon, Text} from 'native-base';
 import  NetworkHeader from '../common/NetworkHeader';
 import Autocomplete from 'react-native-autocomplete-input';
@@ -10,124 +10,50 @@ import WikiLoader from '../common/WikiLoader';
 
 
 let newStateArray = [];
-let styles;
-if (Platform.OS==='ios') {
-    styles = StyleSheet.create({
-        container1: {
-            paddingTop: 15,
-            borderRadius:50,
-            //marginBottom:50,
-            zIndex:4
-          },
-          container2: {
-            paddingTop: 15,
-            borderRadius:50,
-            //marginBottom:50,
-            zIndex:4
-          },
-          autocompleteContainer: {
-            marginLeft: 10,
-            marginRight: 10,
-          },
-          itemText: {
-            fontSize: 22,
-            margin: 1,
-            color:'#3C4037'
-          },
-    
-          infoText: {
-            textAlign: 'center'
-          },
-          list:{
-            borderColor:"grey",
-            borderWidth:0.6,
-            borderStyle:'solid',
-            backgroundColor:'#C0DDD9',
-            position:'relative'
-          },
-          openingText: {
-            textAlign: 'center'
-          },
-            textInputStyle:{
-                height:40,
-                borderColor:'grey',
-                borderWidth:1,
-                margin:'5%',
-                padding:10,
-                borderRadius:10
-            },
-            title:{
-                textAlign:'center',
-    
-            }
-    })
-}
-else{
-    styles = StyleSheet.create({
-        container1: {
-            flex: 0.3,
-            left: 0,
-            position: 'absolute',
-            right: 0,
-            top: 50,
-            paddingTop: 15,
-            borderRadius:50,
-            marginBottom:5,
-            zIndex:1
-          },
-          container2: {
-            flex: 0.3,
-            left: 0,
-            position: 'absolute',
-            right: 0,
-            top: 100,
-            paddingTop: 15,
-            borderRadius:50,
-            marginBottom:5,
-            zIndex:1
-          },
-          autocompleteContainer: {
-            marginLeft: 20,
-            marginRight: 20,
-            position:'relative',
-            zIndex:2
-          },
-          itemText: {
-            fontSize: 22,
-            margin: 1,
-            color:'#3C4037'
-          },
-    
-          infoText: {
-            textAlign: 'center'
-          },
-          list:{
-            borderColor:"grey",
-            borderWidth:0.6,
-            borderStyle:'solid',
-            backgroundColor:'#C0DDD9',
-            //position:'absolute',
-            flex:1,
-            zIndex:2
-          },
-          openingText: {
-            textAlign: 'center'
-          },
-            textInputStyle:{
-                height:40,
-                borderColor:'grey',
-                borderWidth:1,
-                margin:'5%',
-                padding:10,
-                borderRadius:10
-            },
-            title:{
-                textAlign:'center',
-    
-            }
-    })
-}
 
+const styles = StyleSheet.create({
+    container: {
+        paddingTop: 15,
+        borderRadius:50,
+        marginBottom:50,
+        zIndex:4
+      },
+      autocompleteContainer: {
+        marginLeft: 10,
+        marginRight: 10,
+      },
+      itemText: {
+        fontSize: 22,
+        margin: 1,
+        color:'#3C4037'
+      },
+
+      infoText: {
+        textAlign: 'center'
+      },
+      list:{
+        borderColor:"grey",
+        borderWidth:0.6,
+        borderStyle:'solid',
+        backgroundColor:'#E2B5FF',
+        position:'relative'
+      },
+      openingText: {
+        textAlign: 'center'
+      },
+        textInputStyle:{
+            height:40,
+            borderColor:'grey',
+            borderWidth:1,
+            margin:'5%',
+            padding:10,
+            borderRadius:10
+        },
+        title:{
+            textAlign:'center',
+
+        }
+})
 
 export default class Paths extends React.Component{
 
@@ -286,10 +212,10 @@ export default class Paths extends React.Component{
             )
           }
         return(
-            <View flex={1} style={{marginTop:'4%'}}>
+            <View flex={1} style={{marginTop:'4%',backgroundColor:'transparent'}}>
                 <Text style={{textAlign:'center',marginTop:'5%',fontSize:24}}>Find the shortest path{"\n\n"}From</Text>
 
-                <View style={styles.container1}>
+                <View style={styles.container}>
                     <Autocomplete
                     listStyle={styles.list}
                     autoCapitalize="words"
@@ -308,7 +234,7 @@ export default class Paths extends React.Component{
                     />
                 </View>
                 <Text style={{textAlign:'center',fontSize:24,marginTop:'3%'}}>To</Text>
-                <View style={styles.container2}>
+                <View style={styles.container}>
                     <Autocomplete
                     listStyle={styles.list}
                     autoCapitalize="words"

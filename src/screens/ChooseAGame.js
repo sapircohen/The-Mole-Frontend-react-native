@@ -1,5 +1,5 @@
 import React,{ Component } from "react";
-import {Image,Text,StyleSheet} from "react-native";
+import {Image,Text,StyleSheet,ImageBackground} from "react-native";
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
 import {Button,Icon,Container, Header, Content} from 'native-base';
@@ -24,16 +24,17 @@ export default class GameTime extends React.Component{
     static navigationOptions = ({ navigation }) =>{
         return{
           headerTitle: (
-            <Image style={{ width: 90, height: 50 }} source={images.logo}/>
-          ),
+            <Image style={{ width: 90, height: 50,flex:1 }} resizeMode="contain" source={images.logo}/>
+            ),
           headerBackground: (
             <NetworkHeader/>
           ),
           headerTitleStyle: { color: '#4D5F66',fontSize:23 },
+          headerRight:(<Text></Text>),
           headerLeft: 
             ( <Button
                 onPress={()=>navigation.navigate('Profile')}
-                style={{backgroundColor:"transparent"}}>
+                style={{backgroundColor:"transparent",elevation:0}}>
                 <Icon style={{color:"#403773",fontSize:32}}  name="ios-arrow-round-back" />
             </Button>
             ),
@@ -54,20 +55,22 @@ export default class GameTime extends React.Component{
         }
     render(){
         return(
-            <Box f={1} center bg="#E6E4E0">
-                <Button onPress={this.ChooseACategory} style={styles.buttonStyle} block bordered dark>
-                    <Text style={styles.textStyle}>Create a new game</Text>
-                </Button>
-                <Button onPress={this.JoinAGame} style={styles.buttonStyle} block bordered dark>
-                    <Text style={styles.textStyle}>Join a game</Text>
-                </Button>
-                <Button onPress={this.MyGames} style={styles.buttonStyle} block bordered dark>
-                    <Text style={styles.textStyle}>My opened games</Text>
-                </Button>
-                <Button onPress={this.GamesWon} style={styles.buttonStyle} block bordered dark>
-                    <Text style={styles.textStyle}>Games WON</Text>
-                </Button>
-            </Box>
+            <ImageBackground resizeMode='contain' style={{flex:1}} source={{uri:'https://ak1.picdn.net/shutterstock/videos/8085121/thumb/1.jpg'}}>
+                <Box f={1} center bg='transparent'>
+                    <Button onPress={this.ChooseACategory} style={styles.buttonStyle} block rounded bordered info>
+                        <Text style={styles.textStyle}>Create a new game</Text>
+                    </Button>
+                    <Button onPress={this.JoinAGame} style={styles.buttonStyle} block rounded bordered primary>
+                        <Text style={styles.textStyle}>Join a game</Text>
+                    </Button>
+                    <Button onPress={this.MyGames} style={styles.buttonStyle} block rounded bordered warning>
+                        <Text style={styles.textStyle}>My opened games</Text>
+                    </Button>
+                    <Button onPress={this.GamesWon} style={styles.buttonStyle} block rounded bordered success>
+                        <Text style={styles.textStyle}>Games WON</Text>
+                    </Button>
+                </Box>
+            </ImageBackground>
         )
     }
 }
@@ -78,8 +81,8 @@ const styles = StyleSheet.create({
         'margin':10,
     },
     textStyle:{
-        'fontSize':20,
+        'fontSize':25,
         'color':'#000',
-        'fontWeight':'100'
+        'fontWeight':'200'
     },
 })
