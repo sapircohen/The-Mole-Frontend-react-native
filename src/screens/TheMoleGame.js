@@ -117,10 +117,10 @@ export default class GameBoard extends React.Component{
         break;
       case 'FILMS':
         categoryImage='https://drhurd.com/wp-content/uploads/2016/01/Oscar-statue.jpg';
-        categoryImage='http://www.cliparthut.com/clip-arts/201/guess-up-emoji-movie-star-game-solver-clipart-jpU5yP.png';
+        categoryImage='https://st4.depositphotos.com/18664664/23955/v/1600/depositphotos_239558178-stock-illustration-cinema-celebrity-icon-trendy-cinema.jpg';
         break;
       case 'CELEBRITY':
-        categoryImage='https://cdn.worldvectorlogo.com/logos/celebrity-1.svg';
+        categoryImage='https://st4.depositphotos.com/18657574/21815/v/1600/depositphotos_218157006-stock-illustration-fame-vector-icon-isolated-transparent.jpg';
 
         break;
       case 'GENERAL KNOWLEDGE':
@@ -535,22 +535,9 @@ export default class GameBoard extends React.Component{
             ],
             {cancelable: true},
           );  
-          // this.setState({   
-          //   // timerStart:false,       
-          //   // dialogContent:data.query.pages[pageid].extract,
-          //   // dialogTitle:title,
-          // },()=>{
-          //   this.setState({
-          //     // timerStart:false,
-          //     // modalVisible:true,
-          //     // pathVisible:false,
-          //   })
-          // })
       })     
   }
-  getDataOnTarget = (title)=>{
-    alert(title);
-    
+  getDataOnTarget = (title)=>{    
         InfoTitle = title;
         InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects=';
         alert(InfoApi);
@@ -598,8 +585,6 @@ export default class GameBoard extends React.Component{
         if (this.state.creatorTarget.title==title) {
           //we have a winner.
           gameRef.update(({'state': STATE.WINCreator}));
-          //show confetty
-          //show staff to oponent
         }
         else{
           let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetPath/?source='+title+'&target='+this.state.creatorTarget.title+'&categoryNAME='+this.state.category;
@@ -682,10 +667,26 @@ export default class GameBoard extends React.Component{
     //5. change turn's
 
   }
+  changeCards = ()=>{
+    Alert.alert("Change cards",
+        "Pass your turn and change cards?",
+        [
+        {
+          text: 'OK', 
+          onPress: this.getNewCards,
+          style: 'destructive'
+        },
+        {text: 'CANCEL'},
+        ],
+        {cancelable: true}
+    )
+  }
   getNewCards = ()=>{
     let endpoint = '';
+    
     if (this.state.user == this.state.creatorUid) {
       endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.creatorCurrentNode+'&categoryName='+categoryPlayed;
+      
     }
     if (this.state.user == this.state.joinerUid) {
       endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.joinerCurrentNode+'&categoryName='+categoryPlayed;
@@ -699,6 +700,9 @@ export default class GameBoard extends React.Component{
             timerStart:false
           },()=>{
             this.fetchListForcCreatorFromWiki();
+            const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+            const gameRef = ref.child(currentGamekey);
+            gameRef.update(({'state': STATE.NEXTJoiner}));
           })        
         }
         if (this.state.user == this.state.joinerUid) {
@@ -707,6 +711,9 @@ export default class GameBoard extends React.Component{
             timerStart:false
           },()=>{
             this.fetchListForJoinerFromWiki();
+            const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+            const gameRef = ref.child(currentGamekey);
+            gameRef.update(({'state': STATE.NEXTCreator}));
           })
         }
       })
@@ -775,11 +782,11 @@ export default class GameBoard extends React.Component{
         
         <View flex={2} style={{alignContent:'space-between',flexDirection:'row',marginTop:10}}>
           <View flex={0.2}></View>
-          <View flex={0.6} style={{justifyContent:'center',borderWidth:0.5,borderRadius:10}}>
+          <View flex={0.6} style={{justifyContent:'center'}}>
             <View flex={0.3}>
               <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',color:'#80D3A1'}}>Target</Text>
             </View>
-            <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
+            <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?1:4),overflow:'visible'}}>
               {this.state.user==this.state.creatorUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
             </View>
             <View flex={0.5} style={{flexDirection:'row',marginTop:10}}>
@@ -788,7 +795,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.creatorUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:30}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -797,7 +804,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:30}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -818,8 +825,8 @@ export default class GameBoard extends React.Component{
           ? 
             <Text style={{textAlign:'center',fontSize:25}}>Wait for your turn🤓</Text>
           :
-            (<View flex={1} style={{marginTop:15,borderWidth:1}}>
-              <Text style={{textAlign:'center',fontSize:15,fontWeight:'bold',color:'#96B2CC'}}>Choose an option</Text>
+            (<View flex={1} style={{marginTop:15}}>
+              <Text style={{textAlign:'center',fontSize:18,fontWeight:'bold',color:'#96B2CC'}}>Choose an option</Text>
               <FlatGrid
                 itemDimension={100}
                 items={this.state.user==this.state.creatorUid ? listCreator : listJoiner }
@@ -828,8 +835,8 @@ export default class GameBoard extends React.Component{
                 // fixed
                 spacing={10}
                 renderItem={({ item, index }) => (
-                  <TouchableOpacity style={{overflow: 'hidden',borderRadius:20}} onPress={()=>this.getArticleInfo(item.title)}>
-                    <ImageBackground source={{uri:item.image}} style={{ flex: 1}} resizeMode='stretch'>
+                  <TouchableOpacity onPress={()=>this.getArticleInfo(item.title)}>
+                    <ImageBackground source={{uri:item.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:40}} resizeMode='stretch'>
                       <View style={[styles.itemContainer]}>
                         
                       </View>
@@ -844,9 +851,9 @@ export default class GameBoard extends React.Component{
         
         <View flex={2} style={{alignContent:'space-between',flexDirection:'row',marginBottom:20}}>
           <View flex={0.2}></View>
-          <View flex={0.6} style={{justifyContent:'center',borderWidth:1}}>
+          <View flex={0.6} style={{justifyContent:'center'}}>
             <View flex={0.3}>
-              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',color:'#FFF189'}}>Source</Text>
+              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',color:'#F2BBAD'}}>Source</Text>
             </View>
             <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
               {this.state.user==this.state.joinerUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
@@ -857,7 +864,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.joinerUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:20}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -866,7 +873,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:20}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -885,10 +892,10 @@ export default class GameBoard extends React.Component{
               <ImageBackground source={images.network} style={{width: '100%', height:footerHeight,color:'transparent'}}>
                 <FooterTab style={{backgroundColor:'transparent'}}>
                     <Button vertical onPress={this.openPathHistory}>
-                      <Icon style={styles.iconStyle} name="ios-flag" />
+                      <Icon style={styles.iconStyleFlag} name="ios-flag" />
                     </Button>
-                    <Button vertical onPress={this.getNewCards}>
-                      <Icon style={styles.iconStyle} name="ios-sync" />
+                    <Button vertical onPress={this.changeCards}>
+                      <Icon style={styles.iconStyleSync} name="ios-sync" />
                     </Button>
                 </FooterTab>
               </ImageBackground>
@@ -920,9 +927,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#fff',
   },
-  iconStyle:{
+  iconStyleSync:{
     backgroundColor:'transparent',
-    color:'black',
+    color:'#CBC1DE',
+    fontSize:33
+  },
+  iconStyleFlag:{
+    backgroundColor:'transparent',
+    color:'#71C4C6',
     fontSize:33
   },
   textStyle:{

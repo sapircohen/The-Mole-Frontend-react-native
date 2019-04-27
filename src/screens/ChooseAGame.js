@@ -73,7 +73,7 @@ export default class GameTime extends React.Component{
                         <Text style={styles.textStyle}>Games WON</Text>
                     </Button>
                     <Button onPress={this.LeaderBoard} style={styles.buttonStyle} block rounded bordered danger>
-                        <Text style={styles.textStyle}>🏆</Text>
+                        <Text style={styles.textStyle}>Leaderboard🏆</Text>
                     </Button>
                 </Box>
             </ImageBackground>

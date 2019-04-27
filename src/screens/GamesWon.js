@@ -156,7 +156,7 @@ export default class GamesWon extends React.Component{
 
                         {this.state.path.map((item,index)=>{
                         return(
-                            <List key={index}>
+                            <List key={index} style={{marginBottom: 10}}>
                                     <ListBase avatar>
                                     
                                     {/* <Left>

@@ -143,9 +143,9 @@ class ProfileScreen extends Component{
       }
         return(
           
-            <Box f={1} bg="white">
+            <Box f={1} bg="transparent">
+              <ImageBackground resizeMode='contain' style={{flex:1}} source={{uri:'https://securestrux.com/content/uploads/2014/02/network_blue_opacity_lighter.png'}}>
                 {/* {lastScreen==='Splash' ? <NotificationPopupToShow body="Welcome Back" title="Hey you"/>:<Text></Text>} */}
-
               <Box f={1} style={{marginTop:"15%"}} center>
                 <Avatar size='xlarge' 
                 rounded
@@ -158,6 +158,8 @@ class ProfileScreen extends Component{
               />
               <Text h5 style={{fontWeight:"bold",marginTop:"5%"}}>{this.state.userName}</Text>
             </Box>
+            </ImageBackground>
+
             
                   <Content contentContainerStyle={{ flex: 1}}>
                     <Grid style={{justifyContent:'space-evenly'}}>
@@ -186,17 +188,20 @@ class ProfileScreen extends Component{
                       <Col></Col>
                     </Grid>
                 </Content>
-            <Box f={1} style={{marginBottom:"3%"}}>
-              <Box f={1} >
-                <FABStartGame GoToScreen={this.changeScreen}/> 
-              </Box>
-              <Box style={{marginLeft:"37%"}}>
-                <FABPaths GoToScreen={this.changeScreen}/>
-              </Box> 
-              <Box>
-                <FABSettings GoToScreen={this.changeScreen} />
-              </Box>
+
+            <Box bg='transparent' f={1} style={{marginBottom:"3%"}}>
+                <Box f={1} >
+                  <FABStartGame GoToScreen={this.changeScreen}/> 
+                </Box>
+                <Box style={{marginLeft:"37%"}}>
+                  <FABPaths GoToScreen={this.changeScreen}/>
+                </Box> 
+                <Box>
+                  <FABSettings GoToScreen={this.changeScreen} />
+                </Box>
             </Box>
+
+
           </Box>
           
         )
