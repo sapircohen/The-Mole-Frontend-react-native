@@ -32,6 +32,15 @@ const BombNavigator = createStackNavigator(
         },
     },
 )
+
+const LeaderboardNavigator = createStackNavigator(
+    {
+        Intro: {
+            getScreen: ()=>require('./Leaderboard').default,
+        },
+    },
+)
+
 const PathsNavigator = createStackNavigator(
     {
         BombShop: {
@@ -168,7 +177,8 @@ const AppNavigator = createSwitchNavigator(
         MyOpenGames:MyOpenGamesNavigator,
         Winner:WinnerNavigator,
         Loser:LoserNavigator,
-        GamesWon:GamesWonNavigator
+        GamesWon:GamesWonNavigator,
+        Leaderboard:LeaderboardNavigator
     },{
         initialRouteName:'Splash',
     }

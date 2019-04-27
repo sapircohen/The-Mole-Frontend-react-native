@@ -54,7 +54,7 @@ export default class GameTime extends React.Component{
             this.props.navigation.navigate('GamesWon');
         }
         LeaderBoard = ()=>{
-            //move to leaderboard screen
+            this.props.navigation.navigate('Leaderboard');
         }
     render(){
         return(
