@@ -151,7 +151,7 @@ componentDidMount(){
         }
             return(
       <Box f={1} center>
-        <Text>NO OPENED GAMES BY {firebase.auth().currentUser.displayName}</Text>
+        <Text style={{fontSize:20}}>{firebase.auth().currentUser.displayName}, You don't have any opened games🤔</Text>
       </Box>
     )
   }

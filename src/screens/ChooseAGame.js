@@ -1,5 +1,5 @@
 import React,{ Component } from "react";
-import {Image,Text,StyleSheet,ImageBackground} from "react-native";
+import {Image,Text,StyleSheet,ImageBackground,Platform} from "react-native";
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
 import {Button,Icon,Container, Header, Content} from 'native-base';
@@ -24,7 +24,7 @@ export default class GameTime extends React.Component{
     static navigationOptions = ({ navigation }) =>{
         return{
           headerTitle: (
-            <Image style={{ width: 90, height: 50,flex:1 }} resizeMode="contain" source={images.logo}/>
+            <Image style={{ width: 90, height: 50,flex:1}} resizeMode="contain" source={images.logo}/>
             ),
           headerBackground: (
             <NetworkHeader/>
@@ -53,6 +53,9 @@ export default class GameTime extends React.Component{
         GamesWon = ()=>{
             this.props.navigation.navigate('GamesWon');
         }
+        LeaderBoard = ()=>{
+            //move to leaderboard screen
+        }
     render(){
         return(
             <ImageBackground resizeMode='contain' style={{flex:1}} source={{uri:'https://ak1.picdn.net/shutterstock/videos/8085121/thumb/1.jpg'}}>
@@ -69,6 +72,9 @@ export default class GameTime extends React.Component{
                     <Button onPress={this.GamesWon} style={styles.buttonStyle} block rounded bordered success>
                         <Text style={styles.textStyle}>Games WON</Text>
                     </Button>
+                    <Button onPress={this.LeaderBoard} style={styles.buttonStyle} block rounded bordered danger>
+                        <Text style={styles.textStyle}>🏆</Text>
+                    </Button>
                 </Box>
             </ImageBackground>
         )
@@ -76,13 +82,28 @@ export default class GameTime extends React.Component{
 }
 
 //STYLE
-const styles = StyleSheet.create({
-    buttonStyle:{
-        'margin':10,
-    },
-    textStyle:{
-        'fontSize':25,
-        'color':'#000',
-        'fontWeight':'200'
-    },
-})
+let styles;
+if (Platform.OS ==='ios') {
+    styles = StyleSheet.create({
+        buttonStyle:{
+            'margin':10,
+        },
+        textStyle:{
+            'fontSize':25,
+            'color':'#000',
+            'fontWeight':'200'
+        },
+    })
+}
+else{
+    styles = StyleSheet.create({
+        buttonStyle:{
+            'margin':10,
+        },
+        textStyle:{
+            'fontSize':23,
+            'color':'#000',
+            'fontWeight':'normal'
+        },
+    })
+}

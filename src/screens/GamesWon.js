@@ -192,9 +192,9 @@ export default class GamesWon extends React.Component{
                             source={l.image}
                             size="large"
                         />}
-                        title="Show winning path"
+                        subtitle="Show winning path"
                         titleStyle={{color:'#3A5173',fontWeight:'bold'}}
-                        subtitle={"Category: " +l.categoryName}
+                        title={"Category: " +l.categoryName}
                         subtitleStyle={{color:'#627365'}}
                         rightIcon={
                             <Icon 
@@ -212,7 +212,7 @@ export default class GamesWon extends React.Component{
             }
         return(
             <Box f={1} center>
-                <Text>{firebase.auth().currentUser.displayName} you didn't won yet...don't stop trying!</Text>
+                <Text>{firebase.auth().currentUser.displayName} you didn't won yet...don't stop trying!🤗</Text>
             </Box>
         )
     }

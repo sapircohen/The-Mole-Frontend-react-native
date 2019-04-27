@@ -11,6 +11,7 @@ import {FirebaseConfig} from './src/constant/ApiKeys';
 firebase.initializeApp(FirebaseConfig);
 
 I18nManager.allowRTL(false);
+console.disableYellowBox = true;
 
 export default class App extends React.Component {
 

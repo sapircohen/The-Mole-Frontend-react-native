@@ -16,10 +16,12 @@ let InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=e
 const body = { method: 'GET', dataType: 'json'};
 let myRequest = new Request(InfoApi, body); 
 
+let fontVertex = 12;
 let marTop = 38;
 let footerHeight = 60;
 if (Platform.OS==='ios') {
-  marTop = 24;
+  fontVertex = 16;
+  marTop = 20;
   footerHeight = 80;
 }
 let categoryImage = '';
@@ -115,18 +117,23 @@ export default class GameBoard extends React.Component{
         break;
       case 'FILMS':
         categoryImage='https://drhurd.com/wp-content/uploads/2016/01/Oscar-statue.jpg';
+        categoryImage='http://www.cliparthut.com/clip-arts/201/guess-up-emoji-movie-star-game-solver-clipart-jpU5yP.png';
         break;
       case 'CELEBRITY':
         categoryImage='https://cdn.worldvectorlogo.com/logos/celebrity-1.svg';
+
         break;
       case 'GENERAL KNOWLEDGE':
-        categoryImage='https://thumbs.dreamstime.com/z/general-knowledge-vector-icon-isolated-transparent-background-general-knowledge-logo-design-general-knowledge-vector-icon-118970857.jpg';
+        categoryImage='https://video-images.vice.com/_uncategorized/1489779368199-einstein.jpeg';
+        categoryImage='https://ih1.redbubble.net/image.25918527.1383/flat,550x550,075,f.jpg';
         break;
       case 'MUSIC':
         categoryImage='https://d85wutc1n854v.cloudfront.net/live/products/600x375/WB0PGGM81.png';
+        categoryImage='https://c8.alamy.com/comp/HM0655/music-note-kawaii-character-vector-illustration-design-HM0655.jpg';
         break;
       case 'POLITICS':
         categoryImage='http://www.cfiargentina.org/wp-content/uploads/2015/04/politics.png';
+        categoryImage='https://www.washingtonpost.com/pbox.php?url=http://wp-stat.s3.amazonaws.com/emoji/shared/resources/share/politics/fb_share.jpg&w=1484&op=resize&opt=1&filter=antialias&t=20170517';
         break;
       default:
         break;
@@ -601,6 +608,7 @@ export default class GameBoard extends React.Component{
           .then(response => response.json())
           .then((data)=>{
             if (data[0][0]=='not found') {
+              this.getNewCards();
               alert('no path from ' + title + ' to ' + this.state.creatorTarget.title + ' try another article..')
             }
             else{
@@ -639,6 +647,7 @@ export default class GameBoard extends React.Component{
           .then(response => response.json())
           .then((data)=>{
             if (data[0][0]=='not found') {
+              this.getNewCards();
               alert('no path from ' + title + ' to ' + this.state.joinerTarget.title + ' try another article..')
             }
             else{
@@ -686,14 +695,16 @@ export default class GameBoard extends React.Component{
       .then((data)=>{
         if (this.state.user == this.state.creatorUid) {
           this.setState({
-            creatorVerteciesToChooseFrom:data
+            creatorVerteciesToChooseFrom:data,
+            timerStart:false
           },()=>{
             this.fetchListForcCreatorFromWiki();
           })        
         }
         if (this.state.user == this.state.joinerUid) {
           this.setState({
-            joinerVerteciesToChooseFrom:data
+            joinerVerteciesToChooseFrom:data,
+            timerStart:false
           },()=>{
             this.fetchListForJoinerFromWiki();
           })
@@ -745,6 +756,8 @@ export default class GameBoard extends React.Component{
               </ScrollView>    
             </DialogContent>
       </Dialog>
+        
+        
         <View style={{flex:2,flexDirection:'row',marginTop:10}}>
           <View style={{flex:0.4,marginTop:'7%'}}>
             <Text style={{textAlign:'center',fontSize:21}}>You</Text>
@@ -758,11 +771,13 @@ export default class GameBoard extends React.Component{
             <Text style={{textAlign:'center',fontSize:24,color:'red'}}>{this.state.oponentPathCount}</Text>
           </View>
         </View> 
+        
+        
         <View flex={2} style={{alignContent:'space-between',flexDirection:'row',marginTop:10}}>
           <View flex={0.2}></View>
-          <View flex={0.6} style={{justifyContent:'center'}}>
+          <View flex={0.6} style={{justifyContent:'center',borderWidth:0.5,borderRadius:10}}>
             <View flex={0.3}>
-              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center'}}>Target</Text>
+              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',color:'#80D3A1'}}>Target</Text>
             </View>
             <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
               {this.state.user==this.state.creatorUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
@@ -803,7 +818,8 @@ export default class GameBoard extends React.Component{
           ? 
             <Text style={{textAlign:'center',fontSize:25}}>Wait for your turn🤓</Text>
           :
-            (<View flex={1} style={{marginTop:10}}>
+            (<View flex={1} style={{marginTop:15,borderWidth:1}}>
+              <Text style={{textAlign:'center',fontSize:15,fontWeight:'bold',color:'#96B2CC'}}>Choose an option</Text>
               <FlatGrid
                 itemDimension={100}
                 items={this.state.user==this.state.creatorUid ? listCreator : listJoiner }
@@ -812,13 +828,13 @@ export default class GameBoard extends React.Component{
                 // fixed
                 spacing={10}
                 renderItem={({ item, index }) => (
-                  <TouchableOpacity onPress={()=>this.getArticleInfo(item.title)}>
+                  <TouchableOpacity style={{overflow: 'hidden',borderRadius:20}} onPress={()=>this.getArticleInfo(item.title)}>
                     <ImageBackground source={{uri:item.image}} style={{ flex: 1}} resizeMode='stretch'>
                       <View style={[styles.itemContainer]}>
                         
                       </View>
                     </ImageBackground>
-                    <Text style={{textAlign:'center',fontSize:16}}>{item.title}</Text>
+                    <Text style={{textAlign:'center',fontSize:fontVertex,fontWeight:'100'}}>{item.title}</Text>
                   </TouchableOpacity>
                 )}
               />
@@ -828,9 +844,9 @@ export default class GameBoard extends React.Component{
         
         <View flex={2} style={{alignContent:'space-between',flexDirection:'row',marginBottom:20}}>
           <View flex={0.2}></View>
-          <View flex={0.6} style={{justifyContent:'center'}}>
+          <View flex={0.6} style={{justifyContent:'center',borderWidth:1}}>
             <View flex={0.3}>
-              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center'}}>Source</Text>
+              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',color:'#FFF189'}}>Source</Text>
             </View>
             <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
               {this.state.user==this.state.joinerUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
@@ -865,7 +881,7 @@ export default class GameBoard extends React.Component{
         </View>
         
        
-            <Footer  >
+            <Footer>
               <ImageBackground source={images.network} style={{width: '100%', height:footerHeight,color:'transparent'}}>
                 <FooterTab style={{backgroundColor:'transparent'}}>
                     <Button vertical onPress={this.openPathHistory}>

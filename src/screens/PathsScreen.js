@@ -90,7 +90,7 @@ else{
             marginLeft: 20,
             marginRight: 20,
             position:'relative',
-            zIndex:2
+            zIndex:2,
           },
           itemText: {
             fontSize: 22,
