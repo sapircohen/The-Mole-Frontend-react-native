@@ -864,7 +864,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.joinerUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:20}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:50}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -873,7 +873,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:20}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'50%'}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>

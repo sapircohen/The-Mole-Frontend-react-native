@@ -44,7 +44,10 @@ class RandArticle extends React.Component{
                   this.setState({imageUrl:data.query.pages[pgid].thumbnail.source,isReady:true})
                 }
                 else {
-                  this.setState({isReady:true})
+                  this.setState({
+                    isReady:true,
+                    imageUrl:'https://i.pinimg.com/originals/59/9a/2b/599a2b3ebc21325ff8f26bd6bf94ed61.jpg',
+                  })
                 }
               })
              })

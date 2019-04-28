@@ -39,15 +39,15 @@ export default class SettingsScreen extends Component {
   render() {
     return (
         <Container>
-            <View >
+            {/* <View >
             <Header style={{backgroundColor:"white"}} >
                 <Left >
                   <Title style={{color:"red"}}>PROFILE SETTINGS</Title>
                 </Left>
                 <Right />
               </Header>
-            </View>
-            <Content style={{marginBottom:"-10%"}}>
+            </View> */}
+            {/* <Content style={{marginBottom:"-10%"}}>
             <ListItem icon>
               <Left>
                 <Button style={{ backgroundColor: "#FF9501" }}>
@@ -74,7 +74,7 @@ export default class SettingsScreen extends Component {
                 <Switch onValueChange={()=>this.setState({NotificationsOn:!this.state.NotificationsOn})} value={this.state.NotificationsOn} />
               </Right>
             </ListItem>
-          </Content>
+          </Content> */}
               <Header style={{backgroundColor:"white"}} >
                 <Left >
                   <Title style={{color:"red"}}>SHARE THE APP</Title>
@@ -137,11 +137,11 @@ export default class SettingsScreen extends Component {
             </ListItem>
           </Content>
           <Content>
-            <Body>
+            {/* <Body>
               <Button success block>
                   <Text style={{fontSize:20}}>Save</Text>
                 </Button>
-            </Body>
+            </Body> */}
           </Content>  
         </Container>
     );
