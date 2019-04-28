@@ -10,7 +10,9 @@ import {FirebaseConfig} from './src/constant/ApiKeys';
 //initializing firebase for auth
 firebase.initializeApp(FirebaseConfig);
 
+I18nManager.forceRTL(false);
 I18nManager.allowRTL(false);
+
 console.disableYellowBox = true;
 
 export default class App extends React.Component {

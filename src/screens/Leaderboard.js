@@ -1,3 +1,5 @@
+
+
 import React,{Component} from 'react';
 import { Image } from "react-native";
 import { Container, Content, List, ListItem, Left, Body, Right, Thumbnail, Text,Button,Icon} from 'native-base';
@@ -5,6 +7,8 @@ import WikiLoader from '../common/WikiLoader';
 import {Box} from 'react-native-design-utility';
 import {images} from '../constant/images';
 import NetworkHeader from '../common/NetworkHeader';
+import { LongPressGestureHandler } from 'react-native-gesture-handler';
+
 
 
 //for example
@@ -28,15 +32,14 @@ export default class Leaderboard extends React.Component{
     }
     static navigationOptions = ({ navigation }) =>{
       return{
-          headerTitle: (
-              <Text style={{fontSize:35}}>🏆</Text>
-              //<Image style={{ width: 90, height: 50,flex:1 }} resizeMode='contain' source={images.logo}/>
-            ),
+        headerTitle: (
+          <Text style={{fontSize:35}}>🏆</Text>
+        ),
         headerBackground: (
           <NetworkHeader/>
         ),
         headerTitleStyle: { color: '#4D5F66',fontSize:23 },
-        headerRight:<Text></Text>,
+        headerRight:<Text style={{marginRight:10}}></Text>,
         headerLeft: 
           ( <Button
               onPress={()=>navigation.navigate('ChooseAGame')}
@@ -46,11 +49,21 @@ export default class Leaderboard extends React.Component{
           ),
           }
       }
+      //ברגע שהמסך מוכן - זאת הפונקציה הראשונה שמתבצעת
+      //document ready
     componentDidMount(){
-        //fetch all users from db ordered by number of wins
+      fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/playerwinners')
+      .then((response) => response.json())
+      .then((responseJson) => {
         this.setState({
-            isReady:true
+          isReady:true,
+          bestPlayers:responseJson
         })
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+        
     }
     render(){
         if (!this.state.isReady) {
@@ -65,15 +78,15 @@ export default class Leaderboard extends React.Component{
               <Content>
                 <List>
                 {
-                    list.map((l) => (
+                    this.state.bestPlayers.map((p) => (
                       
                           <ListItem avatar>
                             <Left>
-                              <Thumbnail source={{ uri: l.avatar_url }} />
+                              {/* //<Thumbnail source={{ uri: }} /> */}
                             </Left>
                             <Body>
-                          <Text style={{fontWeight:'bold'}}>{l.name}</Text>
-                          <Text note style={{color:'#7CCB9D',fontWeight:'bold'}}>3 wins</Text>
+                          <Text style={{fontWeight:'bold',textAlign:'left'}}>{p.NickName}</Text>
+                          <Text note style={{color:'#7CCB9D',fontWeight:'bold'}}>Number of wins: {p.NumOfWinnings}</Text>
                           </Body>
                       </ListItem>
                     ))
