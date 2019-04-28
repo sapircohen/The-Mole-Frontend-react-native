@@ -114,7 +114,8 @@ class ProfileScreen extends Component{
             .then((data)=>{
               this.setState({
                 playerCash:data.CashMole,
-                playerWins:data.NumOfWinnings
+                playerWins:data.NumOfWinnings,
+                userPic:data.ProfilePic
               })
             })
             .catch((error)=>{

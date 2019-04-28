@@ -2,13 +2,14 @@ import React,{ Component } from 'react';
 import FooterNavigator from '../common/Footer'
 import {Text} from 'react-native';
 import { Container,Icon } from 'native-base';
-import {StyleSheet, FlatList, View, Platform,Image} from 'react-native';
+import {Alert,StyleSheet, FlatList, View, Platform,Image} from 'react-native';
 import NetworkHeader from '../common/NetworkHeader';
 import {images} from '../constant/images';
 import Lightbox from 'react-native-lightbox/Lightbox/';
 import {Button} from 'react-native-elements';
 import BannerMole from '../common/BannerMole';
- 
+import firebase from 'firebase';
+
 const activeProps = {
   resizeMode: 'contain',
   flex: 1,
@@ -70,15 +71,16 @@ class AvatarScreen extends Component{
   }
     state = {
         GridViewItems: [
-          {key: images.avatar1},
-          {key: images.avatar2},
-          {key: images.avatar3},
-          {key: images.avatar4},
-          {key: images.avatar5},
-          {key: images.avatar6},
-          {key: images.avatar7},
-          {key: images.avatar8},
-          {key: images.avatar9},
+          {key: images.avatar1,name:'1'},
+          {key: images.avatar2,name:'2'},
+          {key: images.avatar3,name:'3'},
+          {key: images.avatar4,name:'4'},
+          {key: images.avatar5,name:'5'},
+          {key: images.avatar6,name:'6'},
+          {key: images.avatar7,name:'7'},
+          {key: images.avatar8,name:'8'},
+          {key: images.avatar9,name:'9'},
+          {key:firebase.auth().currentUser.photoURL,name:firebase.auth().currentUser.photoURL}
         ],
     }
     BackToProfileScreen = (screenName) =>{
@@ -91,18 +93,36 @@ class AvatarScreen extends Component{
       }
 
     changeToAvatar = (avatar)=>{
-        //ajaxCall("POST", "../api/Player?avatarUrl=netta&uid=sapir", "", success, error);
-        let LastLogin = 'https://proj/bgroup65/prod/Player?avatarUrl='+avatar+'&uid='+firebase.auth().currentUser.uid;
-        //         fetch(LastLogin, {
-        //           method: 'POST',
-        //           headers: {
-        //             Accept: 'application/json',
-        //             'Content-Type': 'application/json',
-        //           },
-        //         })
-        //         .catch((error)=>{
-        //           console.log(error);
-        //         });
+        let avatarUrl = 'http://proj.ruppin.ac.il/bgroup65/prod/img/'+avatar+'.png';
+        if (avatar.length>1) {
+          avatarUrl = avatar;
+        }      
+
+        let endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/PlayerAvatar?avatarUrl='+avatarUrl+'&uid='+firebase.auth().currentUser.uid;
+        console.log(endpoint);
+        fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          })
+          .then(()=>{
+            Alert.alert(
+              '',
+              'Profile pic changed🤩',
+              [
+                {
+                  text: "OK", 
+                  style:'default'
+                },
+              ],
+            );  
+            this.props.navigation.navigate('Profile');
+          })
+          .catch((error)=>{
+            console.log(error);
+          });
     }
     render(){
         return(
@@ -114,10 +134,10 @@ class AvatarScreen extends Component{
                     renderItem={({item}) =>
                         <View on style={styles.GridViewBlockStyle}>
                           <Lightbox activeProps={activeProps} pinchToZoom swipeToDismiss>
-                            <Image style={styles.GridViewInsideImageItemStyle} source={item.key} />
+                            <Image style={styles.GridViewInsideImageItemStyle} source={item.name.length>1?{uri:item.key}:item.key}/>
                           </Lightbox>
                           <Button 
-                            onPress={()=>this.changeToAvatar(item.key)}
+                            onPress={()=>this.changeToAvatar(item.name)}
                             title="take me!"
                             style={{paddingBottom:1,paddingTop:1}}
                             type='outline'

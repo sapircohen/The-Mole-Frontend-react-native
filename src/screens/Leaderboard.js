@@ -82,7 +82,7 @@ export default class Leaderboard extends React.Component{
                       
                           <ListItem avatar>
                             <Left>
-                              {/* //<Thumbnail source={{ uri: }} /> */}
+                              <Thumbnail source={{ uri: p.ProfilePic}} />
                             </Left>
                             <Body>
                           <Text style={{fontWeight:'bold',textAlign:'left'}}>{p.NickName}</Text>
