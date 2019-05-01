@@ -30,8 +30,8 @@ export default class FABSettings extends Component {
             {/* <Button onPress={this.goToSettings} name="settings" style={{ backgroundColor: '#808080'}}>
                 <Icon style={{fontSize:29}} name="md-settings" />
             </Button> */}
-            <Button onPress={this.goToIntro} name="instructions" on style={{ backgroundColor: '#4FB089' }}>
-                <Icon style={{fontSize:29}} name="ios-help-buoy" />
+            <Button onPress={this.goToIntro} name="instructions" on style={{ backgroundColor: '#81BFAF' }}>
+                <Icon style={{fontSize:30}} name="ios-help-buoy" />
             </Button>
           </Fab>
         </View>

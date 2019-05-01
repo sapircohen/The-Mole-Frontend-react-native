@@ -87,6 +87,8 @@ export default class GameBoard extends React.Component{
       creatorUid:'',
       category:'',
       newList:false,
+      notFount:false,
+      noNewCards:false
     }
     this.getArticleInfo =this.getArticleInfo.bind(this);
   }
@@ -463,8 +465,6 @@ export default class GameBoard extends React.Component{
           this.setState({
             creatorTarget:article,
             joinerCurrentNode:article
-          },()=>{
-            alert(this.state.creatorTarget.image)
           })  
         }
     })
@@ -556,7 +556,7 @@ export default class GameBoard extends React.Component{
   getDataOnTarget = (title)=>{    
         InfoTitle = title;
         InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects=';
-        alert(InfoApi);
+        //alert(InfoApi);
         myRequest = new Request(InfoApi, body); 
         fetch(myRequest)
         .then(response => response.json())
@@ -586,7 +586,7 @@ export default class GameBoard extends React.Component{
     });
   }
   nextMove = (articleMove)=>{
-    alert(articleMove.title)
+    //alert(articleMove.title)
     const ref =  firebase.database().ref("/theMole"+categoryPlayed);
     const gameRef = ref.child(currentGamekey);
     
@@ -595,6 +595,7 @@ export default class GameBoard extends React.Component{
       modalVisible: false,
       modalTargetVisible:false,
       pathVisible:false,
+      notFount:false
     },()=>{
       //check who's turn is it..
       if (this.state.user==this.state.creatorUid && !this.state.wait) {
@@ -610,9 +611,10 @@ export default class GameBoard extends React.Component{
           .then(response => response.json())
           .then((data)=>{
             
-            if (data[0][0]=='not found') {
-              this.getNewCards();
-              alert('no path from ' + articleMove.title + ' to ' + this.state.creatorTarget.title + ' try another article..')
+            if (data.length ===1) {
+              this.setState({
+                notFount:true
+              })
             }
             else{
               article={
@@ -650,8 +652,9 @@ export default class GameBoard extends React.Component{
           .then(response => response.json())
           .then((data)=>{
             if (data[0][0]=='not found') {
-              this.getNewCards();
-              alert('no path from ' + articleMove.title + ' to ' + this.state.joinerTarget.title + ' try another article..')
+              this.setState({
+                notFount:true
+              })
             }
             else{
               article={
@@ -686,6 +689,7 @@ export default class GameBoard extends React.Component{
 
   }
   changeCards = ()=>{
+
     if ((this.state.creatorUid === this.state.user && !this.state.wait) || (this.state.joinerUid === this.state.user && !this.state.wait)) {
           Alert.alert("Change cards",
           "Pass your turn and change cards?",
@@ -701,7 +705,15 @@ export default class GameBoard extends React.Component{
       )
     }
     else{
-      alert('wait for your turn...')
+      Alert.alert('‼️',
+      'wait for your turn...',
+      [
+      {
+        text: 'OK', 
+        style: 'destructive'
+      },
+      ],
+    )
     }
   }
   getNewCards = ()=>{
@@ -709,7 +721,6 @@ export default class GameBoard extends React.Component{
     
     if (this.state.user == this.state.creatorUid) {
       endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.creatorCurrentNode.title+'&categoryName='+categoryPlayed;
-      
     }
     if (this.state.user == this.state.joinerUid) {
       endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.joinerCurrentNode.title+'&categoryName='+categoryPlayed;
@@ -717,28 +728,42 @@ export default class GameBoard extends React.Component{
     fetch(endpoint)
       .then(response => response.json())
       .then((data)=>{
-        if (this.state.user == this.state.creatorUid) {
-          this.setState({
-            creatorVerteciesToChooseFrom:data,
-            timerStart:false
-          },()=>{
-            this.fetchListForcCreatorFromWiki();
-            const ref =  firebase.database().ref("/theMole"+categoryPlayed);
-            const gameRef = ref.child(currentGamekey);
-            gameRef.update(({'state': STATE.NEXTJoiner}));
-          })        
-        }
-        if (this.state.user == this.state.joinerUid) {
-          this.setState({
-            joinerVerteciesToChooseFrom:data,
-            timerStart:false
-          },()=>{
-            this.fetchListForJoinerFromWiki();
-            const ref =  firebase.database().ref("/theMole"+categoryPlayed);
-            const gameRef = ref.child(currentGamekey);
-            gameRef.update(({'state': STATE.NEXTCreator}));
-          })
-        }
+          if (data.length === 0 ) {
+            Alert.alert("😟",
+            'New cards are missing, please choose from the giving options.',
+            [
+            {
+              text: 'OK', 
+              style: 'destructive'
+            },
+            ],
+          )
+            return;
+          }
+          if (this.state.user == this.state.creatorUid) {
+            this.setState({
+              creatorVerteciesToChooseFrom:data,
+              timerStart:false,
+              noNewCards:false
+            },()=>{
+              this.fetchListForcCreatorFromWiki();
+              const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+              const gameRef = ref.child(currentGamekey);
+              gameRef.update(({'state': STATE.NEXTJoiner}));
+            })        
+          }
+          if (this.state.user == this.state.joinerUid) {
+            this.setState({
+              joinerVerteciesToChooseFrom:data,
+              timerStart:false
+            },()=>{
+              this.fetchListForJoinerFromWiki();
+              const ref =  firebase.database().ref("/theMole"+categoryPlayed);
+              const gameRef = ref.child(currentGamekey);
+              gameRef.update(({'state': STATE.NEXTCreator}));
+            })
+          }
+        
       })
       .catch((error)=>{
         console.log(error);
@@ -818,7 +843,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.creatorUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%'}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%',borderWidth:0.5}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -827,7 +852,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%'}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%',borderWidth:0.5}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -852,7 +877,11 @@ export default class GameBoard extends React.Component{
             // 
           :
             (<View flex={1} style={{marginTop:15}}>
+            {this.state.notFount ?
+              <Text style={{textAlign:'center',fontSize:18,fontWeight:'bold',color:'#96B2CC'}}>Lucky u, only one vertex found</Text>
+              :
               <Text style={{textAlign:'center',fontSize:18,fontWeight:'bold',color:'#96B2CC'}}>Choose an option</Text>
+            }
               <FlatGrid
                 itemDimension={80}
                 items={this.state.user==this.state.creatorUid ? listCreator : listJoiner }
@@ -893,7 +922,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.joinerUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%'}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%',borderWidth:0.5}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -902,7 +931,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%'}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%',borderWidth:0.5}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -917,20 +946,20 @@ export default class GameBoard extends React.Component{
         </View>
         
        
-            <Footer>
-              <ImageBackground source={images.network} style={{width: '100%', height:footerHeight,color:'transparent'}}>
-                <FooterTab style={{backgroundColor:'transparent'}}>
+        <Footer>
+          <ImageBackground source={images.network} style={{width: '100%', height:footerHeight,color:'transparent'}}>
+            <FooterTab style={{backgroundColor:'transparent'}}>
                     {/* <Button vertical onPress={this.openPathHistory}>
                       <Icon style={styles.iconStyleFlag} name="ios-flag" />
                     </Button> */}
-                    <View></View>
-                    <Button vertical onPress={this.changeCards}>
-                      <Icon style={styles.iconStyleSync} name="ios-sync" />
-                    </Button>
-                    <View></View>
-                </FooterTab>
-              </ImageBackground>
-            </Footer>
+              <View></View>
+              <Button vertical onPress={this.changeCards}>
+                <Icon style={styles.iconStyleSync} name="ios-sync" />
+              </Button>
+              <View></View>
+            </FooterTab>
+          </ImageBackground>
+        </Footer>
        
     </View>
     )
@@ -963,8 +992,8 @@ const styles = StyleSheet.create({
   },
   iconStyleSync:{
     backgroundColor:'transparent',
-    color:'#CBC1DE',
-    fontSize:33
+    color:'#000',
+    fontSize:38
   },
   iconStyleFlag:{
     backgroundColor:'transparent',
