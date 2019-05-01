@@ -3,11 +3,14 @@ import { I18nManager,ActivityIndicator} from 'react-native';
 import {UtilityThemeProvider, Box,Text} from 'react-native-design-utility';
 
 import Navigation from './src/screens/index';
+
+
+
 import {images} from './src/constant/images';
 import {cacheImages} from './src/utils/cachImage';
 import firebase from 'firebase';
 import {FirebaseConfig} from './src/constant/ApiKeys';
-//initializing firebase for auth
+//initializing firebase for auth + game managment
 firebase.initializeApp(FirebaseConfig);
 
 I18nManager.forceRTL(false);

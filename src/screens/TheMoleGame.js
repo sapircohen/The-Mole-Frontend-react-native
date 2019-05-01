@@ -11,16 +11,28 @@ import { FlatGrid } from 'react-native-super-grid';
 import CountdownTimer from "../common/countdown";
 import Dialog, {DialogTitle, DialogFooter, DialogButton, DialogContent } from 'react-native-popup-dialog';
 
+import {
+  BallIndicator,
+  BarIndicator,
+  DotIndicator,
+  MaterialIndicator,
+  PacmanIndicator,
+  PulseIndicator,
+  SkypeIndicator,
+  UIActivityIndicator,
+  WaveIndicator
+} from 'react-native-indicators';
+
 let InfoTitle='Google';
 let InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects='
 const body = { method: 'GET', dataType: 'json'};
 let myRequest = new Request(InfoApi, body); 
 
-let fontVertex = 12;
+let fontVertex = 10;
 let marTop = 38;
 let footerHeight = 60;
 if (Platform.OS==='ios') {
-  fontVertex = 16;
+  fontVertex = 12;
   marTop = 20;
   footerHeight = 80;
 }
@@ -74,7 +86,7 @@ export default class GameBoard extends React.Component{
       joinerUid:'',
       creatorUid:'',
       category:'',
-      newList:false
+      newList:false,
     }
     this.getArticleInfo =this.getArticleInfo.bind(this);
   }
@@ -383,7 +395,7 @@ export default class GameBoard extends React.Component{
     listCreator = [];
     //fetch joiner vertecies to choose from
     this.state.joinerVerteciesToChooseFrom.map((item,key)=>{
-      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=1400';
       fetch(API)
         .then(response => response.json())
         .then(data => {
@@ -406,7 +418,7 @@ export default class GameBoard extends React.Component{
     })
     //fetch creator vertecies to choose from
     this.state.creatorVerteciesToChooseFrom.map((item,key)=>{
-      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=1400';
       fetch(API)
         .then(response => response.json())
         .then(data => {
@@ -428,7 +440,7 @@ export default class GameBoard extends React.Component{
       })
     })
     //fetch creator target 
-    let API1 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.CreatorPath.target+'&prop=pageimages&format=json&pithumbsize=600';
+    let API1 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.CreatorPath.target+'&prop=pageimages&format=json&pithumbsize=1400';
       fetch(API1)
         .then(response => response.json())
         .then(data => {
@@ -439,7 +451,8 @@ export default class GameBoard extends React.Component{
             image:data.query.pages[pgid].thumbnail.source
           }
           this.setState({
-            creatorTarget:article
+            creatorTarget:article,
+            joinerCurrentNode:article
           })
         }
         else {
@@ -448,14 +461,15 @@ export default class GameBoard extends React.Component{
             image:categoryImage,
           }
           this.setState({
-            creatorTarget:article
+            creatorTarget:article,
+            joinerCurrentNode:article
           },()=>{
             alert(this.state.creatorTarget.image)
           })  
         }
     })
     //fetch joiner target 
-    let API2 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.JoinerPath.target+'&prop=pageimages&format=json&pithumbsize=600';
+    let API2 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.JoinerPath.target+'&prop=pageimages&format=json&pithumbsize=1400';
     fetch(API2)
       .then(response => response.json())
       .then(data => {
@@ -466,7 +480,8 @@ export default class GameBoard extends React.Component{
           image:data.query.pages[pgid].thumbnail.source
         }
         this.setState({
-          joinerTarget:article
+          joinerTarget:article,
+          creatorCurrentNode:article
         })
       }
       else {
@@ -475,7 +490,8 @@ export default class GameBoard extends React.Component{
           image:categoryImage,
         }
         this.setState({
-          joinerTarget:article
+          joinerTarget:article,
+          creatorCurrentNode:article
         })
       }
     })
@@ -509,9 +525,9 @@ export default class GameBoard extends React.Component{
         gameRef.update(({'state': STATE.NEXTCreator}));
     }
   }
-  getArticleInfo(title){
+  getArticleInfo(article){
     //get article info from wikipedia.
-      InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+title+'&redirects=';
+      InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+article.title+'&redirects=';
       myRequest = new Request(InfoApi, body); 
       fetch(myRequest)
         .then(response => response.json())
@@ -519,7 +535,7 @@ export default class GameBoard extends React.Component{
           console.log(data)
           var pageid = Object.keys(data.query.pages)[0];
           Alert.alert(
-            title,
+            article.title,
             data.query.pages[pageid].extract,
             [
               {
@@ -529,7 +545,7 @@ export default class GameBoard extends React.Component{
               },
               {
                 text: "Let's go!", 
-                onPress: () => {this.nextMove(title)},
+                onPress: () => {this.nextMove(article)},
                 style:'default'
               },
             ],
@@ -569,7 +585,8 @@ export default class GameBoard extends React.Component{
       pathVisible:false,
     });
   }
-  nextMove = (title)=>{
+  nextMove = (articleMove)=>{
+    alert(articleMove.title)
     const ref =  firebase.database().ref("/theMole"+categoryPlayed);
     const gameRef = ref.child(currentGamekey);
     
@@ -582,23 +599,24 @@ export default class GameBoard extends React.Component{
       //check who's turn is it..
       if (this.state.user==this.state.creatorUid && !this.state.wait) {
         //1. check if chosen node equal to target
-        if (this.state.creatorTarget.title==title) {
+        if (this.state.creatorTarget.title==articleMove.title) {
           //we have a winner.
           gameRef.update(({'state': STATE.WINCreator}));
         }
         else{
-          let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetPath/?source='+title+'&target='+this.state.creatorTarget.title+'&categoryNAME='+this.state.category;
+          let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetPath/?source='+articleMove.title+'&target='+this.state.creatorTarget.title+'&categoryNAME='+this.state.category;
           console.log(uri);
           fetch(uri)
           .then(response => response.json())
           .then((data)=>{
+            
             if (data[0][0]=='not found') {
               this.getNewCards();
-              alert('no path from ' + title + ' to ' + this.state.creatorTarget.title + ' try another article..')
+              alert('no path from ' + articleMove.title + ' to ' + this.state.creatorTarget.title + ' try another article..')
             }
             else{
               article={
-                title:title,
+                title:articleMove.title,
                 image:images.logo
               }
               list.push(article);
@@ -608,7 +626,7 @@ export default class GameBoard extends React.Component{
               this.setState({
                 creatorVerteciesToChooseFrom:[firstVertex,...TwoMore],
                 yourPathCount:data[0].length,
-                creatorCurrentNode:title
+                creatorCurrentNode:articleMove
               },()=>{
                 this.fetchListForcCreatorFromWiki();
                 this.changeTurn();
@@ -621,23 +639,23 @@ export default class GameBoard extends React.Component{
       //JOINER METHODS
       if (this.state.user==this.state.joinerUid && !this.state.wait) {
         //1. check if chosen node equal to target
-        if (this.state.joinerTarget.title==title) {
+        if (this.state.joinerTarget.title==articleMove.title) {
           //we have a winner.
           gameRef.update(({'state': STATE.WINJoiner}));
         }
         else{
-          let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source='+title+'&target='+this.state.joinerTarget.title+'&categoryNAME='+this.state.category;
+          let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source='+articleMove.title+'&target='+this.state.joinerTarget.title+'&categoryNAME='+this.state.category;
           console.log(uri);
           fetch(uri)
           .then(response => response.json())
           .then((data)=>{
             if (data[0][0]=='not found') {
               this.getNewCards();
-              alert('no path from ' + title + ' to ' + this.state.joinerTarget.title + ' try another article..')
+              alert('no path from ' + articleMove.title + ' to ' + this.state.joinerTarget.title + ' try another article..')
             }
             else{
               article={
-                title:title,
+                title:articleMove.title,
                 image:images.logo
               }
               list.push(article);
@@ -649,7 +667,7 @@ export default class GameBoard extends React.Component{
               this.setState({
                 joinerVerteciesToChooseFrom:[firstVertex,...TwoMore],
                 yourPathCount:data[0].length,
-                joinerCurrentNode:title
+                joinerCurrentNode:articleMove
               },()=>{
                 this.fetchListForJoinerFromWiki();
                 this.changeTurn();
@@ -668,28 +686,33 @@ export default class GameBoard extends React.Component{
 
   }
   changeCards = ()=>{
-    Alert.alert("Change cards",
-        "Pass your turn and change cards?",
-        [
-        {
-          text: 'OK', 
-          onPress: this.getNewCards,
-          style: 'destructive'
-        },
-        {text: 'CANCEL'},
-        ],
-        {cancelable: true}
-    )
+    if ((this.state.creatorUid === this.state.user && !this.state.wait) || (this.state.joinerUid === this.state.user && !this.state.wait)) {
+          Alert.alert("Change cards",
+          "Pass your turn and change cards?",
+          [
+          {
+            text: 'OK', 
+            onPress: this.getNewCards,
+            style: 'destructive'
+          },
+          {text: 'CANCEL'},
+          ],
+          {cancelable: true}
+      )
+    }
+    else{
+      alert('wait for your turn...')
+    }
   }
   getNewCards = ()=>{
     let endpoint = '';
     
     if (this.state.user == this.state.creatorUid) {
-      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.creatorCurrentNode+'&categoryName='+categoryPlayed;
+      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.creatorCurrentNode.title+'&categoryName='+categoryPlayed;
       
     }
     if (this.state.user == this.state.joinerUid) {
-      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.joinerCurrentNode+'&categoryName='+categoryPlayed;
+      endpoint = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetRandomVerteciesFromVertex3/?source='+this.state.joinerCurrentNode.title+'&categoryName='+categoryPlayed;
     }
     fetch(endpoint)
       .then(response => response.json())
@@ -795,7 +818,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.creatorUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:30}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%'}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -804,7 +827,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:30}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%'}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -823,25 +846,31 @@ export default class GameBoard extends React.Component{
           {
             this.state.wait 
           ? 
-            <Text style={{textAlign:'center',fontSize:25}}>Wait for your turn🤓</Text>
+            <Box f={1} center bg="white">
+              <BarIndicator color='#E8C5F7'/>
+            </Box>
+            // 
           :
             (<View flex={1} style={{marginTop:15}}>
               <Text style={{textAlign:'center',fontSize:18,fontWeight:'bold',color:'#96B2CC'}}>Choose an option</Text>
               <FlatGrid
-                itemDimension={100}
+                itemDimension={80}
                 items={this.state.user==this.state.creatorUid ? listCreator : listJoiner }
                 style={styles.gridView}
                 //staticDimension={300}
                 // fixed
-                spacing={10}
+                spacing={20}
                 renderItem={({ item, index }) => (
-                  <TouchableOpacity onPress={()=>this.getArticleInfo(item.title)}>
-                    <ImageBackground source={{uri:item.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:40}} resizeMode='stretch'>
+                  <TouchableOpacity onPress={()=>this.getArticleInfo(item)}>
+                    <ImageBackground source={{uri:item.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:"5%",borderWidth:1}} resizeMode='stretch'>
                       <View style={[styles.itemContainer]}>
                         
                       </View>
                     </ImageBackground>
-                    <Text style={{textAlign:'center',fontSize:fontVertex,fontWeight:'100'}}>{item.title}</Text>
+                    <Text style={{textAlign:'center',fontSize:fontVertex,fontWeight:'100'}}>{item.title}
+                    {`
+            
+                    `}</Text>
                   </TouchableOpacity>
                 )}
               />
@@ -856,7 +885,7 @@ export default class GameBoard extends React.Component{
               <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',color:'#F2BBAD'}}>Source</Text>
             </View>
             <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
-              {this.state.user==this.state.joinerUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
+              {this.state.user==this.state.joinerUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.joinerCurrentNode.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.creatorCurrentNode.title}</Text>}
             </View>
             <View flex={0.5} style={{flexDirection:'row',marginTop:10}}>
               <View flex={0.3}></View>
@@ -864,7 +893,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.joinerUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:50}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%'}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -873,7 +902,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'50%'}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%'}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -891,12 +920,14 @@ export default class GameBoard extends React.Component{
             <Footer>
               <ImageBackground source={images.network} style={{width: '100%', height:footerHeight,color:'transparent'}}>
                 <FooterTab style={{backgroundColor:'transparent'}}>
-                    <Button vertical onPress={this.openPathHistory}>
+                    {/* <Button vertical onPress={this.openPathHistory}>
                       <Icon style={styles.iconStyleFlag} name="ios-flag" />
-                    </Button>
+                    </Button> */}
+                    <View></View>
                     <Button vertical onPress={this.changeCards}>
                       <Icon style={styles.iconStyleSync} name="ios-sync" />
                     </Button>
+                    <View></View>
                 </FooterTab>
               </ImageBackground>
             </Footer>
@@ -911,6 +942,9 @@ export default class GameBoard extends React.Component{
 const styles = StyleSheet.create({
   gridView: {
     flex: 1,
+    marginTop:'1%',
+    alignContent:'space-between',
+    justifyContent:'space-between',
   },
   itemContainer: {
     justifyContent: 'space-between',

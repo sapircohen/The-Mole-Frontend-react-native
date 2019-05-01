@@ -29,6 +29,7 @@
     "react-native-fcm": "^16.2.4",
     "react-native-firebase": "^5.2.3",
     "react-native-foldview": "^1.2.1",
+    "react-native-indicators": "^0.13.0",
     "react-native-interactable": "^0.1.10",
     "react-native-lightbox": "^0.8.0",
     "react-native-modal": "^9.0.0",
