@@ -1,3 +1,4 @@
+
 export const images ={
         logo: require('../../assets/images/rsz_logo33-03.jpg'),
         network:require('../../assets/images/Network.jpg'),
@@ -33,5 +34,6 @@ export const images ={
         bomb7:require('../../assets/images/7Bombs.png'),
         SIXDOW:require('../../assets/images/SixDegreesOfWikipedia.png'),
         noImage: require('../../assets/images/noImage.png'),
-        path:require('../../assets/images/vertex-path.png')
+        path:require('../../assets/images/vertex-path.png'),
+        networkgIF:require('../../assets/images/animat-network-color.gif'),
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import {Alert,StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,Platform,TouchableHighlight} from "react-native";
+import {Alert,StyleSheet,Image,Text,View,ImageBackground,TouchableOpacity,ScrollView,Platform} from "react-native";
 import {Box} from 'react-native-design-utility'
 import NetworkHeader from '../common/NetworkHeader';
 import {Button,Icon,List, ListItem, Left, Body,Container, Content, Footer, FooterTab } from 'native-base';
@@ -9,18 +9,12 @@ import WikiLoader from '../common/WikiLoader';
 import { storageGet } from "../constant/Storage";
 import { FlatGrid } from 'react-native-super-grid';
 import CountdownTimer from "../common/countdown";
-import Dialog, {DialogTitle, DialogFooter, DialogButton, DialogContent } from 'react-native-popup-dialog';
+import Dialog, {DialogTitle, DialogButton, DialogContent } from 'react-native-popup-dialog';
 
 import {
   BallIndicator,
   BarIndicator,
-  DotIndicator,
-  MaterialIndicator,
-  PacmanIndicator,
-  PulseIndicator,
-  SkypeIndicator,
-  UIActivityIndicator,
-  WaveIndicator
+  
 } from 'react-native-indicators';
 
 let InfoTitle='Google';
@@ -540,7 +534,6 @@ export default class GameBoard extends React.Component{
             [
               {
                 text: 'Cancel',
-                //onPress: () => {this._handleNotificationForeGround(false,data.key,data.category)},
                 style: 'cancel',
               },
               {
@@ -556,7 +549,6 @@ export default class GameBoard extends React.Component{
   getDataOnTarget = (title)=>{    
         InfoTitle = title;
         InfoApi = 'http://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exlimit=1&explaintext&exintro&titles='+InfoTitle+'&redirects=';
-        //alert(InfoApi);
         myRequest = new Request(InfoApi, body); 
         fetch(myRequest)
         .then(response => response.json())
@@ -843,7 +835,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.creatorUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%',borderWidth:0.5}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -852,7 +844,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%',borderWidth:0.5}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -874,7 +866,6 @@ export default class GameBoard extends React.Component{
             <Box f={1} center bg="white">
               <BarIndicator color='#E8C5F7'/>
             </Box>
-            // 
           :
             (<View flex={1} style={{marginTop:15}}>
             {this.state.notFount ?
@@ -891,7 +882,7 @@ export default class GameBoard extends React.Component{
                 spacing={20}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity onPress={()=>this.getArticleInfo(item)}>
-                    <ImageBackground source={{uri:item.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:"5%",borderWidth:1}} resizeMode='stretch'>
+                    <ImageBackground source={{uri:item.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:1}} resizeMode='stretch'>
                       <View style={[styles.itemContainer]}>
                         
                       </View>
@@ -922,7 +913,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.joinerUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%',borderWidth:0.5}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -931,7 +922,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:'5%',borderWidth:0.5}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
