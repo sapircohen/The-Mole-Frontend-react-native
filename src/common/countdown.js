@@ -29,10 +29,11 @@ class CountdownTimer extends React.Component{
           const m = minutes < 10 ? '0' + minutes : minutes;
           let h = hours < 10 ? '0' + hours : hours;
           h = h === '00' ? '' : h + ':';
-          return h + m + ':' + s;
+          return s;
+          // h + m + ':' +
         }}
         allowFontScaling={true}
-        style={{ fontSize: 20 }}
+        style={{ fontSize: 22 }}
       />
     </View>)
     }

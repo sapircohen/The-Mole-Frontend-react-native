@@ -277,7 +277,24 @@ export default class GameBoard extends React.Component{
       }   
       return(
         <Box f={1} center bg="white">
-          <Text>No open games:(</Text>
+          <Text style={{fontSize:20}}>
+          {`
+          No open games:(
+          Would u like to Open a game?`}
+          </Text>
+          <View style={{marginTop:10,flexDirection:'row',alignContent:'space-between'}}>
+              
+              <View style={{marginRight:'5%'}}>
+                <Button onPress={()=>this.props.navigation.navigate('Profile')} style={{padding:10}} bordered warning>
+                  <Text>Nope</Text>
+                </Button>
+              </View>
+              <View >
+                <Button onPress={()=>this.props.navigation.navigate('Categories')} style={{padding:10}} bordered success >
+                  <Text>Create a game</Text>
+                </Button >
+              </View>
+            </View>
         </Box>
       )
     }

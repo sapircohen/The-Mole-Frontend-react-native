@@ -23,7 +23,7 @@ const body = { method: 'GET', dataType: 'json'};
 let myRequest = new Request(InfoApi, body); 
 
 let fontVertex = 10;
-let marTop = 38;
+let marTop = 10;
 let footerHeight = 60;
 if (Platform.OS==='ios') {
   fontVertex = 12;
@@ -53,6 +53,7 @@ export default class GameBoard extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      noPath:false,
       isStarted:false,
       modalTargetVisible:false,
       yourPathCount:0,
@@ -97,13 +98,13 @@ export default class GameBoard extends React.Component{
       ),
       headerTitleStyle: { color: '#4D5F66',fontSize:23 },
       headerRight:<Text></Text>,
-      headerLeft: 
-        ( <Button
-            onPress={()=>navigation.navigate('ChooseAGame')}
-            style={{backgroundColor:"transparent",elevation:0}}>
-            <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
-          </Button>
-        ),
+      headerLeft: <Text></Text>,
+        // ( <Button
+        //     onPress={()=>navigation.navigate('ChooseAGame')}
+        //     style={{backgroundColor:"transparent",elevation:0}}>
+        //     <Icon style={{color:"#4D5F66",fontSize:32}}  name="ios-arrow-round-back" />
+        //   </Button>
+        // ),
     }
   }
   componentDidMount(){
@@ -330,7 +331,7 @@ export default class GameBoard extends React.Component{
     listCreator = [];
     //fetch creator vertecies to choose from
     this.state.creatorVerteciesToChooseFrom.map((item,key)=>{
-      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=800';
       fetch(API)
         .then(response => response.json())
         .then(data => {
@@ -360,7 +361,7 @@ export default class GameBoard extends React.Component{
     listJoiner = [];
     //fetch creator vertecies to choose from
     this.state.joinerVerteciesToChooseFrom.map((item,key)=>{
-      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=400';
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=800';
       fetch(API)
         .then(response => response.json())
         .then(data => {
@@ -391,7 +392,7 @@ export default class GameBoard extends React.Component{
     listCreator = [];
     //fetch joiner vertecies to choose from
     this.state.joinerVerteciesToChooseFrom.map((item,key)=>{
-      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=1400';
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=800';
       fetch(API)
         .then(response => response.json())
         .then(data => {
@@ -414,7 +415,7 @@ export default class GameBoard extends React.Component{
     })
     //fetch creator vertecies to choose from
     this.state.creatorVerteciesToChooseFrom.map((item,key)=>{
-      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=1400';
+      let API = 'https://en.wikipedia.org/w/api.php?action=query&titles='+item+'&prop=pageimages&format=json&pithumbsize=800';
       fetch(API)
         .then(response => response.json())
         .then(data => {
@@ -436,7 +437,7 @@ export default class GameBoard extends React.Component{
       })
     })
     //fetch creator target 
-    let API1 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.CreatorPath.target+'&prop=pageimages&format=json&pithumbsize=1400';
+    let API1 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.CreatorPath.target+'&prop=pageimages&format=json&pithumbsize=800';
       fetch(API1)
         .then(response => response.json())
         .then(data => {
@@ -463,7 +464,7 @@ export default class GameBoard extends React.Component{
         }
     })
     //fetch joiner target 
-    let API2 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.JoinerPath.target+'&prop=pageimages&format=json&pithumbsize=1400';
+    let API2 = 'https://en.wikipedia.org/w/api.php?action=query&titles='+game.JoinerPath.target+'&prop=pageimages&format=json&pithumbsize=800';
     fetch(API2)
       .then(response => response.json())
       .then(data => {
@@ -529,17 +530,17 @@ export default class GameBoard extends React.Component{
           console.log(data)
           var pageid = Object.keys(data.query.pages)[0];
           Alert.alert(
-            article.title,
+            article.title + '🏁',
             data.query.pages[pageid].extract,
             [
               {
                 text: 'Cancel',
-                style: 'cancel',
+                style: {color:'red'},
               },
               {
                 text: "Let's go!", 
                 onPress: () => {this.nextMove(article)},
-                style:'default'
+                style:{color:'green'},
               },
             ],
             {cancelable: true},
@@ -608,6 +609,19 @@ export default class GameBoard extends React.Component{
                 notFount:true
               })
             }
+            else if (data.length===0) {
+              Alert.alert(
+                'No path 🏁',
+                'there is no path from ' +articleMove.title+ ' to ' +this.state.joinerTarget.title+' ,Try again next turn',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                ],
+                {cancelable: true},
+              );  
+            }
             else{
               article={
                 title:articleMove.title,
@@ -623,9 +637,11 @@ export default class GameBoard extends React.Component{
                 creatorCurrentNode:articleMove
               },()=>{
                 this.fetchListForcCreatorFromWiki();
-                this.changeTurn();
               })
             }
+          })
+          .then(()=>{
+            this.changeTurn();
           })
         }
       }
@@ -638,15 +654,28 @@ export default class GameBoard extends React.Component{
           gameRef.update(({'state': STATE.WINJoiner}));
         }
         else{
-          let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/network/?source='+articleMove.title+'&target='+this.state.joinerTarget.title+'&categoryNAME='+this.state.category;
+          let uri = 'https://proj.ruppin.ac.il/bgroup65/prod/api/networkGetPath/?source='+articleMove.title+'&target='+this.state.joinerTarget.title+'&categoryNAME='+this.state.category;
           console.log(uri);
           fetch(uri)
           .then(response => response.json())
           .then((data)=>{
-            if (data[0][0]=='not found') {
+            if (data.length === 1) {
               this.setState({
                 notFount:true
               })
+            }
+            else if (data.length===0) {
+              Alert.alert(
+                'No path 🏁',
+                'there is no path from ' +articleMove.title+ ' to ' +this.state.joinerTarget.title+' ,Try again next turn',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                ],
+                {cancelable: true},
+              );  
             }
             else{
               article={
@@ -665,9 +694,12 @@ export default class GameBoard extends React.Component{
                 joinerCurrentNode:articleMove
               },()=>{
                 this.fetchListForJoinerFromWiki();
-                this.changeTurn();
+                
               })
             }
+          })
+          .then(()=>{
+            this.changeTurn();
           })
         }
       }
@@ -805,37 +837,40 @@ export default class GameBoard extends React.Component{
       </Dialog>
         
         
-        <View style={{flex:2,flexDirection:'row',marginTop:10}}>
-          <View style={{flex:0.4,marginTop:'7%'}}>
-            <Text style={{textAlign:'center',fontSize:21}}>You</Text>
-            <Text style={{textAlign:'center',fontSize:24,color:'green'}}>{this.state.yourPathCount}</Text>
+        <View style={{flex:1,borderWidth:Platform.OS==='ios'?0.4:0,flexDirection:'row',marginTop:Platform.OS==='ios'?10:5}}>
+          <View style={{flex:0.4,marginTop:Platform.OS==='ios'?'6%':'5%'}}>
+            <Text style={{textAlign:'center',fontSize:16,color:'black'}}>
+            {`Your steps`}</Text>
+
+            <Text style={{textAlign:'center',fontSize:20,color:'green'}}>{this.state.yourPathCount-1}</Text>
           </View>
-          <View style={{flex:0.2,marginTop:'7%'}}>
+          <View style={{flex:0.2,padding:0,marginTop:'1%'}}>
             <CountdownTimer startAgain={this.state.timerStart} Expired={this.TimerExpired}/>
           </View>
-          <View style={{flex:0.4,marginTop:'7%'}}>
-            <Text style={{textAlign:'center',fontSize:21}}>Opponent</Text>
-            <Text style={{textAlign:'center',fontSize:24,color:'red'}}>{this.state.oponentPathCount}</Text>
+          <View style={{flex:0.4,marginTop:Platform.OS==='ios'?'6%':'5%'}}>
+            <Text style={{textAlign:'center',fontSize:16,color:'black'}}>
+            {`Oponnent steps`}</Text>
+            <Text style={{textAlign:'center',fontSize:20,color:'red'}}>{this.state.oponentPathCount-1}</Text>
           </View>
         </View> 
         
         
-        <View flex={2} style={{alignContent:'space-between',flexDirection:'row',marginTop:10}}>
+        <View flex={Platform.OS==='ios'?2:3} style={{alignContent:'space-between',flexDirection:'row',marginTop:Platform.OS==='ios'?15:20}}>
           <View flex={0.2}></View>
           <View flex={0.6} style={{justifyContent:'center'}}>
             <View flex={0.3}>
-              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',color:'#80D3A1'}}>Target</Text>
+              <Text style={{fontWeight:'bold',fontSize:20,textAlign:'center',color:'#000'}}>🏁Target🏁</Text>
             </View>
             <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?1:4),overflow:'visible'}}>
               {this.state.user==this.state.creatorUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.creatorTarget.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.joinerTarget.title}</Text>}
             </View>
-            <View flex={0.5} style={{flexDirection:'row',marginTop:10}}>
+            <View flex={1.2} style={{flexDirection:'row',marginTop:10}}>
               <View flex={0.3}></View>
               <View flex={0.4}>
                   {this.state.user==this.state.creatorUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:110}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -844,7 +879,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:110}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -859,15 +894,20 @@ export default class GameBoard extends React.Component{
         </View>
        
        
-        <View style={{flex:3,marginTop:marTop}}>
+        <View style={{flex:Platform.OS==='ios'?3:4,marginTop:marTop}}>
           {
             this.state.wait 
           ? 
-            <Box f={1} center bg="white">
-              <BarIndicator color='#E8C5F7'/>
+            <Box f={1} center>
+              <Box f={0.5} center bg="white">
+                <BarIndicator color='#242A2C'/>
+              </Box>
+              <Box f={0.5}>
+                <Text style={{textAlign:'center',fontSize:Platform.OS==='ios'?22:15,fontFamily:'sans-serif-thin'}}>Wait for your turn...</Text>
+              </Box>
             </Box>
           :
-            (<View flex={1} style={{marginTop:15}}>
+            (<View flex={3} style={{marginTop:15}}>
             {this.state.notFount ?
               <Text style={{textAlign:'center',fontSize:18,fontWeight:'bold',color:'#96B2CC'}}>Lucky u, only one vertex found</Text>
               :
@@ -882,7 +922,7 @@ export default class GameBoard extends React.Component{
                 spacing={20}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity onPress={()=>this.getArticleInfo(item)}>
-                    <ImageBackground source={{uri:item.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:1}} resizeMode='stretch'>
+                    <ImageBackground source={{uri:item.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:1,height:Platform.OS==='ios'?120:80}} resizeMode='stretch'>
                       <View style={[styles.itemContainer]}>
                         
                       </View>
@@ -898,22 +938,22 @@ export default class GameBoard extends React.Component{
           }
         </View>
         
-        <View flex={2} style={{alignContent:'space-between',flexDirection:'row',marginBottom:20}}>
+        <View flex={Platform.OS==='ios'?2:3} style={{alignContent:'space-between',flexDirection:'row',marginBottom:20}}>
           <View flex={0.2}></View>
           <View flex={0.6} style={{justifyContent:'center'}}>
             <View flex={0.3}>
-              <Text style={{fontWeight:'bold',fontSize:18,textAlign:'center',color:'#F2BBAD'}}>Source</Text>
+              <Text style={{fontWeight:'bold',fontSize:20,textAlign:'center',color:'#242A2C'}}>Source🚩</Text>
             </View>
-            <View flex={0.2} style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
+            <View flex={0.2}  style={{fontWeight:'bold',textAlign:'center',marginTop:(Platform.OS==='ios'?2:4)}}>
               {this.state.user==this.state.joinerUid ?<Text style={{textAlign:'center',fontSize:13}}>{this.state.joinerCurrentNode.title}</Text>:<Text style={{textAlign:'center',fontSize:15}}>{this.state.creatorCurrentNode.title}</Text>}
             </View>
-            <View flex={0.5} style={{flexDirection:'row',marginTop:10}}>
+            <View flex={1.2} style={{flexDirection:'row',marginTop:10}}>
               <View flex={0.3}></View>
               <View flex={0.4}>
                   {this.state.user==this.state.joinerUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.joinerCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:120}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -922,7 +962,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5}} resizeMode='stretch'>
+                      <ImageBackground source={{uri: this.state.creatorCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:120}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -946,6 +986,7 @@ export default class GameBoard extends React.Component{
               <View></View>
               <Button vertical onPress={this.changeCards}>
                 <Icon style={styles.iconStyleSync} name="ios-sync" />
+                <Text style={{fontSize:Platform.OS==='ios'?20:10}}>Change Cards</Text>
               </Button>
               <View></View>
             </FooterTab>
@@ -962,7 +1003,7 @@ export default class GameBoard extends React.Component{
 const styles = StyleSheet.create({
   gridView: {
     flex: 1,
-    marginTop:'1%',
+    marginTop:'0%',
     alignContent:'space-between',
     justifyContent:'space-between',
   },

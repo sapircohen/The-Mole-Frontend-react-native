@@ -20,17 +20,15 @@ class ProfileScreen extends Component{
     static navigationOptions = ({ navigation }) =>{
     return{
       headerTitle: (
-        <Image style={{ width: 90, height: 50,flex:1 }} resizeMode="contain" source={images.logo}/>
+        <Image style={{ width: 90, height: 40,flex:1 }} resizeMode="contain" source={images.logo}/>
       ),
-      headerBackground: (
-        <NetworkHeader/>
-      ),
+      headerBackgroundStyle: {backgroundColor:'#000'},
       //headerTitleStyle: { color: '#4D5F66',fontSize:23,alignSelf: 'center' },
       headerRight: 
        ( <Button
           onPress={()=>navigation.navigate('Article')}
           style={{backgroundColor:"transparent",elevation:0}}>
-            <Icon style={{color:"#8D3BC8",fontSize:35}}  name="md-paper" />
+            <Icon style={{color:"#2DA3BD",fontSize:35}}  name="md-paper" />
         </Button>
        ),
       headerLeft: 

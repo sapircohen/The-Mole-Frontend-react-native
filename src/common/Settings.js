@@ -23,16 +23,10 @@ export default class FABSettings extends Component {
             active={this.state.active}
             direction="up"
             containerStyle={{ }}
-            style={{ backgroundColor: '#E6E386' }}
+            style={{ backgroundColor: '#AC98D3',fontSize:25 }}
             position="bottomLeft"
-            onPress={() => this.setState({ active: !this.state.active })}>
-            <Icon name="ios-options" />
-            {/* <Button onPress={this.goToSettings} name="settings" style={{ backgroundColor: '#808080'}}>
-                <Icon style={{fontSize:29}} name="md-settings" />
-            </Button> */}
-            <Button onPress={this.goToIntro} name="instructions" on style={{ backgroundColor: '#81BFAF' }}>
-                <Icon style={{fontSize:30}} name="ios-help-buoy" />
-            </Button>
+            onPress={this.goToIntro}>
+            <Icon name="ios-help-buoy" />
           </Fab>
         </View>
       //</Container>
