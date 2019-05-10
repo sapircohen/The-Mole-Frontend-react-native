@@ -1,5 +1,5 @@
 import React,{ Component } from "react";
-import {Platform,Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView} from "react-native";
+import {Alert,Platform,Image, StyleSheet,View ,TouchableOpacity,Linking,ScrollView} from "react-native";
 import {Button,Icon, Text} from 'native-base';
 import  NetworkHeader from '../common/NetworkHeader';
 import Autocomplete from 'react-native-autocomplete-input';
@@ -219,6 +219,7 @@ export default class Paths extends React.Component{
                     //console.log(this.state.paths)
                     for (let i = 0; i < this.state.paths.length; i++) {
                             if(i%2==0){
+                                console.log(this.state.paths[i]);
                                 originalArrayForSort.push(this.state.paths[i]);
                                 this.GetData(this.state.paths[i],i);
                             }
@@ -242,9 +243,10 @@ export default class Paths extends React.Component{
                         //console.log(data.query.pages[pageid].title);
 
                         if (data.query.pages[pageid].missing === "") {
-                            alert("no good");
+                            Alert.alert('Problem','Sorry😞 There was a problem while trying to search for a path')
                             return;
                         }
+                    
                         //getting the full url to redirect user onPress
                         fullWikiUri = 'https://en.wikipedia.org/wiki/';
                         let wiki = data.query.pages[pageid].title;

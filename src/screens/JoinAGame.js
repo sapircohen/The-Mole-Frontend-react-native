@@ -148,7 +148,7 @@ export default class GameBoard extends React.Component{
             to: JSON.parse(token._bodyInit),
             title: 'New Game',
             body: 'Come play with ' + firebase.auth().currentUser.displayName + ' in ' + category + ' category game',
-            data:{key:key,category:category}
+            data:{key:key,category:category,joiner:firebase.auth().currentUser.displayName}
            };
           
        

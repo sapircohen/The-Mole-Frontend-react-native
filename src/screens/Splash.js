@@ -69,8 +69,8 @@ class SplashScreen extends Component{
         if (origin === 'received') {
           // Works on both iOS and Android
           Alert.alert(
-            'New Game!',
-            'You have an open invite to a game in ' + data.category+ ' category',
+            data.category + ' New Game!',
+            'Come play with '+data.joiner+' in ' + data.category+ ' game',
             [
               {
                 text: 'Cancel game',

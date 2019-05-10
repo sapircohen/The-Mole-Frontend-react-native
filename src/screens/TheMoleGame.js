@@ -529,9 +529,11 @@ export default class GameBoard extends React.Component{
         .then(data => {
           console.log(data)
           var pageid = Object.keys(data.query.pages)[0];
+          let str = data.query.pages[pageid].extract;
+          if(str.length > 500) str = str.substring(0,500);
           Alert.alert(
             article.title + '🏁',
-            data.query.pages[pageid].extract,
+            str,
             [
               {
                 text: 'Cancel',
