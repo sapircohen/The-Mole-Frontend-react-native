@@ -33,6 +33,6 @@
         "android": "625987979169-470e5jli10dbo7nq3q9cecskrksd8gsk.apps.googleusercontent.com"
       }
     },
-    "description": "two player game based on wikipedia articles and network science.\nthe player goal is to reach his/hers opponent in the shortest and the quickest way possible. \neach player gets a source vertex (starting article) and target vertex (ending article), the game algorithm will advice one 'good' article to continue with and two bad ones until the user get's to his/her's target.\nthere are six categories to play.\n\n"
+    "description": "two player game based on wikipedia articles and network science.\nthe player goal is to reach his/hers opponent source vertex(=wikipedia article) in the shortest and the quickest way possible. \neach player gets a source vertex (starting article) and target vertex (ending article), the game algorithm will advice one 'good' article to continue with and two bad ones until the user get's to his/her's target.\nthere are six categories to play - politics, movies , music, \n\n"
   }
 }

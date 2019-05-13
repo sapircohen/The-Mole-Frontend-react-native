@@ -46,8 +46,16 @@ export default class Categories extends Component{
           const ref = firebase.database().ref("/theMole"+categoryName);
           console.log(ref);
           //creating a game:
-            const user = firebase.auth().currentUser;
-            const currentGame = {
+          let today = new Date();
+          const dd = String(today.getDate()).padStart(2, '0');
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const yyyy = today.getFullYear();
+
+          today = dd + '/' + mm + '/' + yyyy;
+          console.log(today);
+          const user = firebase.auth().currentUser;
+          const currentGame = {
+              Date:today,
               creator:{
                 uid:user.uid,
                 displayName:user.displayName,
@@ -66,25 +74,25 @@ export default class Categories extends Component{
 
       render() {
         const items = [
+          { name: 'CELEBRITY', code: '#27ae60' ,image:images.celebrityLogo,id:2},
+          { name: 'FILMS', code: '#27ae60' ,image:images.filmLogo,id:1},
           { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo,id:5}, 
           { name: 'GENERAL KNOWLEDGE', code: '#3498db',image:images.generalKnowledgeLogo,id:3 },
           { name: 'MUSIC', code: '#34495e' ,image:images.musicLogo,id:4},
           { name: 'POLITICS', code: '#27ae60' ,image:images.politicsLogo,id:6},
-          { name: 'CELEBRITY', code: '#27ae60' ,image:images.celebrityLogo,id:2},
-          { name: 'FILMS', code: '#27ae60' ,image:images.filmLogo,id:1},
         ];
     
         return (
           <View flex={1}>
             {this.state.showPop && <NotificationPopupToShow title="New Game!" category={this.state.category}/>}
             <FlatGrid
-              itemDimension={130}
+              itemDimension={110}
               items={items}
               style={styles.gridView}
-              spacing={20}
+              spacing={30}
               renderItem={({ item, index }) => (
                 <TouchableOpacity onPress={()=>this.StartANewGame(item.name)}>
-                  <ImageBackground source={item.image} style={{ flex: 1 }} resizeMode='contain'>
+                  <ImageBackground source={item.image} style={{ flex: 1 ,borderStyle:'solid',bordeeWidth:2}} resizeMode='cover'>
                     <View style={[styles.itemContainer,{borderStyle:'solid',bordeeWidth:2}]}>
                     </View>
                   </ImageBackground>
@@ -103,9 +111,11 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     itemContainer: {
+      borderStyle:'dots',
+      borderWidth:1,
       justifyContent: 'flex-end',
-      borderRadius: 5,
-      padding: 10,
+      borderRadius: 10,
+      padding: 20,
       height: 150,
     },
     itemName: {

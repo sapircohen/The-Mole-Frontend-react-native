@@ -95,6 +95,7 @@ export default class GamesWon extends React.Component{
             const openGames = ref.orderByChild("state").equalTo(STATE.WINJoiner);
             openGames.on("child_added",(snapshot,key)=>{
             const data = snapshot.val();
+            console.log(data)
             //igonre other people games, show only ours. 
             if (data.joiner.uid==firebase.auth().currentUser.uid) {
                 console.log(data);
@@ -191,6 +192,7 @@ export default class GamesWon extends React.Component{
                         leftAvatar={<Avatar
                             source={l.image}
                             size="large"
+                            rounded
                         />}
                         subtitle="Show winning path"
                         titleStyle={{color:'#3A5173',fontWeight:'bold'}}

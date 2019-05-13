@@ -122,28 +122,24 @@ export default class GameBoard extends React.Component{
     let category =  await storageGet('category');
     switch (category) {
       case 'NBA':
-        categoryImage='https://a4.espncdn.com/combiner/i?img=%2Fi%2Fespn%2Fmisc_logos%2F500%2Fnba.png';
+        categoryImage=images.nbaLogo;
         break;
       case 'FILMS':
-        categoryImage='https://drhurd.com/wp-content/uploads/2016/01/Oscar-statue.jpg';
-        categoryImage='https://st4.depositphotos.com/18664664/23955/v/1600/depositphotos_239558178-stock-illustration-cinema-celebrity-icon-trendy-cinema.jpg';
+        categoryImage=images.filmLogo;
         break;
       case 'CELEBRITY':
-        categoryImage='https://st4.depositphotos.com/18657574/21815/v/1600/depositphotos_218157006-stock-illustration-fame-vector-icon-isolated-transparent.jpg';
+      categoryImage=images.celebrityLogo;
 
         break;
       case 'GENERAL KNOWLEDGE':
-        categoryImage='https://video-images.vice.com/_uncategorized/1489779368199-einstein.jpeg';
-        categoryImage='https://ih1.redbubble.net/image.25918527.1383/flat,550x550,075,f.jpg';
-        break;
+      categoryImage=images.generalKnowledgeLogo;
+      break;
       case 'MUSIC':
-        categoryImage='https://d85wutc1n854v.cloudfront.net/live/products/600x375/WB0PGGM81.png';
-        categoryImage='https://c8.alamy.com/comp/HM0655/music-note-kawaii-character-vector-illustration-design-HM0655.jpg';
+        categoryImage=images.musicLogo;
         break;
       case 'POLITICS':
-        categoryImage='http://www.cfiargentina.org/wp-content/uploads/2015/04/politics.png';
-        categoryImage='https://www.washingtonpost.com/pbox.php?url=http://wp-stat.s3.amazonaws.com/emoji/shared/resources/share/politics/fb_share.jpg&w=1484&op=resize&opt=1&filter=antialias&t=20170517';
-        break;
+      categoryImage=images.politicsLogo;
+      break;
       default:
         break;
     }
@@ -338,6 +334,7 @@ export default class GameBoard extends React.Component{
         var pgid = Object.keys(data.query.pages)[0];
         if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
           let article = {
+            url:true,
             title:item,
             image:data.query.pages[pgid].thumbnail.source
           }
@@ -345,6 +342,7 @@ export default class GameBoard extends React.Component{
         }
         else {
           let article = {
+            url:false,
             title:item,
             image:categoryImage,
           }
@@ -368,6 +366,7 @@ export default class GameBoard extends React.Component{
         var pgid = Object.keys(data.query.pages)[0];
         if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
           let article = {
+            url:true,
             title:item,
             image:data.query.pages[pgid].thumbnail.source
           }
@@ -375,6 +374,7 @@ export default class GameBoard extends React.Component{
         }
         else {
           let article = {
+            url:false,
             title:item,
             image:categoryImage,
           }
@@ -399,6 +399,7 @@ export default class GameBoard extends React.Component{
         var pgid = Object.keys(data.query.pages)[0];
         if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
           let article = {
+            url:true,
             title:item,
             image:data.query.pages[pgid].thumbnail.source
           }
@@ -406,6 +407,7 @@ export default class GameBoard extends React.Component{
         }
         else {
           let article = {
+            url:false,
             title:item,
             image:categoryImage,
           }
@@ -422,6 +424,7 @@ export default class GameBoard extends React.Component{
         var pgid = Object.keys(data.query.pages)[0];
         if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
           let article = {
+            url:true,
             title:item,
             image:data.query.pages[pgid].thumbnail.source
           }
@@ -429,6 +432,7 @@ export default class GameBoard extends React.Component{
         }
         else {
           let article = {
+            url:false,
             title:item,
             image:categoryImage,
           }
@@ -444,6 +448,7 @@ export default class GameBoard extends React.Component{
         var pgid = Object.keys(data.query.pages)[0];
         if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
           let article = {
+            url:true,
             title:game.CreatorPath.target,
             image:data.query.pages[pgid].thumbnail.source
           }
@@ -454,6 +459,7 @@ export default class GameBoard extends React.Component{
         }
         else {
           let article = {
+            url:false,
             title:game.CreatorPath.target,
             image:categoryImage,
           }
@@ -471,6 +477,7 @@ export default class GameBoard extends React.Component{
       var pgid = Object.keys(data.query.pages)[0];
       if (typeof data.query.pages[pgid].thumbnail !== "undefined") {
         let article = {
+          url:true,
           title:game.JoinerPath.target,
           image:data.query.pages[pgid].thumbnail.source
         }
@@ -481,6 +488,7 @@ export default class GameBoard extends React.Component{
       }
       else {
         let article = {
+          url:false,
           title:game.JoinerPath.target,
           image:categoryImage,
         }
@@ -626,6 +634,7 @@ export default class GameBoard extends React.Component{
             }
             else{
               article={
+                url:false,
                 title:articleMove.title,
                 image:images.logo
               }
@@ -872,7 +881,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.creatorUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:110}} resizeMode='stretch'>
+                      <ImageBackground source={this.state.creatorTarget.url?{uri: this.state.creatorTarget.image}:this.state.creatorTarget.image} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:110}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -881,7 +890,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerTarget.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:110}} resizeMode='stretch'>
+                      <ImageBackground source={this.state.joinerTarget.url?{uri: this.state.joinerTarget.image}:this.state.joinerTarget.image} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:110}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>
@@ -924,7 +933,7 @@ export default class GameBoard extends React.Component{
                 spacing={20}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity onPress={()=>this.getArticleInfo(item)}>
-                    <ImageBackground source={{uri:item.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:1,height:Platform.OS==='ios'?120:80}} resizeMode='stretch'>
+                    <ImageBackground source={item.url?{uri:item.image}:item.image} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:1,height:Platform.OS==='ios'?120:80}} resizeMode='stretch'>
                       <View style={[styles.itemContainer]}>
                         
                       </View>
@@ -955,7 +964,7 @@ export default class GameBoard extends React.Component{
                   {this.state.user==this.state.joinerUid ? 
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.creatorTarget.title)}>
-                      <ImageBackground source={{uri: this.state.joinerCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:120}} resizeMode='stretch'>
+                      <ImageBackground source={this.state.joinerCurrentNode.url?{uri: this.state.joinerCurrentNode.image}:this.state.joinerCurrentNode.image} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:120}} resizeMode='stretch'>
                         <View>
                         </View>
                       </ImageBackground>  
@@ -964,7 +973,7 @@ export default class GameBoard extends React.Component{
                   :
                   (
                     //<TouchableHighlight onPress={()=>this.getArticleInfo(this.state.joinerTarget.title)}>
-                      <ImageBackground source={{uri: this.state.creatorCurrentNode.image}} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:120}} resizeMode='stretch'>
+                      <ImageBackground source={this.state.creatorCurrentNode.url?{uri: this.state.creatorCurrentNode.image}:this.state.creatorCurrentNode.image} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:0.5,height:Platform.OS==='ios'?100:120}} resizeMode='stretch'>
                           <View>
                           </View>
                       </ImageBackground>

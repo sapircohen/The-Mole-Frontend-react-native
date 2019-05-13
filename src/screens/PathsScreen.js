@@ -243,7 +243,7 @@ export default class Paths extends React.Component{
                         //console.log(data.query.pages[pageid].title);
 
                         if (data.query.pages[pageid].missing === "") {
-                            Alert.alert('Problem','Sorry😞 There was a problem while trying to search for a path')
+                            Alert.alert('Problem','Sorry😞 a problem occurred while trying to search for a path')
                             return;
                         }
                     
@@ -341,7 +341,7 @@ export default class Paths extends React.Component{
                                 key={i}
                                 leftAvatar={<Avatar
                                     source={ {uri: l.avatar_url} }
-                                    size="large"
+                                    size="medium"
                                 />}
                                 title={l.name}
                                 subtitle={l.subtitle}
