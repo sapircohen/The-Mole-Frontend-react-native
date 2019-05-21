@@ -720,7 +720,7 @@ export default class GameBoard extends React.Component{
     //2. update current node
     //3. get path from current node to target
     //4. get more random vertecies to show as options
-    //5. change turn's
+    //5. change turn
 
   }
   changeCards = ()=>{

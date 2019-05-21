@@ -28,12 +28,13 @@ const STATE = {
 
 let creatorUid= '';
   const items = [
+    { name: 'CELEBRITY', code: '#27ae60' ,image:images.celebrityLogo,id:2},
+    { name: 'FILMS', code: '#27ae60' ,image:images.filmLogo,id:1},
     { name: 'NBA', code: '#1abc9c' ,image:images.nbaLogo,id:5}, 
     { name: 'GENERAL KNOWLEDGE', code: '#3498db',image:images.generalKnowledgeLogo,id:3 },
     { name: 'MUSIC', code: '#34495e' ,image:images.musicLogo,id:4},
     { name: 'POLITICS', code: '#27ae60' ,image:images.politicsLogo,id:6},
-    { name: 'CELEBRITY', code: '#27ae60' ,image:images.celebrityLogo,id:2},
-    { name: 'FILMS', code: '#27ae60' ,image:images.filmLogo,id:1},
+    
   ];
 
 export default class GameBoard extends React.Component{
@@ -310,6 +311,8 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     itemContainer: {
+      borderStyle:'dots',
+      borderWidth:1,
       justifyContent: 'flex-end',
       borderRadius: 5,
       padding: 10,

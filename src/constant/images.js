@@ -36,4 +36,10 @@ export const images ={
         noImage: require('../../assets/images/noImage.png'),
         path:require('../../assets/images/vertex-path.png'),
         networkgIF:require('../../assets/images/animat-network-color.gif'),
+
+        screenshot1:require('../../assets/images/screenshot1.jpeg'),
+        screenshot2:require('../../assets/images/screenshot2.jpeg'),
+        screenshot3:require('../../assets/images/screenshot3.jpeg'),
+        screenshot4:require('../../assets/images/screenshot4.jpeg'),
+
 }

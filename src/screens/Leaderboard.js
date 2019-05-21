@@ -1,4 +1,5 @@
 
+//שלל הספריות שהשתמשנו בהם
 
 import React,{Component} from 'react';
 import { Image } from "react-native";
@@ -28,8 +29,11 @@ const list = [
 export default class Leaderboard extends React.Component{
     state={
         bestPlayers:[],
+          //אנימציית ההמתנה - כל עוד isready = false הוא יקפוץ
         isReady:false
     }
+        //עיצוב כללי של העמוד
+
     static navigationOptions = ({ navigation }) =>{
       return{
         headerTitle: (
@@ -52,9 +56,16 @@ export default class Leaderboard extends React.Component{
       //ברגע שהמסך מוכן - זאת הפונקציה הראשונה שמתבצעת
       //document ready
     componentDidMount(){
+           //תבנית כתיבה קבועה מגוגל לפעולת הGET
+      //קישור לדאתא שהוצאנו מהDB
+      //הוצאנו רשימת משתמשים אשר נמצאים ב25 המקומות הראשונים לפי מספר הניצחונות של כל משתמש
       fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/playerwinners')
+            //את רשימת האנשים נמיר לג'ייסון
       .then((response) => response.json())
       .then((responseJson) => {
+           //כאשר הג'ייסון מוכן קודם כל נפסיק את פעולת ההמתנה
+        //הפסקה של האנימציה שקופצת
+        //ונעדכן את רשימת המשתמשים לפי השליפה מהדאתאבייס
         this.setState({
           isReady:true,
           bestPlayers:responseJson
@@ -65,6 +76,7 @@ export default class Leaderboard extends React.Component{
       });
         
     }
+        //ברגע שיש עידכון של הstate והוא מוכן הוא מרונדר אוטומטית
     render(){
         if (!this.state.isReady) {
             return(
@@ -78,6 +90,11 @@ export default class Leaderboard extends React.Component{
               <Content>
                 <List>
                 {
+                      //עיצוב עבור כל משתמש ברשימה שהוצאנו
+                  //נעבור על כל איבר ברשימה ונבצע עליו את הפעולות הבאות
+                  //יקבל את התמונה ששלפנו עבורו
+                  //שם המשתמש (הכינוי)
+                  //מספר הנקודות שקיבל
                     this.state.bestPlayers.map((p) => (
                       
                           <ListItem avatar>

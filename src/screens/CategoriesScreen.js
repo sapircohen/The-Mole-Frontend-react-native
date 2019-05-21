@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
       borderStyle:'dots',
       borderWidth:1,
       justifyContent: 'flex-end',
-      borderRadius: 10,
+      borderRadius: 5,
       padding: 20,
       height: 150,
     },
