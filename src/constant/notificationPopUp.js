@@ -16,7 +16,7 @@ export default class NotificationPopupToShow extends React.Component{
       appIconSource:images.logo,
       appTitle: this.props.title,
       timeText: 'Now',
-      title: this.props.category && (this.props.category + " new game created!"),
+      title: this.props.category && ((this.props.category==="FILMS"?"Movies":this.props.category) + " new game created!"),
       body:this.props.body && (this.props.body + '😀'),
     });
   }

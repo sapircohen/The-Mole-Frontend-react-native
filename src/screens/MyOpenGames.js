@@ -53,13 +53,8 @@ export default class GameBoard extends React.Component{
         ),
     }
 }
-componentDidMount(){
-        this.setState({
-            games:[],
-            isReady:false,
-            isDeleted:false
-        },()=>{
-        gamesToShow=[];
+getGames = ()=>{
+  gamesToShow=[];
         categories.forEach(category => {
             console.log(category);
             const ref =  firebase.database().ref("/theMole"+category.name);
@@ -85,6 +80,14 @@ componentDidMount(){
                 }
             })
         });
+}
+componentDidMount(){
+        this.setState({
+            games:[],
+            isReady:false,
+            isDeleted:false
+        },()=>{
+          this.getGames();
       })
       setInterval(()=>{
         if (!this.state.isReady) {
@@ -92,7 +95,7 @@ componentDidMount(){
             isReady:true
           })
         }
-      },8000)
+      },3000)
     }   
     cancelGame = (key,categoryNameToJoin)=>{
          //use firebase right here to join existing game in a category to choose from
@@ -103,7 +106,9 @@ componentDidMount(){
          //remove a game from firebase 
          gameRef.remove()
          .then(()=>{
-             this.props.navigation.navigate('ChooseAGame')
+             //this.props.navigation.navigate('ChooseAGame')
+             this.getGames();
+
          })
          .catch((error)=>{
              console.log(error)
@@ -130,6 +135,7 @@ componentDidMount(){
                       leftAvatar={<Avatar
                           source={l.image}
                           size="large"
+                          rounded
                       />}
                       title={l.data.creator.displayName}
                       titleStyle={{color:'#3A5173',fontWeight:'bold'}}

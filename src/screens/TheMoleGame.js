@@ -12,9 +12,10 @@ import CountdownTimer from "../common/countdown";
 import Dialog, {DialogTitle, DialogButton, DialogContent } from 'react-native-popup-dialog';
 
 import {
-  BallIndicator,
+  PulseIndicator,
   BarIndicator,
-  
+  PacmanIndicator,
+  MaterialIndicator
 } from 'react-native-indicators';
 
 let InfoTitle='Google';
@@ -813,6 +814,7 @@ export default class GameBoard extends React.Component{
       )
     }
     return(
+      <ImageBackground resizeMode='contain' style={{flex:1}} source={{uri:'https://ak1.picdn.net/shutterstock/videos/8085121/thumb/1.jpg'}}>
       <View style={{flex:9}}>
         <Dialog 
             footer={<DialogButton
@@ -910,19 +912,17 @@ export default class GameBoard extends React.Component{
             this.state.wait 
           ? 
             <Box f={1} center>
-              <Box f={0.5} center bg="white">
-                <BarIndicator color='#242A2C'/>
+              <Box f={1} center bg="white">
+                <PulseIndicator size={50} color='#242A2C'/>
               </Box>
-              <Box f={0.5}>
-                <Text style={{textAlign:'center',fontSize:Platform.OS==='ios'?22:15,fontFamily:'sans-serif-thin'}}>Wait for your turn...</Text>
-              </Box>
+                {/* <Text style={{textAlign:'center',fontSize:Platform.OS==='ios'?22:15,fontFamily:'sans-serif-thin'}}>Wait for your turn...</Text> */}
             </Box>
           :
             (<View flex={3} style={{marginTop:15}}>
             {this.state.notFount ?
               <Text style={{textAlign:'center',fontSize:18,fontWeight:'bold',color:'#96B2CC'}}>Lucky u, only one vertex found</Text>
               :
-              <Text style={{textAlign:'center',fontSize:18,fontWeight:'bold',color:'#96B2CC'}}>Choose an option</Text>
+              <Text style={{textAlign:'center',fontSize:18,fontWeight:'bold',color:'#000'}}>Choose an option</Text>
             }
               <FlatGrid
                 itemDimension={80}
@@ -932,7 +932,7 @@ export default class GameBoard extends React.Component{
                 // fixed
                 spacing={20}
                 renderItem={({ item, index }) => (
-                  <TouchableOpacity onPress={()=>this.getArticleInfo(item)}>
+                  <TouchableOpacity  onPress={()=>this.getArticleInfo(item)}>
                     <ImageBackground source={item.url?{uri:item.image}:item.image} style={{ flex: 1,overflow: 'hidden',borderRadius:5,borderWidth:1,height:Platform.OS==='ios'?120:80}} resizeMode='stretch'>
                       <View style={[styles.itemContainer]}>
                         
@@ -1005,6 +1005,7 @@ export default class GameBoard extends React.Component{
         </Footer>
        
     </View>
+    </ImageBackground>
     )
   }
 }
@@ -1014,7 +1015,7 @@ export default class GameBoard extends React.Component{
 const styles = StyleSheet.create({
   gridView: {
     flex: 1,
-    marginTop:'0%',
+    marginTop:'1%',
     alignContent:'space-between',
     justifyContent:'space-between',
   },

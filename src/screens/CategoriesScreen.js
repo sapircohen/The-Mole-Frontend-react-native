@@ -86,10 +86,10 @@ export default class Categories extends Component{
           <View flex={1}>
             {this.state.showPop && <NotificationPopupToShow title="New Game!" category={this.state.category}/>}
             <FlatGrid
-              itemDimension={110}
+              itemDimension={130}
               items={items}
               style={styles.gridView}
-              spacing={30}
+              spacing={20}
               renderItem={({ item, index }) => (
                 <TouchableOpacity onPress={()=>this.StartANewGame(item.name)}>
                   <ImageBackground source={item.image} style={{ flex: 1 ,borderStyle:'solid',bordeeWidth:2}} resizeMode='cover'>
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
       borderWidth:1,
       justifyContent: 'flex-end',
       borderRadius: 5,
-      padding: 20,
+      padding: 10,
       height: 150,
     },
     itemName: {

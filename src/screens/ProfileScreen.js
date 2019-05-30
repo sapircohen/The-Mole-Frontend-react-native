@@ -104,7 +104,7 @@ class ProfileScreen extends Component{
           userName:firebase.auth().currentUser.displayName,
           userPic:firebase.auth().currentUser.photoURL,
           email:firebase.auth().currentUser.email,
-          isReady:true
+          
         },()=>{
           const endpoint = 'http://proj.ruppin.ac.il/bgroup65/prod/api/playergetplayer?uid='+firebase.auth().currentUser.uid;
           fetch(endpoint)
@@ -113,13 +113,15 @@ class ProfileScreen extends Component{
               this.setState({
                 playerCash:data.CashMole,
                 playerWins:data.NumOfWinnings,
-                userPic:data.ProfilePic
+                userPic:data.ProfilePic,
+                isReady:true
               })
             })
             .catch((error)=>{
               console.log(error);
             })
         })
+      
 
     }
     
@@ -160,7 +162,7 @@ class ProfileScreen extends Component{
             </ImageBackground>
 
             
-                  <Content contentContainerStyle={{ flex: 1}}>
+                  <Content contentContainerStyle={{ flex: 1,marginTop:'4%'}}>
                     <Grid style={{justifyContent:'space-evenly'}}>
                       <Col></Col>
                       <Col style={styles.colStyleForGrid}>
@@ -221,7 +223,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
     borderStyle:'solid',
     borderColor:'grey',
-    padding:10,
+    padding:5,
     borderRadius:10,
     backgroundColor:'#4F86EC'
   },
@@ -240,14 +242,14 @@ const styles = StyleSheet.create({
     borderStyle:'solid',
     borderColor:'grey',
     backgroundColor:'#D95040',
-    padding:10,
+    padding:5,
     borderRadius:10,
     marginTop:"15%"
   },
   textStyleForGrid:{
     textAlign:'center',
     color:'black',
-    fontSize:25,
+    fontSize:20,
     fontWeight:'bold',
     //marginBottom:30
   },
