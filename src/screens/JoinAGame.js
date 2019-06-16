@@ -149,7 +149,7 @@ export default class GameBoard extends React.Component{
             to: JSON.parse(token._bodyInit),
             title: 'New Game',
             body: 'Come play with ' + firebase.auth().currentUser.displayName + ' in ' + category + ' category game',
-            data:{key:key,category:category,joiner:firebase.auth().currentUser.displayName}
+            data:{key:key,category:category,joiner:firebase.auth().currentUser.displayName,time:Date.now()}
            };
           
        
@@ -254,7 +254,7 @@ export default class GameBoard extends React.Component{
                   <ListItem
                       onPress={()=>this.JoinAGame(l.key,l.category)}
                       key={i}
-                      leftAvatar={<Avatar
+                      leftAvatar={<Avatar rounded
                           source={ {uri: l.data.creator.picture} }
                           size="large"
                       />}

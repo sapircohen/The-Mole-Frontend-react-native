@@ -66,6 +66,7 @@ class SplashScreen extends Component{
     _handleNotification = ({origin,data}) => {
         storageSet('key', data.key);
         storageSet('category', data.category);
+        
         if (origin === 'received') {
           // Works on both iOS and Android
           Alert.alert(
@@ -89,8 +90,7 @@ class SplashScreen extends Component{
         else{
         //update game state and starting paths
         const ref =  firebase.database().ref("/theMole"+data.category);
-        const gameRef = ref.child(data.key);
-
+        const gameRef = ref.child(data.key);      
         fetch('https://proj.ruppin.ac.il/bgroup65/prod/api/NetworkStartAGame?categoryNAME='+data.category)
           .then(response => response.json())
           .then((data)=>{
@@ -114,8 +114,8 @@ class SplashScreen extends Component{
             gameRef.update(({'CreatorPath': creatorPath}));
           })
           .then(()=>{
-            gameRef.update(({'state': STATE.START}));
-            this.props.navigation.navigate('GameBoard');
+              gameRef.update(({'state': STATE.START}));
+              this.props.navigation.navigate('GameBoard');
           })
           .catch((err)=>{
             console.log(err)

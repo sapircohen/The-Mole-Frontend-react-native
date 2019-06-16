@@ -104,7 +104,7 @@ class ProfileScreen extends Component{
           userName:firebase.auth().currentUser.displayName,
           userPic:firebase.auth().currentUser.photoURL,
           email:firebase.auth().currentUser.email,
-          
+          isReady:true
         },()=>{
           const endpoint = 'http://proj.ruppin.ac.il/bgroup65/prod/api/playergetplayer?uid='+firebase.auth().currentUser.uid;
           fetch(endpoint)
@@ -114,7 +114,7 @@ class ProfileScreen extends Component{
                 playerCash:data.CashMole,
                 playerWins:data.NumOfWinnings,
                 userPic:data.ProfilePic,
-                isReady:true
+                
               })
             })
             .catch((error)=>{
