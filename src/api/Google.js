@@ -1,4 +1,4 @@
-import {Google, Constants} from 'expo';
+import {Google, Constants,Expo} from 'expo';
 import firebase from 'firebase';
 
 const scopes = ['profile','email'];
@@ -8,9 +8,10 @@ const scopes = ['profile','email'];
 const loginAsync = async ()=>{
     try {
         const result = await Google.logInAsync({
-            androidClientId:Constants.manifest.extra.googleAppId.android,
-            iosClientId: Constants.manifest.extra.googleAppId.ios,
-            scopes
+            androidClientId:'625987979169-470e5jli10dbo7nq3q9cecskrksd8gsk.apps.googleusercontent.com',
+            iosClientId: '625987979169-ich3hq56mbspf3k8lp6ttd4it6g246e6.apps.googleusercontent.com',
+            scopes,
+            behavior:'web'
         })
         if (result.type ==="success") {
             onSignIn(result);
