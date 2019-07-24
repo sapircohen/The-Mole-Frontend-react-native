@@ -7,7 +7,7 @@ const permissions = ['public_profile','email'];
 
 const loginAsync = async () =>{
     try {
-        const {type,token } = await Facebook.logInWithReadPermissionsAsync('752014891800107',{permissions});
+        const {type,token } = await Facebook.logInWithReadPermissionsAsync(Constants.manifest.facebookAppId,{permissions});
         if (type ==="success") {
             console.log(token.authResponse)
             checkLoginState(token);
