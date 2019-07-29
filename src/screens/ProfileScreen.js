@@ -31,13 +31,6 @@ class ProfileScreen extends Component{
             <Icon style={{color:"#2DA3BD",fontSize:35}}  name="md-paper" />
         </Button>
        ),
-      headerLeft: 
-       ( <Button
-          onPress={()=>navigation.navigate('Paths')}
-          style={{backgroundColor:"transparent",elevation:0}}>
-          <Icon style={{color:"#2DA3BD",fontSize:35}}  name="ios-infinite" />
-        </Button>
-       ),
       }
     }
     state = {
@@ -121,10 +114,7 @@ class ProfileScreen extends Component{
               console.log(error);
             })
         })
-      
-
     }
-    
     EditAvatarPic = () =>{
       this.props.navigation.navigate('Avatar');
     }
@@ -133,8 +123,6 @@ class ProfileScreen extends Component{
     }
     render(){
       //const { lastScreen } = this.props.navigation.state.params;
-
-
       if (!this.state.isReady) {
         return(
           <Box f={1} center bg="white">
@@ -196,22 +184,18 @@ class ProfileScreen extends Component{
                 </Box>
                 <Box style={{marginLeft:"37%"}}>
                   <FABPaths GoToScreen={this.changeScreen}/>
-                </Box> 
+                </Box>  
                 <Box>
                   <FABSettings GoToScreen={this.changeScreen} />
                 </Box>
             </Box>
-
-
           </Box>
-          
         )
     }
 }
 
 
 export default ProfileScreen;
-
 
 //STYLE
 const styles = StyleSheet.create({

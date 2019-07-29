@@ -8,6 +8,8 @@ const scopes = ['profile','email'];
 const loginAsync = async ()=>{
     try {
         const result = await Google.logInAsync({
+            androidStandaloneAppClientId:'625987979169-470e5jli10dbo7nq3q9cecskrksd8gsk.apps.googleusercontent.com',
+            iosStandaloneAppClientId:'625987979169-ich3hq56mbspf3k8lp6ttd4it6g246e6.apps.googleusercontent.com',
             androidClientId:'625987979169-470e5jli10dbo7nq3q9cecskrksd8gsk.apps.googleusercontent.com',
             iosClientId: '625987979169-ich3hq56mbspf3k8lp6ttd4it6g246e6.apps.googleusercontent.com',
             scopes,
