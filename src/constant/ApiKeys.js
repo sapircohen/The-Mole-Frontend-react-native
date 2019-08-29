@@ -5,5 +5,5 @@ export const FirebaseConfig = {
       projectId: "the-mole-230111",
       storageBucket: "the-mole-230111.appspot.com",
       messagingSenderId: "625987979169"
-  }
+}
  // firebase.initializeApp(config);
