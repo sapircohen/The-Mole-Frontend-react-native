@@ -12,7 +12,7 @@
     "bundleIdentifier": "somethingElse"
   },
   "dependencies": {
-    "expo": "^32.0.0",
+    "expo": "^46.0.14",
     "expo-facebook": "^5.0.1",
     "firebase": "^5.8.1",
     "native-base": "^2.8.2",
